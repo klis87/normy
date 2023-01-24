@@ -1,0 +1,13 @@
+{
+  "presets": [["@babel/preset-env", { "loose": true, "modules": false }]],
+  "env": {
+    "cjs": {
+      "presets": [["@babel/preset-env", { "loose": true }]]
+    },
+    "test": {
+      "presets": [
+        ["@babel/preset-env", { "loose": true, "targets": {"node": "current"} } ]
+      ]
+    }
+  }
+}

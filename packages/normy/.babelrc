@@ -1,0 +1,23 @@
+{
+  "presets": [["@babel/preset-env", { "loose": true, "modules": false }]],
+  "env": {
+    "cjs": {
+      "presets": [["@babel/preset-env", { "loose": true }]]
+    },
+    "test": {
+      "presets": [
+        ["@babel/preset-env", { "loose": true, "targets": {"node": "current"} } ]
+      ]
+    }
+  },
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": false,
+        "helpers": true,
+        "regenerator": true
+      }
+    ]
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "clean": "lerna run clean",
+    "lint": "lerna run lint",
+    "lint-examples": "eslint 'examples/**/src/**'",
+    "test": "jest packages/*/src",
+    "test:cover": "jest --coverage packages/*/src",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test-types": "lerna run test-types",
+    "prettify": "prettier --write '{packages,examples}/**/*.{js,jsx,ts}'",
+    "bundlesize": "bundlesize"
+  },
+  "devDependencies": {
+    "bundlesize": "0.18.0",
+    "coveralls": "3.1.0",
+    "lerna": "3.21.0",
+    "prettier": "2.2.1"
+  },
+  "bundlesize": [
+    {
+      "path": "./packages/redux-requests/dist/normy.min.js",
+      "maxSize": "1 kB"
+    },
+    {
+      "path": "./packages/redux-requests-axios/dist/normy-react-query.min.js",
+      "maxSize": "1 kB"
+    }
+  ]
+}
