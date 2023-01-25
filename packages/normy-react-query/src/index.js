@@ -12,12 +12,6 @@ export const createNormalizedQueryClient = (
     queryCache: new QueryCache({
       onSuccess: (data, query) => {
         normalizer.onQuerySuccess(query.queryKey.join(','), data);
-        console.log(
-          'query success',
-          query.queryKey,
-          data,
-          normalizer.getNormalizedData(),
-        );
       },
     }),
     mutationCache: new MutationCache({
@@ -30,7 +24,6 @@ export const createNormalizedQueryClient = (
             );
           });
         });
-        console.log('mutation success', data, normalizer.getNormalizedData());
       },
     }),
   });
@@ -44,7 +37,6 @@ export const createNormalizedQueryClient = (
       queryKey.join(','),
       queryClient.getQueryData(queryKey),
     );
-    console.log('mutation data ipdate success', normalizer.getNormalizedData());
   };
 
   return queryClient;

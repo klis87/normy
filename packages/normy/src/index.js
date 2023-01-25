@@ -108,8 +108,6 @@ export const createNormalizer = config => {
         removedDependencies,
       ),
     };
-
-    return normalizedData;
   };
 
   const onMutationSuccess = (mutationData, callback) => {
@@ -130,14 +128,6 @@ export const createNormalizer = config => {
         normalizedData.queries[queryKey].data,
         normalizedDataWithMutation,
         normalizedData.queries[queryKey].usedKeys,
-      );
-
-      console.log(
-        'denormalizing',
-        normalizedData.queries[queryKey].data,
-        normalizedDataWithMutation,
-        normalizedData.queries[queryKey].usedKeys,
-        newData,
       );
 
       return { queryKey, data: newData };
