@@ -74,6 +74,5 @@ export const normalize = (data, config = defaultConfig) => {
       return prev;
     }, {}),
     usedKeys,
-    dependencies,
   ];
 };
