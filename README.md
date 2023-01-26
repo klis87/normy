@@ -153,7 +153,7 @@ or you can just use CDN: `https://unpkg.com/@normy/core`.
 To see how to write a plugin, for now just check source code of `@normy/react-query`, it is very easy to do,
 in the future a guide will be created.
 
-## Required conditions
+## Required conditions [:arrow_up:](#table-of-content)
 
 In order to make automatic normalisation work, the following conditions must be meet:
 
@@ -196,7 +196,7 @@ const queryClient = createNormalizedQueryClient(reactQueryConfig, {
 Point 3 should always be met, if not, your really should ask your backend developers
 to keep things standardized and consistent. As a last resort, you can amend response on your side
 
-## Normalisation of arrays
+## Normalisation of arrays [:arrow_up:](#table-of-content)
 
 Unfortunately it does not mean you will never need to update data manually anymore. Some updates still need
 to be done manually like usually, namely adding and removing items from array. Why? Imagine `REMOVE_BOOK`
