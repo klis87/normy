@@ -1,7 +1,7 @@
 {
   "name": "@normy/react-query",
   "version": "0.1.0",
-  "description": "react-query addon for normy - automatic normalisation for data fetching libraries",
+  "description": "react-query addon for normy - Automatic normalisation and data updates for data fetching libraries",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
