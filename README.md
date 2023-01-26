@@ -118,7 +118,7 @@ const App = () => (
 ```
 
 So, as you can see, apart from arrays, no manual data updates are necessary. This is especially handy if a given mutation
-should update data for multiple queries. Not only this is verbose to do updates manually, but also you need to exactly now,
+should update data for multiple queries. Not only this is verbose to do updates manually, but also you need to exactly know,
 which queries to update. The more queries you have, the bigger advantages `normy` brings.
 
 How does it work? By default all objects with `id` key are

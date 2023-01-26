@@ -1,213 +1,218 @@
-# ![Redux-Requests](https://raw.githubusercontent.com/klis87/redux-requests/master/images/logo.png)
+# Normy
 
-[![npm version](https://badge.fury.io/js/%40redux-requests%2Fcore.svg)](https://badge.fury.io/js/%40redux-requests%2Fcore)
-[![gzip size](https://img.badgesize.io/https://unpkg.com/@redux-requests/core/dist/redux-requests.min.js?compression=gzip)](https://unpkg.com/@redux-requests/core)
-[![dependencies](https://david-dm.org/klis87/redux-requests.svg?path=packages/redux-requests)](https://david-dm.org/klis87/redux-requests?path=packages/redux-requests)
-[![dev dependencies](https://david-dm.org/klis87/redux-requests/dev-status.svg?path=packages/redux-requests)](https://david-dm.org/klis87/redux-requests?path=packages/redux-requests&type=dev)
-[![peer dependencies](https://david-dm.org/klis87/redux-requests/peer-status.svg?path=packages/redux-requests)](https://david-dm.org/klis87/redux-requests?path=packages/redux-requests&type=peer)
-[![Build Status](https://travis-ci.org/klis87/redux-requests.svg?branch=master)](https://travis-ci.org/klis87/redux-requests)
-[![Coverage Status](https://coveralls.io/repos/github/klis87/redux-requests/badge.svg?branch=master)](https://coveralls.io/github/klis87/redux-requests?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/klis87/redux-requests/badge.svg)](https://snyk.io/test/github/klis87/redux-requests)
+[![npm version](https://badge.fury.io/js/%40normy%2Fcore.svg)](https://badge.fury.io/js/%40normy%2Fcore)
+[![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/core/dist/normy.min.js?compression=gzip)](https://unpkg.com/@normy/core)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-Declarative AJAX requests and automatic network state management for single-page applications
+<!-- [![Build Status](https://travis-ci.org/klis87/normy.svg?branch=master)](https://travis-ci.org/klis87/normy)
+[![Coverage Status](https://coveralls.io/repos/github/klis87/normy/badge.svg?branch=master)](https://coveralls.io/github/klis87/normy?branch=master) -->
+<!-- [![Known Vulnerabilities](https://snyk.io/test/github/klis87/normy/badge.svg)](https://snyk.io/test/github/klis87/normy) -->
 
-![Redux-Requests showcase](https://raw.githubusercontent.com/klis87/redux-requests/master/images/showcase.gif)
+Automatic normalisation and data updates for data fetching libraries
 
 ## Table of content
 
+- [Introduction](#introduction-arrow_up)
 - [Motivation](#motivation-arrow_up)
-- [Features](#features-arrow_up)
 - [Installation](#installation-arrow_up)
-- [Usage](#usage-arrow_up)
+- [Required conditions](#required-conditions-arrow_up)
+- [Normalisation of arrays](#normalisation-of-arrays-arrow_up)
 - [Examples](#examples-arrow_up)
 - [Companion libraries](#examples-arrow_up)
 
+## Introduction [:arrow_up:](#table-of-content)
+
+`normy` is a library, which allows your application data to be normalized automatically. Then, once data is normalized, in many cases your data can be updated automatically.
+
+The core of `normy` - namely `@normy/core` library, which is not meant to be used directly in applications, has logic inside which allows an easily integration with your favourite data fetching libraries, be it `react-query`, `swr`, `RTK Query` and so on. For now only `@normy/react-query` exists, but there are more to come.
+
 ## Motivation [:arrow_up:](#table-of-content)
 
-With `redux-requests`, assuming you use `axios` (you could use it with anything else too!) you could refactor a code in the following way:
+In order to understand what `normy` actually does, it is the best to see an example. Let's assume you use `react-query`. Then you could refactor a code in the following way:
 
 ```diff
-  import axios from 'axios';
-- import thunk from 'redux-thunk';
-+ import { handleRequests } from '@redux-requests/core';
-+ import { createDriver } from '@redux-requests/axios'; // or another driver
+  import React from 'react';
+  import {
+    QueryClientProvider,
+-   QueryClient,
+    useQueryClient,
+  } from '@tanstack/react-query';
++ import { createNormalizedQueryClient } from '@normy/react-query';
 
-  const FETCH_BOOKS = 'FETCH_BOOKS';
-- const FETCH_BOOKS_SUCCESS = 'FETCH_BOOKS_SUCCESS';
-- const FETCH_BOOKS_ERROR = 'FETCH_BOOKS_ERROR';
--
-- const fetchBooksRequest = () => ({ type: FETCH_BOOKS });
-- const fetchBooksSuccess = data => ({ type: FETCH_BOOKS_SUCCESS, data });
-- const fetchBooksError = error => ({ type: FETCH_BOOKS_ERROR, error });
+- const queryClient = new QueryClient();
++ const queryClient = createNormalizedQueryClient();
 
-- const fetchBooks = () => dispatch => {
--   dispatch(fetchBooksRequest());
--
--   return axios.get('/books').then(response => {
--     dispatch(fetchBooksSuccess(response.data));
--     return response;
--   }).catch(error => {
--     dispatch(fetchBooksError(error));
--     throw error;
--   });
-- }
+const Books = () => {
+  const queryClient = useQueryClient();
 
-+ const fetchBooks = () => ({
-+   type: FETCH_BOOKS,
-+   request: {
-+     url: '/books',
-+     // you can put here other Axios config attributes, like method, data, headers etc.
-+   },
-+ });
+  const { data: booksData = [] } = useQuery(['books'], () =>
+    Promise.resolve([
+      { id: '1', name: 'Name 1', author: { id: '1001', name: 'User1' } },
+      { id: '2', name: 'Name 2', author: { id: '1002', name: 'User2' } },
+    ]),
+  );
 
-- const defaultState = {
--   data: null,
--   pending: 0, // number of pending FETCH_BOOKS requests
--   error: null,
-- };
--
-- const booksReducer = (state = defaultState, action) => {
--   switch (action.type) {
--     case FETCH_BOOKS:
--       return { ...defaultState, pending: state.pending + 1 };
--     case FETCH_BOOKS_SUCCESS:
--       return { ...defaultState, data: action.data, pending: state.pending - 1 };
--     case FETCH_BOOKS_ERROR:
--       return { ...defaultState, error: action.error, pending: state.pending - 1 };
--     default:
--       return state;
--   }
-- };
+  const { data: bookData } = useQuery(['book'], () =>
+    Promise.resolve({
+      id: '1',
+      name: 'Name 1',
+      author: { id: '1001', name: 'User1' },
+    }),
+  );
 
-  const configureStore = () => {
-+   const { requestsReducer, requestsMiddleware } = handleRequests({
-+     driver: createDriver(axios),
-+   });
-+
-    const reducers = combineReducers({
--     books: booksReducer,
-+     requests: requestsReducer,
-    });
+  const updateBookNameMutation = useMutation({
+    mutationFn: () => ({
+      id: '1',
+      name: 'Name 1 Updated',
+    }),
+-   onSuccess: mutationData => {
+-     queryClient.setQueryData(['books'], data =>
+-       data.map(book =>
+-         book.id === mutationData.id ? { ...book, ...mutationData } : book,
+-       ),
+-     );
+-     queryClient.setQueryData(['book'], data =>
+-       data.id === mutationData.id ? { ...data, ...mutationData } : data,
+-     );
+-   },
+  });
 
-    const store = createStore(
-      reducers,
--     applyMiddleware(thunk),
-+     applyMiddleware(...requestsMiddleware),
-    );
+  const updateBookAuthorMutation = useMutation({
+    mutationFn: () => ({
+      id: '1',
+      author: { id: '1004', name: 'User4' },
+    }),
+-   onSuccess: mutationData => {
+-     queryClient.setQueryData(['books'], data =>
+-       data.map(book =>
+-         book.id === mutationData.id ? { ...book, ...mutationData } : book,
+-       ),
+-     );
+-     queryClient.setQueryData(['book'], data =>
+-       data.id === mutationData.id ? { ...data, ...mutationData } : data,
+-     );
+-   },
+  });
 
-    return store;
-  };
+  const addBookMutation = useMutation({
+    mutationFn: () => ({
+      id: '3',
+      name: 'Name 3',
+      author: { id: '1003', name: 'User3' },
+    }),
+    // with data with top level arrays, you still need to update data manually
+    onSuccess: mutationData => {
+      queryClient.setQueryData(['books'], data => data.concat(mutationData));
+    },
+  });
+
+  // return some JSX
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <Books />
+  </QueryClientProvider>
+);
 ```
 
-## Features [:arrow_up:](#table-of-content)
+So, as you can see, apart from arrays, no manual data updates are necessary. This is especially handy if a given mutation
+should update data for multiple queries. Not only this is verbose to do updates manually, but also you need to exactly know,
+which queries to update. The more queries you have, the bigger advantages `normy` brings.
 
-### Just actions
+How does it work? By default all objects with `id` key are
+organized by their ids. Now, any object with key `id`
+will be normalized, which simply means stored by id. If there is already a matching object
+with the same id, new one will be deeply merged with the one already in state.
+So, if only server response data from a mutation is `{ id: '1', title: 'new title' }`,
+this library will automatically figure it out to update `title` for object with `id: '1'`.
 
-Just dispatch actions and enjoy automatic AJAX requests and network state management
-
-### First class aborts support
-
-Automatic and configurable requests aborts, which increases performance
-and prevents race condition bugs before they even happen
-
-### Drivers driven
-
-Compatible with anything for server communication. Axios, Fetch API,
-GraphQL, promise libraries, mocking? No problem! You can also integrate
-it with other ways by writing a custom driver!
-
-### Batch requests
-
-Define multiple requests in single action
-
-### Optimistic updates
-
-Update remote data before receiving server response to improve perceived performance
-
-### Cache
-
-Cache server response forever or for a defined time period to decrease
-amount of network calls
-
-### Data normalisation
-
-Use automatic data normalisation in GraphQL Apollo fashion, but for anything, including REST!
-
-### Server side rendering
-
-Configure SSR totally on Redux level and write truly universal code
-between client and server
-
-### React bindings
-
-Use react bindings to decrease code amount with React even more
-
-### Typescript friendly
-
-It has many utilities to make Typescript experience even greater, for example all data generics are inferred in selectors
-and dispatch results automatically.
+It also works with nested objects with ids, no matter how deep. If an object with id has other objects
+with ids, then those will be normalized separately and parent object will have just reference to those nested
+objects.
 
 ## Installation [:arrow_up:](#table-of-content)
 
 To install the package, just run:
 
 ```
-$ npm install @redux-requests/core
+$ npm install @normy/react-query
 ```
 
-or you can just use CDN: `https://unpkg.com/@redux-requests/core`.
+or you can just use CDN: `https://unpkg.com/@normy/react-query`.
 
-Also, you need to install a driver:
+If you want to write a plugin to another library than `react-query`:
 
-- if you use Axios, install `axios` and `@redux-requests/axios`:
+```
+$ npm install @normy/core
+```
 
-  ```
-  $ npm install axios @redux-requests/axios
-  ```
+or you can just use CDN: `https://unpkg.com/@normy/core`.
 
-  or CDN: `https://unpkg.com/@redux-requests/axios`.
+To see how to write a plugin, for now just check source code of `@normy/react-query`, it is very easy to do,
+in the future a guide will be created.
 
-- if you use Fetch API, install `isomorphic-fetch` (or a different Fetch polyfill) and `@redux-requests/fetch`:
+## Required conditions [:arrow_up:](#table-of-content)
 
-  ```
-  $ npm install isomorphic-fetch redux-requests/fetch
-  ```
+In order to make automatic normalisation work, the following conditions must be meet:
 
-  or CDN: `https://unpkg.com/@redux-requests/fetch`.
+1. you must have a standardized way to identify your objects, usually this is just `id` key
+2. ids must be unique across the whole app, not only across object types, if not, you will need to append something to them,
+   the same has to be done in GraphQL world, usually adding `_typename`
+3. objects with the same ids should have consistent structure, if an object like book in one
+   query has `title` key, it should be `title` in others, not `name` out of a sudden
 
-Also, you have to install `reselect`, which probably you use anyway.
+Two functions which can be passed to `createNormalizedQueryClient` can help to meet those requirements,
+`shouldObjectBeNormalized` and `getNormalisationObjectKey`.
 
-## Usage [:arrow_up:](#table-of-content)
+`shouldObjectBeNormalized` can help you with 1st point, if for instance you identify
+objects differently, for instance by `_id` key, then you can pass
+`shouldObjectBeNormalized: obj => obj._id !== undefined` to `handleRequest`.
 
-For usage, see [documentation](https://redux-requests.klisiczynski.com/docs/introduction/motivation)
+`getNormalisationObjectKey` allows you to pass 2nd requirement. For example, if your ids
+are unique, but not across the whole app, but within object types, you could use
+`getNormalisationObjectKey: obj => obj.id + obj.type` or something similar.
+If that is not possible, then you could just compute a suffix yourself, for example:
+
+```js
+const getType = obj => {
+  if (obj.bookTitle) {
+    return 'book';
+  }
+
+  if (obj.surname) {
+    return 'user';
+  }
+
+  throw 'we support only book and user object';
+};
+
+const queryClient = createNormalizedQueryClient(reactQueryConfig, {
+  getNormalisationObjectKey: obj => obj.id + getType(obj),
+});
+```
+
+Point 3 should always be met, if not, your really should ask your backend developers
+to keep things standardized and consistent. As a last resort, you can amend response on your side
+
+## Normalisation of arrays [:arrow_up:](#table-of-content)
+
+Unfortunately it does not mean you will never need to update data manually anymore. Some updates still need
+to be done manually like usually, namely adding and removing items from array. Why? Imagine `REMOVE_BOOK`
+mutation. This book could be present in many queries, library cannot know from which query
+you would like to remove it. The same applies for `ADD_BOOK`, library cannot know to which query a book should be added,
+or even as which array index. The same thing for action like `SORT_BOOKS`. This problem affects only top
+level arrays though. For instance, if you have a book with some id and another key like `likedByUsers`,
+then if you return new book with updated list in `likedByUsers`, this will work again automatically.
 
 ## Examples [:arrow_up:](#table-of-content)
 
-I highly recommend to try examples how this package could be used in real applications. You could play with those demos
-and see what actions are being sent with [redux-devtools](https://github.com/zalmoxisus/redux-devtools-extension).
+I highly recommend to try examples how this package could be used in real applications.
 
 There are following examples currently:
 
-- [basic](https://github.com/klis87/redux-requests/tree/master/examples/basic)
-- [advanced](https://github.com/klis87/redux-requests/tree/master/examples/advanced)
-- [mutations](https://github.com/klis87/redux-requests/tree/master/examples/mutations)
-- [normalisation](https://github.com/klis87/redux-requests/tree/master/examples/normalisation)
-- [Fetch API](https://github.com/klis87/redux-requests/tree/master/examples/fetch-api)
-- [GraphQL](https://github.com/klis87/redux-requests/tree/master/examples/graphql)
-- [actions-creator](https://github.com/klis87/redux-requests/tree/master/examples/actions-creator)
-- [mock-and-multiple-drivers](https://github.com/klis87/redux-requests/tree/master/examples/mock-and-multiple-drivers)
-- [server-side-rendering](https://github.com/klis87/redux-requests/tree/master/examples/server-side-rendering)
-- [suspense-ssr](https://github.com/klis87/redux-requests/tree/master/examples/suspense-ssr)
-- [promise driver](https://github.com/klis87/redux-requests/tree/master/examples/promise-driver)
-- [showcase](https://github.com/klis87/redux-requests/tree/master/examples/showcase)
-
-## Companion libraries [:arrow_up:](#table-of-content)
-
-- [redux-smart-actions](https://github.com/klis87/redux-smart-actions) - Redux addon to create actions and thunks with minimum boilerplate, you can use it to create requests actions faster and in a less verbose way, without constants,
-  useful especially to create thunks without constants, so you have access to Redux state in request actions without
-  any need to pass them with action arguments
+- [react-query](https://github.com/klis87/normy/tree/master/examples/react-query)
 
 ## Licence [:arrow_up:](#table-of-content)
 
