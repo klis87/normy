@@ -208,8 +208,7 @@ then if you return new book with updated list in `likedByUsers`, this will work 
 
 ## Examples [:arrow_up:](#table-of-content)
 
-I highly recommend to try examples how this package could be used in real applications. You could play with those demos
-and see what actions are being sent with [redux-devtools](https://github.com/zalmoxisus/redux-devtools-extension).
+I highly recommend to try examples how this package could be used in real applications.
 
 There are following examples currently:
 
