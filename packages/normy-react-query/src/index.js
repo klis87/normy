@@ -7,13 +7,21 @@ export const createNormalizedQueryClient = (
 ) => {
   const normalizer = createNormalizer(normalizerConfig);
 
+  const queryCache = new QueryCache({
+    onSuccess: (data, query) => {
+      normalizer.onQuerySuccess(query.queryKey.join(','), data);
+    },
+  });
+
+  queryCache.subscribe(event => {
+    if (event.type === 'removed') {
+      normalizer.onQueryRemoval(event.query.queryKey.join(','));
+    }
+  });
+
   const queryClient = new QueryClient({
     ...reactQueryConfig,
-    queryCache: new QueryCache({
-      onSuccess: (data, query) => {
-        normalizer.onQuerySuccess(query.queryKey.join(','), data);
-      },
-    }),
+    queryCache,
     mutationCache: new MutationCache({
       onSuccess: data => {
         normalizer.onMutationSuccess(data, queriesToUpdate => {
