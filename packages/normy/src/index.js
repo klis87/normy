@@ -110,6 +110,18 @@ export const createNormalizer = config => {
     };
   };
 
+  const onQueryRemoval = queryKey => {
+    onQuerySuccess(queryKey, null);
+
+    const queries = { ...normalizedData.queries };
+    delete queries[queryKey];
+
+    normalizedData = {
+      ...normalizedData,
+      queries,
+    };
+  };
+
   const onMutationSuccess = (mutationData, callback) => {
     const [, normalizedObjectsData] = normalize(mutationData, config);
 
@@ -172,5 +184,6 @@ export const createNormalizer = config => {
     getNormalizedData: () => normalizedData,
     onQuerySuccess,
     onMutationSuccess,
+    onQueryRemoval,
   };
 };

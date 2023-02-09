@@ -18,4 +18,5 @@ export const createNormalizer: (
       queriesToUpdate: ReadonlyArray<{ queryKey: string; data: any }>,
     ) => void,
   ) => void;
+  onQueryRemoval: (queryKey: string) => void;
 };
