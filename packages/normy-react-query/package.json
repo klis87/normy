@@ -1,6 +1,6 @@
 {
   "name": "@normy/react-query",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "react-query addon for normy - Automatic normalisation and data updates for data fetching libraries",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,7 +36,7 @@
     "@tanstack/react-query": ">=4.22.0"
   },
   "dependencies": {
-    "@normy/core": "^0.2.0"
+    "@normy/core": "^0.3.0"
   },
   "devDependencies": {
     "@babel/cli": "7.12.8",
