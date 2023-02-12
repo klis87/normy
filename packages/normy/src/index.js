@@ -45,17 +45,14 @@ const getQueriesDependentOnMutation = (
   mutationDependencies,
 ) => {
   const queries = [];
-  const orphanDependencies = [];
 
   mutationDependencies.forEach(dependency => {
     if (dependentQueries[dependency]) {
       queries.push(...dependentQueries[dependency]);
-    } else {
-      orphanDependencies.push(dependency);
     }
   });
 
-  return { foundQueries: Array.from(new Set(queries)), orphanDependencies };
+  return Array.from(new Set(queries));
 };
 
 const getDependenciesDiff = (oldDependencies, newDependencies) => {
@@ -78,7 +75,7 @@ export const createNormalizer = config => {
     dependentQueries: {},
   };
 
-  const onQuerySuccess = (queryKey, queryData) => {
+  const setQuery = (queryKey, queryData) => {
     const [normalizedQueryData, normalizedObjectsData, usedKeys] = normalize(
       queryData,
       config,
@@ -108,10 +105,12 @@ export const createNormalizer = config => {
         removedDependencies,
       ),
     };
+
+    console.log('onQuerySuccess', queryKey, queryData, normalizedData);
   };
 
-  const onQueryRemoval = queryKey => {
-    onQuerySuccess(queryKey, null);
+  const removeQuery = queryKey => {
+    setQuery(queryKey, null);
 
     const queries = { ...normalizedData.queries };
     delete queries[queryKey];
@@ -120,9 +119,11 @@ export const createNormalizer = config => {
       ...normalizedData,
       queries,
     };
+
+    console.log('onQueryRemoval', queryKey, normalizedData);
   };
 
-  const onMutationSuccess = (mutationData, callback) => {
+  const getQueriesToUpdate = mutationData => {
     const [, normalizedObjectsData] = normalize(mutationData, config);
 
     const normalizedDataWithMutation = mergeData(
@@ -130,28 +131,27 @@ export const createNormalizer = config => {
       normalizedObjectsData,
     );
 
-    const { foundQueries } = getQueriesDependentOnMutation(
+    const foundQueries = getQueriesDependentOnMutation(
       normalizedData.dependentQueries,
       Object.keys(normalizedObjectsData),
     );
 
-    const queriesToUpdate = foundQueries.map(queryKey => {
-      const newData = denormalize(
+    console.log('onMutationSuccess', mutationData);
+
+    return foundQueries.map(queryKey => ({
+      queryKey,
+      data: denormalize(
         normalizedData.queries[queryKey].data,
         normalizedDataWithMutation,
         normalizedData.queries[queryKey].usedKeys,
-      );
-
-      return { queryKey, data: newData };
-    });
-
-    callback(queriesToUpdate);
+      ),
+    }));
   };
 
   return {
     getNormalizedData: () => normalizedData,
-    onQuerySuccess,
-    onMutationSuccess,
-    onQueryRemoval,
+    setQuery,
+    removeQuery,
+    getQueriesToUpdate,
   };
 };

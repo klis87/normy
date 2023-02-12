@@ -4,15 +4,17 @@ const normalizer = createNormalizer();
 
 const normalizedData = normalizer.getNormalizedData();
 
-normalizer.onQuerySuccess('someKey', { id: '1', key: 'value' });
+normalizer.setQuery('someKey', { id: '1', key: 'value' });
 
-normalizer.onMutationSuccess({ id: '1', key: 'value 2' }, queriesToUpdate =>
-  queriesToUpdate.forEach(({ queryKey, data }) => {
-    //
-  }),
-);
+const queriesToUpdate = normalizer.getQueriesToUpdate({
+  id: '1',
+  key: 'value 2',
+});
 
-normalizer.onQueryRemoval('someKey');
+queriesToUpdate.forEach(({ queryKey, data }) => {
+  //
+}),
+  normalizer.removeQuery('someKey');
 
 const normalizerWithConfig = createNormalizer({
   getNormalisationObjectKey: obj => obj.id,

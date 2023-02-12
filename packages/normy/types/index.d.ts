@@ -11,12 +11,9 @@ export const createNormalizer: (
     objects: any;
     dependentQueries: any;
   };
-  onQuerySuccess: (queryKey: string, queryData: any) => void;
-  onMutationSuccess: (
+  setQuery: (queryKey: string, queryData: any) => void;
+  removeQuery: (queryKey: string) => void;
+  getQueriesToUpdate: (
     mutationData: any,
-    callback: (
-      queriesToUpdate: ReadonlyArray<{ queryKey: string; data: any }>,
-    ) => void,
-  ) => void;
-  onQueryRemoval: (queryKey: string) => void;
+  ) => ReadonlyArray<{ queryKey: string; data: any }>;
 };
