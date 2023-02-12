@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
+const sleep = () => new Promise(resolve => setTimeout(resolve, 5000));
 
 const Books = () => {
   const { data: booksData = [] } = useQuery(['books'], () =>
@@ -19,7 +19,7 @@ const Books = () => {
   ));
 };
 
-const App = () => {
+const Nested = () => {
   const queryClient = useQueryClient();
 
   const { data: bookData } = useQuery(
@@ -55,6 +55,7 @@ const App = () => {
   const addBookMutation = useMutation({
     mutationFn: async () => {
       await sleep();
+
       return {
         id: '3',
         name: 'Name 3',
@@ -72,9 +73,34 @@ const App = () => {
     },
   });
 
+  const updateBookNameMutationOptimistic = useMutation({
+    mutationFn: async () => {
+      await sleep();
+
+      return {
+        id: '1',
+        name: 'Name 1 Updated',
+      };
+    },
+    onMutate: () => {
+      return {
+        optimisticData: {
+          id: '1',
+          name: 'Name 1 Updated',
+        },
+        rollbackData: {
+          id: '1',
+          name: 'Name 1',
+        },
+      };
+    },
+    meta: {
+      normalize: false,
+    },
+  });
+
   return (
     <div>
-      <h1>Normy React Query example</h1>
       <h2>Books</h2>
       <Books />
       <hr />
@@ -93,7 +119,22 @@ const App = () => {
       </button>{' '}
       <button type="button" onClick={() => addBookMutation.mutate()}>
         Add book {addBookMutation.isLoading && 'loading.....'}
-      </button>
+      </button>{' '}
+      <button
+        type="button"
+        onClick={() => updateBookNameMutationOptimistic.mutate()}
+      >
+        Update book name optimistic
+      </button>{' '}
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <div>
+      <h1>Normy React Query example</h1>
+      <Nested />
     </div>
   );
 };
