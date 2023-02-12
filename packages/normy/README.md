@@ -165,9 +165,9 @@ In order to make automatic normalisation work, the following conditions must be 
 
 Two functions which can be passed to `createNormalizedQueryClient` can help to meet those requirements,
 `shouldObjectBeNormalized` and `getNormalisationObjectKey`.
-getNormalisationObjectKey: obj => obj.id
+
 `shouldObjectBeNormalized` and `getNormalisationObjectKey` can help you with 1st point, if for instance you identify
-objects differently, for instance by `_id` key, then you can pass
+objects differently, like by `_id` key, then you can pass
 `shouldObjectBeNormalized: obj => obj._id !== undefined` and `getNormalisationObjectKey: obj => obj._id`.
 
 `getNormalisationObjectKey` also allows you to pass the 2nd requirement. For example, if your ids
