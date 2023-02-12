@@ -136,8 +136,6 @@ export const createNormalizer = config => {
       Object.keys(normalizedObjectsData),
     );
 
-    console.log('onMutationSuccess', mutationData);
-
     return foundQueries.map(queryKey => ({
       queryKey,
       data: denormalize(

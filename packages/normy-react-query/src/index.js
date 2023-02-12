@@ -19,7 +19,8 @@ export const createNormalizedQueryClient = (
     } else if (
       event.type === 'updated' &&
       event.action.type === 'success' &&
-      event.action.data
+      event.action.data !== undefined &&
+      (event.query.meta || {}).normalize !== false
     ) {
       normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
     }
@@ -29,7 +30,8 @@ export const createNormalizedQueryClient = (
     if (
       event.type === 'updated' &&
       event.action.type === 'success' &&
-      event.action.data
+      event.action.data &&
+      (event.mutation.meta || {}).normalize !== false
     ) {
       const queriesToUpdate = normalizer.getQueriesToUpdate(event.action.data);
 
