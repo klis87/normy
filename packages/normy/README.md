@@ -18,8 +18,8 @@ Automatic normalisation and data updates for data fetching libraries
 - [Installation](#installation-arrow_up)
 - [Required conditions](#required-conditions-arrow_up)
 - [Normalisation of arrays](#normalisation-of-arrays-arrow_up)
+- [Integrations](#examples-arrow_up)
 - [Examples](#examples-arrow_up)
-- [Companion libraries](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
 
@@ -117,16 +117,16 @@ const App = () => (
 );
 ```
 
-So, as you can see, apart from arrays, no manual data updates are necessary. This is especially handy if a given mutation
+So, as you can see, apart from top level arrays, no manual data updates are necessary anymore. This is especially handy if a given mutation
 should update data for multiple queries. Not only this is verbose to do updates manually, but also you need to exactly know,
 which queries to update. The more queries you have, the bigger advantages `normy` brings.
 
 How does it work? By default all objects with `id` key are
 organized by their ids. Now, any object with key `id`
 will be normalized, which simply means stored by id. If there is already a matching object
-with the same id, new one will be deeply merged with the one already in state.
-So, if only server response data from a mutation is `{ id: '1', title: 'new title' }`,
-this library will automatically figure it out to update `title` for object with `id: '1'`.
+with the same id, a new one will be deeply merged with the one already in the state.
+So, if a server response data from a mutation is `{ id: '1', title: 'new title' }`,
+this library will automatically figure it out to update `title` for object with `id: '1'` for all dependent queries.
 
 It also works with nested objects with ids, no matter how deep. If an object with id has other objects
 with ids, then those will be normalized separately and parent object will have just reference to those nested
@@ -155,22 +155,22 @@ in the future a guide will be created.
 
 ## Required conditions [:arrow_up:](#table-of-content)
 
-In order to make automatic normalisation work, the following conditions must be meet:
+In order to make automatic normalisation work, the following conditions must be met:
 
-1. you must have a standardized way to identify your objects, usually this is just `id` key
+1. you must have a standardized way to identify your objects, usually this is done by key `id`
 2. ids must be unique across the whole app, not only across object types, if not, you will need to append something to them,
    the same has to be done in GraphQL world, usually adding `_typename`
-3. objects with the same ids should have consistent structure, if an object like book in one
+3. objects with the same ids should have a consistent structure, if an object like book in one
    query has `title` key, it should be `title` in others, not `name` out of a sudden
 
 Two functions which can be passed to `createNormalizedQueryClient` can help to meet those requirements,
 `shouldObjectBeNormalized` and `getNormalisationObjectKey`.
-
-`shouldObjectBeNormalized` can help you with 1st point, if for instance you identify
+getNormalisationObjectKey: obj => obj.id
+`shouldObjectBeNormalized` and `getNormalisationObjectKey` can help you with 1st point, if for instance you identify
 objects differently, for instance by `_id` key, then you can pass
-`shouldObjectBeNormalized: obj => obj._id !== undefined` to `handleRequest`.
+`shouldObjectBeNormalized: obj => obj._id !== undefined` and `getNormalisationObjectKey: obj => obj._id`.
 
-`getNormalisationObjectKey` allows you to pass 2nd requirement. For example, if your ids
+`getNormalisationObjectKey` also allows you to pass the 2nd requirement. For example, if your ids
 are unique, but not across the whole app, but within object types, you could use
 `getNormalisationObjectKey: obj => obj.id + obj.type` or something similar.
 If that is not possible, then you could just compute a suffix yourself, for example:
@@ -194,17 +194,26 @@ const queryClient = createNormalizedQueryClient(reactQueryConfig, {
 ```
 
 Point 3 should always be met, if not, your really should ask your backend developers
-to keep things standardized and consistent. As a last resort, you can amend response on your side
+to keep things standardized and consistent. As a last resort, you can amend responses on your side.
 
 ## Normalisation of arrays [:arrow_up:](#table-of-content)
 
 Unfortunately it does not mean you will never need to update data manually anymore. Some updates still need
-to be done manually like usually, namely adding and removing items from array. Why? Imagine `REMOVE_BOOK`
-mutation. This book could be present in many queries, library cannot know from which query
-you would like to remove it. The same applies for `ADD_BOOK`, library cannot know to which query a book should be added,
+to be done manually like usually, namely adding and removing items from array. Why? Imagine a `REMOVE_BOOK`
+mutation. This book could be present in many queries, library cannot know from which queries
+you would like to remove it. The same applies for `ADD_BOOK`, the library cannot know to which query a book should be added,
 or even as which array index. The same thing for action like `SORT_BOOKS`. This problem affects only top
 level arrays though. For instance, if you have a book with some id and another key like `likedByUsers`,
 then if you return new book with updated list in `likedByUsers`, this will work again automatically.
+
+In the future version of the library though, with some additional pointers, it will be possible to do above updates as well!
+
+## Integrations [:arrow_up:](#table-of-content)
+
+Currently the is only one official integration with data fetching libraries, namely with `react-query`. There are more
+to come though. See dedicated documentations for specific integrations:
+
+- [react-query](https://github.com/klis87/normy/tree/master/packages/normy-react-query)
 
 ## Examples [:arrow_up:](#table-of-content)
 
