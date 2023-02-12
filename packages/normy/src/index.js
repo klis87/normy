@@ -145,38 +145,6 @@ export const createNormalizer = config => {
       return { queryKey, data: newData };
     });
 
-    queriesToUpdate.forEach(query => {
-      const [normalizedQueryData, normalizedObjectsData, usedKeys] = normalize(
-        query.data,
-        config,
-      );
-
-      const { addedDependencies, removedDependencies } = getDependenciesDiff(
-        normalizedData.queries[query.queryKey]
-          ? normalizedData.queries[query.queryKey].dependencies
-          : [],
-        Object.keys(normalizedObjectsData),
-      );
-
-      normalizedData = {
-        queries: {
-          ...normalizedData.queries,
-          [query.queryKey]: {
-            data: normalizedQueryData,
-            usedKeys,
-            dependencies: Object.keys(normalizedObjectsData),
-          },
-        },
-        ...addOrRemoveDependencies(
-          normalizedData.dependentQueries,
-          mergeData(normalizedData.objects, normalizedObjectsData),
-          query.queryKey,
-          addedDependencies,
-          removedDependencies,
-        ),
-      };
-    });
-
     callback(queriesToUpdate);
   };
 
