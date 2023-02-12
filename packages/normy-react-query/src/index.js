@@ -7,9 +7,13 @@ export const createNormalizedQueryClient = (
 ) => {
   const normalizer = createNormalizer(normalizerConfig);
 
-  const queryCache = new QueryCache();
+  reactQueryConfig = {
+    ...reactQueryConfig,
+    queryCache: reactQueryConfig.queryCache || new QueryCache(),
+    mutationCache: reactQueryConfig.mutationCache || new MutationCache(),
+  };
 
-  queryCache.subscribe(event => {
+  reactQueryConfig.queryCache.subscribe(event => {
     if (event.type === 'removed') {
       normalizer.onQueryRemoval(event.query.queryKey.join(','));
     } else if (
@@ -24,9 +28,7 @@ export const createNormalizedQueryClient = (
     }
   });
 
-  const mutationCache = new MutationCache();
-
-  mutationCache.subscribe(event => {
+  reactQueryConfig.mutationCache.subscribe(event => {
     if (
       event.type === 'updated' &&
       event.action.type === 'success' &&
@@ -76,11 +78,7 @@ export const createNormalizedQueryClient = (
     }
   });
 
-  const queryClient = new QueryClient({
-    ...reactQueryConfig,
-    queryCache,
-    mutationCache,
-  });
+  const queryClient = new QueryClient(reactQueryConfig);
 
   return queryClient;
 };
