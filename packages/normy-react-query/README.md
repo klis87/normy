@@ -1,7 +1,7 @@
-# Normy
+# @normy/react-query
 
-[![npm version](https://badge.fury.io/js/%40normy%2Fcore.svg)](https://badge.fury.io/js/%40normy%2Fcore)
-[![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/core/dist/normy.min.js?compression=gzip)](https://unpkg.com/@normy/core)
+[![npm version](https://badge.fury.io/js/%40normy%2Freact-query.svg)](https://badge.fury.io/js/%40normy%2Freact-query)
+[![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/react-query/dist/normy.min.js?compression=gzip)](https://unpkg.com/@normy/react-query)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
@@ -9,27 +9,27 @@
 [![Coverage Status](https://coveralls.io/repos/github/klis87/normy/badge.svg?branch=master)](https://coveralls.io/github/klis87/normy?branch=master) -->
 <!-- [![Known Vulnerabilities](https://snyk.io/test/github/klis87/normy/badge.svg)](https://snyk.io/test/github/klis87/normy) -->
 
-Automatic normalisation and data updates for data fetching libraries
+`react-query` integration with `normy` - automatic normalisation and data updates for data fetching libraries
 
 ## Table of content
 
 - [Introduction](#introduction-arrow_up)
 - [Motivation](#motivation-arrow_up)
 - [Installation](#installation-arrow_up)
-- [Required conditions](#required-conditions-arrow_up)
-- [Normalisation of arrays](#normalisation-of-arrays-arrow_up)
+- [Basic usage](#basic-usage-arrow_up)
+- [Disabling of normalisation per query and mutation](#disabling-of-normalisation-per-query-and-mutation-arrow_up)
+- [Optimistic updates](#optimistic-updates-arrow_up)
+- [Garbage collection](#garbage-collection-arrow_up)
 - [Examples](#examples-arrow_up)
-- [Companion libraries](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
 
-`normy` is a library, which allows your application data to be normalized automatically. Then, once data is normalized, in many cases your data can be updated automatically.
-
-The core of `normy` - namely `@normy/core` library, which is not meant to be used directly in applications, has logic inside which allows an easily integration with your favourite data fetching libraries, be it `react-query`, `swr`, `RTK Query` and so on. For now only `@normy/react-query` exists, but there are more to come.
+This is the official `react-query` integration with `normy`, a library, which allows your application data to be normalized automatically. This documentation will cover only `react-query` specifics, so if you did not already do that, you can
+find `normy` documentation [here](https://github.com/klis87/normy/tree/master).
 
 ## Motivation [:arrow_up:](#table-of-content)
 
-In order to understand what `normy` actually does, it is the best to see an example. Let's assume you use `react-query`. Then you could refactor a code in the following way:
+In order to understand what `@normy/react-query` actually does, it is the best to see an example:
 
 ```diff
   import React from 'react';
@@ -117,20 +117,9 @@ const App = () => (
 );
 ```
 
-So, as you can see, apart from arrays, no manual data updates are necessary. This is especially handy if a given mutation
+So, as you can see, apart from top level arrays, no manual data updates are necessary anymore. This is especially handy if a given mutation
 should update data for multiple queries. Not only this is verbose to do updates manually, but also you need to exactly know,
 which queries to update. The more queries you have, the bigger advantages `normy` brings.
-
-How does it work? By default all objects with `id` key are
-organized by their ids. Now, any object with key `id`
-will be normalized, which simply means stored by id. If there is already a matching object
-with the same id, new one will be deeply merged with the one already in state.
-So, if only server response data from a mutation is `{ id: '1', title: 'new title' }`,
-this library will automatically figure it out to update `title` for object with `id: '1'`.
-
-It also works with nested objects with ids, no matter how deep. If an object with id has other objects
-with ids, then those will be normalized separately and parent object will have just reference to those nested
-objects.
 
 ## Installation [:arrow_up:](#table-of-content)
 
@@ -142,69 +131,116 @@ $ npm install @normy/react-query
 
 or you can just use CDN: `https://unpkg.com/@normy/react-query`.
 
-If you want to write a plugin to another library than `react-query`:
+You do not need to install `@normy/core`, because it will be installed as `@normy/react-query` direct dependency.
 
-```
-$ npm install @normy/core
-```
+## Basic usage [:arrow_up:](#table-of-content)
 
-or you can just use CDN: `https://unpkg.com/@normy/core`.
+For the basic usage, see `Motivation` paragraph. The only thing which you need to actually do is to create `queryClient`
+with `createNormalizedQueryClient` instead of `new QueryClient()`. `createNormalizedQueryClient` is just a thin wrapper around
+the official `QueryClient` and you can use all `react-query` features normally.
 
-To see how to write a plugin, for now just check source code of `@normy/react-query`, it is very easy to do,
-in the future a guide will be created.
+`createNormalizedQueryClient` accepts two optional arguments:
 
-## Required conditions [:arrow_up:](#table-of-content)
+- `reactQueryConfig` - this is just normal `react-query` config, which you would pass as `new QueryClient(reactQueryConfig)`,
+  with `normy` you can do it with `createNormalizedQueryClient(reactQueryConfig)`
+- `normalizerConfig` - this is `normy` config, which you might need to meet requirements for data normalisation to work - see
+  [explanation](https://github.com/klis87/normy/tree/master/#required-conditions-arrow_up) for more details.
 
-In order to make automatic normalisation work, the following conditions must be meet:
+## Disabling of normalisation per query and mutation [:arrow_up:](#table-of-content)
 
-1. you must have a standardized way to identify your objects, usually this is just `id` key
-2. ids must be unique across the whole app, not only across object types, if not, you will need to append something to them,
-   the same has to be done in GraphQL world, usually adding `_typename`
-3. objects with the same ids should have consistent structure, if an object like book in one
-   query has `title` key, it should be `title` in others, not `name` out of a sudden
+By default all your queries and mutations will be normalized. That means that for each query there will be normalized representation
+of its data and for each mutation its response data will be read and all dependent normalized queries will be updated.
 
-Two functions which can be passed to `createNormalizedQueryClient` can help to meet those requirements,
-`shouldObjectBeNormalized` and `getNormalisationObjectKey`.
+You might want to disable data normalisation per query/mutation, for example for performance reason for some extreme big queries,
+or just if you do not need it for a given query, for instance if a query data will be never updated.
 
-`shouldObjectBeNormalized` can help you with 1st point, if for instance you identify
-objects differently, for instance by `_id` key, then you can pass
-`shouldObjectBeNormalized: obj => obj._id !== undefined` to `handleRequest`.
-
-`getNormalisationObjectKey` allows you to pass 2nd requirement. For example, if your ids
-are unique, but not across the whole app, but within object types, you could use
-`getNormalisationObjectKey: obj => obj.id + obj.type` or something similar.
-If that is not possible, then you could just compute a suffix yourself, for example:
+For this, you can use `meta` option, for example for `useQuery`:
 
 ```js
-const getType = obj => {
-  if (obj.bookTitle) {
-    return 'book';
-  }
-
-  if (obj.surname) {
-    return 'user';
-  }
-
-  throw 'we support only book and user object';
-};
-
-const queryClient = createNormalizedQueryClient(reactQueryConfig, {
-  getNormalisationObjectKey: obj => obj.id + getType(obj),
+useQuery(['query-key'], loadData, {
+  meta: {
+    normalize: false,
+  },
 });
 ```
 
-Point 3 should always be met, if not, your really should ask your backend developers
-to keep things standardized and consistent. As a last resort, you can amend response on your side
+or for `useMutation`:
 
-## Normalisation of arrays [:arrow_up:](#table-of-content)
+```js
+useMutation({
+  mutationFn,
+  meta: {
+    normalize: false,
+  },
+});
+```
 
-Unfortunately it does not mean you will never need to update data manually anymore. Some updates still need
-to be done manually like usually, namely adding and removing items from array. Why? Imagine `REMOVE_BOOK`
-mutation. This book could be present in many queries, library cannot know from which query
-you would like to remove it. The same applies for `ADD_BOOK`, library cannot know to which query a book should be added,
-or even as which array index. The same thing for action like `SORT_BOOKS`. This problem affects only top
-level arrays though. For instance, if you have a book with some id and another key like `likedByUsers`,
-then if you return new book with updated list in `likedByUsers`, this will work again automatically.
+## Optimistic updates [:arrow_up:](#table-of-content)
+
+For normal mutations there is nothing you need to do, `normy` will inspect response data, calculate dependent queries,
+update normalized data and update all relevant queries. With optimistic updates though, you need to prepare optimistic data
+yourself:
+
+```jsx
+useMutation({
+  mutationFn: async () => {
+    return {
+      id: '1',
+      name: 'Name updated',
+    };
+  },
+  onMutate: () => {
+    return {
+      optimisticData: {
+        id: '1',
+        name: 'Name 1 Updated',
+      },
+      rollbackData: {
+        id: '1',
+        name: 'Name',
+      },
+    };
+  },
+});
+```
+
+The above code will immediately update all queries which have object with `id: 1` in their data. In case of
+a mutation error, data will be reverted to original `rollbackData`.
+
+It will work at the same time as a normal mutation too, so on mutation success, all dependent queries will be updated
+again. If you are sure about the response structure, you might want to disable normalisation for this mutation,
+so that on successful response the normalisation won't be repeted unnecessarily:
+
+```jsx
+useMutation({
+  mutationFn: async () => {
+    return {
+      id: '1',
+      name: 'Name updated',
+    };
+  },
+  onMutate: () => {
+    return {
+      optimisticData: {
+        id: '1',
+        name: 'Name 1 Updated',
+      },
+      rollbackData: {
+        id: '1',
+        name: 'Name',
+      },
+    };
+  },
+  meta: {
+    normalize: false,
+  },
+});
+```
+
+## Garbage collection [:arrow_up:](#table-of-content)
+
+`normy` know how to clean after itself. When a query is removed from the store, `normy` will do the same, removing all redundant
+information.
 
 ## Examples [:arrow_up:](#table-of-content)
 
