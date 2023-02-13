@@ -39,12 +39,13 @@
     "@normy/core": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.12.8",
-    "@babel/core": "7.12.9",
-    "@babel/preset-env": "7.12.7",
+    "@babel/cli": "7.20.7",
+    "@babel/core": "7.20.12",
+    "@babel/preset-env": "7.20.2",
+    "@babel/types": "^7.20.0",
     "@tanstack/react-query": "4.22.0",
-    "babel-jest": "26.6.3",
-    "babel-loader": "8.2.2",
+    "babel-jest": "29.4.2",
+    "babel-loader": "9.1.2",
     "cross-env": "7.0.2",
     "eslint": "7.14.0",
     "eslint-config-prettier": "6.15.0",
