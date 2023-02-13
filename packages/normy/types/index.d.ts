@@ -3,9 +3,7 @@ export type NormalizerConfig = {
   shouldObjectBeNormalized?: (obj: any) => boolean;
 };
 
-export const createNormalizer: (
-  normalizerConfig?: NormalizerConfig,
-) => {
+export const createNormalizer: (normalizerConfig?: NormalizerConfig) => {
   getNormalizedData: () => {
     queries: any;
     objects: any;

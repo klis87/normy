@@ -9,8 +9,8 @@ export const createNormalizedQueryClient = (
 
   reactQueryConfig = {
     ...reactQueryConfig,
-    queryCache: reactQueryConfig.queryCache || new QueryCache(),
-    mutationCache: reactQueryConfig.mutationCache || new MutationCache(),
+    queryCache: reactQueryConfig.queryCache ?? new QueryCache(),
+    mutationCache: reactQueryConfig.mutationCache ?? new MutationCache(),
   };
 
   reactQueryConfig.queryCache.subscribe(event => {
@@ -20,7 +20,7 @@ export const createNormalizedQueryClient = (
       event.type === 'updated' &&
       event.action.type === 'success' &&
       event.action.data !== undefined &&
-      (event.query.meta || {}).normalize !== false
+      (event.query.meta ?? {}).normalize !== false
     ) {
       normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
     }
@@ -31,39 +31,38 @@ export const createNormalizedQueryClient = (
       event.type === 'updated' &&
       event.action.type === 'success' &&
       event.action.data &&
-      (event.mutation.meta || {}).normalize !== false
+      (event.mutation.meta ?? {}).normalize !== false
     ) {
       const queriesToUpdate = normalizer.getQueriesToUpdate(event.action.data);
 
       queriesToUpdate.forEach(query => {
+        // eslint-disable-next-line no-use-before-define
         queryClient.setQueryData(query.queryKey.split(','), () => query.data);
       });
     } else if (
       event.type === 'updated' &&
       event.action.type === 'loading' &&
-      event.mutation.state &&
-      event.mutation.state.context &&
-      event.mutation.state.context.optimisticData
+      event.mutation.state?.context?.optimisticData
     ) {
       const queriesToUpdate = normalizer.getQueriesToUpdate(
         event.mutation.state.context.optimisticData,
       );
 
       queriesToUpdate.forEach(query => {
+        // eslint-disable-next-line no-use-before-define
         queryClient.setQueryData(query.queryKey.split(','), () => query.data);
       });
     } else if (
       event.type === 'updated' &&
       event.action.type === 'error' &&
-      event.mutation.state &&
-      event.mutation.state.context &&
-      event.mutation.state.context.rollbackData
+      event.mutation.state?.context?.rollbackData
     ) {
       const queriesToUpdate = normalizer.getQueriesToUpdate(
         event.mutation.state.context.rollbackData,
       );
 
       queriesToUpdate.forEach(query => {
+        // eslint-disable-next-line no-use-before-define
         queryClient.setQueryData(query.queryKey.split(','), () => query.data);
       });
     }
