@@ -3,10 +3,13 @@ module.exports = {
     library: 'Normy',
     libraryTarget: 'umd',
   },
+  resolve: {
+    extensions: ['.ts'],
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
       },

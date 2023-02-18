@@ -3,7 +3,7 @@ import { createNormalizer } from '@normy/core';
 
 export const createNormalizedQueryClient = (
   reactQueryConfig,
-  normalizerConfig,
+  normalizerConfig: NormalizerConfig,
 ) => {
   const normalizer = createNormalizer(normalizerConfig);
 
@@ -23,6 +23,7 @@ export const createNormalizedQueryClient = (
       (event.query.meta ?? {}).normalize !== false
     ) {
       normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
+      console.log('lala', normalizer.getNormalizedData());
     }
   });
 

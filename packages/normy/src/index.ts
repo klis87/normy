@@ -1,14 +1,27 @@
 import { normalize } from './normalize';
 import { denormalize } from './denormalize';
 import { mergeData } from './merge-data';
-import defaultConfig from './default-config';
+import { defaultConfig } from './default-config';
+import { Data, DataObject, NormalizerConfig, UsedKeys } from './types';
+
+type NormalizedData = {
+  queries: {
+    [queryKey: string]: {
+      data: Data;
+      dependencies: ReadonlyArray<string>;
+      usedKeys: UsedKeys;
+    };
+  };
+  objects: { [objectId: string]: DataObject };
+  dependentQueries: { [objectId: string]: ReadonlyArray<string> };
+};
 
 const addOrRemoveDependencies = (
-  dependentQueries,
-  objects,
-  queryKey,
-  dependenciesToAdd,
-  dependenciesToRemove,
+  dependentQueries: NormalizedData['dependentQueries'],
+  objects: NormalizedData['objects'],
+  queryKey: string,
+  dependenciesToAdd: ReadonlyArray<string>,
+  dependenciesToRemove: ReadonlyArray<string>,
 ) => {
   dependentQueries = { ...dependentQueries };
   objects = { ...objects };
@@ -41,10 +54,10 @@ const addOrRemoveDependencies = (
 };
 
 const getQueriesDependentOnMutation = (
-  dependentQueries,
-  mutationDependencies,
-) => {
-  const queries = [];
+  dependentQueries: NormalizedData['dependentQueries'],
+  mutationDependencies: ReadonlyArray<string>,
+): ReadonlyArray<string> => {
+  const queries: string[] = [];
 
   mutationDependencies.forEach(dependency => {
     if (dependentQueries[dependency]) {
@@ -55,27 +68,28 @@ const getQueriesDependentOnMutation = (
   return Array.from(new Set(queries));
 };
 
-const getDependenciesDiff = (oldDependencies, newDependencies) => {
-  return {
-    addedDependencies: newDependencies.filter(
-      v => !oldDependencies.includes(v),
-    ),
-    removedDependencies: oldDependencies.filter(
-      v => !newDependencies.includes(v),
-    ),
-  };
-};
+const getDependenciesDiff = (
+  oldDependencies: ReadonlyArray<string>,
+  newDependencies: ReadonlyArray<string>,
+) => ({
+  addedDependencies: newDependencies.filter(
+    newDependency => !oldDependencies.includes(newDependency),
+  ),
+  removedDependencies: oldDependencies.filter(
+    oldDependency => !newDependencies.includes(oldDependency),
+  ),
+});
 
-export const createNormalizer = config => {
-  config = { ...defaultConfig, ...config };
+export const createNormalizer = (normalizerConfig: NormalizerConfig) => {
+  const config = { ...defaultConfig, ...normalizerConfig };
 
-  let normalizedData = {
+  let normalizedData: NormalizedData = {
     queries: {},
     objects: {},
     dependentQueries: {},
   };
 
-  const setQuery = (queryKey, queryData) => {
+  const setQuery = (queryKey: string, queryData: Data) => {
     const [normalizedQueryData, normalizedObjectsData, usedKeys] = normalize(
       queryData,
       config,
@@ -109,7 +123,7 @@ export const createNormalizer = config => {
     console.log('onQuerySuccess', queryKey, queryData, normalizedData);
   };
 
-  const removeQuery = queryKey => {
+  const removeQuery = (queryKey: string) => {
     setQuery(queryKey, null);
 
     const queries = { ...normalizedData.queries };
@@ -123,7 +137,7 @@ export const createNormalizer = config => {
     console.log('onQueryRemoval', queryKey, normalizedData);
   };
 
-  const getQueriesToUpdate = mutationData => {
+  const getQueriesToUpdate = (mutationData: Data) => {
     const [, normalizedObjectsData] = normalize(mutationData, config);
 
     const normalizedDataWithMutation = mergeData(
