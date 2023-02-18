@@ -2356,18 +2356,15 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@tanstack/query-core@4.22.0":
-  version "4.22.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.22.0.tgz#7a786fcea64e229ed5d4308093dd644cdfaa895e"
-  integrity sha512-OeLyBKBQoT265f5G9biReijeP8mBxNFwY7ZUu1dKL+YzqpG5q5z7J/N1eT8aWyKuhyDTiUHuKm5l+oIVzbtrjw==
+"@tanstack/query-core@https://pkg.csb.dev/TanStack/query/commit/f42195b3/@tanstack/query-core":
+  version "4.24.6"
+  resolved "https://pkg.csb.dev/TanStack/query/commit/f42195b3/@tanstack/query-core#171bb47757134689179ac65f1674ff1d978fe724"
 
-"@tanstack/react-query@4.22.0":
-  version "4.22.0"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.22.0.tgz#aaa4b41a6d306be6958018c74a8a3bb3e9f1924c"
-  integrity sha512-P9o+HjG42uB/xHR6dMsJaPhtZydSe4v0xdG5G/cEj1oHZAXelMlm67/rYJNQGKgBamKElKogj+HYGF+NY2yHYg==
+"@tanstack/react-query@https://pkg.csb.dev/TanStack/query/commit/f42195b3/@tanstack/react-query":
+  version "4.24.6"
+  resolved "https://pkg.csb.dev/TanStack/query/commit/f42195b3/@tanstack/react-query#615a44490d266767d4089f1460689dead95408ae"
   dependencies:
-    "@tanstack/query-core" "4.22.0"
-    use-sync-external-store "^1.2.0"
+    "@tanstack/query-core" "https://pkg.csb.dev/TanStack/query/commit/f42195b3/@tanstack/query-core"
 
 "@types/babel__core@^7.1.14":
   version "7.20.0"
@@ -10559,11 +10556,6 @@ url-parse-lax@^3.0.0:
   integrity sha1-FrXK/Afb42dsGxmZF3gj1lA6yww=
   dependencies:
     prepend-http "^2.0.0"
-
-use-sync-external-store@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
-  integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
 use@^3.1.0:
   version "3.1.1"

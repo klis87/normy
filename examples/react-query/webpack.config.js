@@ -11,9 +11,13 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', 'mjs'],
 
     alias: {
+      '@tanstack/react-query':
+        '/home/klis87/projects/normalizer/examples/react-query/src/@tanstack/react-query/build/umd/index.production.js',
+      '@tanstack/query-core':
+        '/home/klis87/projects/normalizer/examples/react-query/src/@tanstack/query-core/build/umd/index.production.js',
       '@normy/core': path.join(
         __dirname,
         '..',
@@ -36,7 +40,11 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
+        test: /\.mjs?$/,
         loader: 'babel-loader',
       },
     ],

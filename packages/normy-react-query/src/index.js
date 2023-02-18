@@ -9,64 +9,78 @@ export const createNormalizedQueryClient = (
 
   reactQueryConfig = {
     ...reactQueryConfig,
-    queryCache: reactQueryConfig.queryCache ?? new QueryCache(),
-    mutationCache: reactQueryConfig.mutationCache ?? new MutationCache(),
+    // queryCache:
+    // reactQueryConfig.queryCache ??
+    // new QueryCache({
+    //   createStore: () => {
+    //     const normyStore = createNormyStore();
+    //     return {
+    //       has:  key => console.log('has', key) || key,
+    //       keys:  key => console.log('get', key) || key,,
+    //       values,
+    //       get: key => console.log('get', key) || key,
+    //       set: (key, value) => console.log('set', key, value) || key,
+    //       delete: key => console.log('det', key) || key,
+    //     };
+    //   },
+    // }),
+    // mutationCache: reactQueryConfig.mutationCache ?? new MutationCache(),
   };
 
-  reactQueryConfig.queryCache.subscribe(event => {
-    if (event.type === 'removed') {
-      normalizer.removeQuery(event.query.queryKey.join(','));
-    } else if (
-      event.type === 'updated' &&
-      event.action.type === 'success' &&
-      event.action.data !== undefined &&
-      (event.query.meta ?? {}).normalize !== false
-    ) {
-      normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
-    }
-  });
+  // reactQueryConfig.queryCache.subscribe(event => {
+  //   if (event.type === 'removed') {
+  //     normalizer.removeQuery(event.query.queryKey.join(','));
+  //   } else if (
+  //     event.type === 'updated' &&
+  //     event.action.type === 'success' &&
+  //     event.action.data !== undefined &&
+  //     (event.query.meta ?? {}).normalize !== false
+  //   ) {
+  //     normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
+  //   }
+  // });
 
-  reactQueryConfig.mutationCache.subscribe(event => {
-    if (
-      event.type === 'updated' &&
-      event.action.type === 'success' &&
-      event.action.data &&
-      (event.mutation.meta ?? {}).normalize !== false
-    ) {
-      const queriesToUpdate = normalizer.getQueriesToUpdate(event.action.data);
+  // reactQueryConfig.mutationCache.subscribe(event => {
+  //   if (
+  //     event.type === 'updated' &&
+  //     event.action.type === 'success' &&
+  //     event.action.data &&
+  //     (event.mutation.meta ?? {}).normalize !== false
+  //   ) {
+  //     const queriesToUpdate = normalizer.getQueriesToUpdate(event.action.data);
 
-      queriesToUpdate.forEach(query => {
-        // eslint-disable-next-line no-use-before-define
-        queryClient.setQueryData(query.queryKey.split(','), () => query.data);
-      });
-    } else if (
-      event.type === 'updated' &&
-      event.action.type === 'loading' &&
-      event.mutation.state?.context?.optimisticData
-    ) {
-      const queriesToUpdate = normalizer.getQueriesToUpdate(
-        event.mutation.state.context.optimisticData,
-      );
+  //     queriesToUpdate.forEach(query => {
+  //       // eslint-disable-next-line no-use-before-define
+  //       queryClient.setQueryData(query.queryKey.split(','), () => query.data);
+  //     });
+  //   } else if (
+  //     event.type === 'updated' &&
+  //     event.action.type === 'loading' &&
+  //     event.mutation.state?.context?.optimisticData
+  //   ) {
+  //     const queriesToUpdate = normalizer.getQueriesToUpdate(
+  //       event.mutation.state.context.optimisticData,
+  //     );
 
-      queriesToUpdate.forEach(query => {
-        // eslint-disable-next-line no-use-before-define
-        queryClient.setQueryData(query.queryKey.split(','), () => query.data);
-      });
-    } else if (
-      event.type === 'updated' &&
-      event.action.type === 'error' &&
-      event.mutation.state?.context?.rollbackData
-    ) {
-      const queriesToUpdate = normalizer.getQueriesToUpdate(
-        event.mutation.state.context.rollbackData,
-      );
+  //     queriesToUpdate.forEach(query => {
+  //       // eslint-disable-next-line no-use-before-define
+  //       queryClient.setQueryData(query.queryKey.split(','), () => query.data);
+  //     });
+  //   } else if (
+  //     event.type === 'updated' &&
+  //     event.action.type === 'error' &&
+  //     event.mutation.state?.context?.rollbackData
+  //   ) {
+  //     const queriesToUpdate = normalizer.getQueriesToUpdate(
+  //       event.mutation.state.context.rollbackData,
+  //     );
 
-      queriesToUpdate.forEach(query => {
-        // eslint-disable-next-line no-use-before-define
-        queryClient.setQueryData(query.queryKey.split(','), () => query.data);
-      });
-    }
-  });
+  //     queriesToUpdate.forEach(query => {
+  //       // eslint-disable-next-line no-use-before-define
+  //       queryClient.setQueryData(query.queryKey.split(','), () => query.data);
+  //     });
+  //   }
+  // });
 
   const queryClient = new QueryClient(reactQueryConfig);
 

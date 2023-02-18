@@ -43,7 +43,7 @@
     "@babel/core": "7.20.12",
     "@babel/preset-env": "7.20.2",
     "@babel/types": "^7.20.0",
-    "@tanstack/react-query": "4.22.0",
+    "@tanstack/react-query": "https://pkg.csb.dev/TanStack/query/commit/f42195b3/@tanstack/react-query",
     "babel-jest": "29.4.2",
     "babel-loader": "9.1.2",
     "cross-env": "7.0.2",
