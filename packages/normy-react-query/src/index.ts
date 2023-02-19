@@ -1,19 +1,24 @@
-import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import { createNormalizer } from '@normy/core';
+import {
+  QueryClient,
+  QueryCache,
+  MutationCache,
+  QueryClientConfig,
+} from '@tanstack/react-query';
+import { createNormalizer, NormalizerConfig } from '@normy/core';
 
 export const createNormalizedQueryClient = (
-  reactQueryConfig,
+  reactQueryConfig: QueryClientConfig,
   normalizerConfig: NormalizerConfig,
 ) => {
   const normalizer = createNormalizer(normalizerConfig);
 
-  reactQueryConfig = {
+  const config = {
     ...reactQueryConfig,
     queryCache: reactQueryConfig.queryCache ?? new QueryCache(),
     mutationCache: reactQueryConfig.mutationCache ?? new MutationCache(),
   };
 
-  reactQueryConfig.queryCache.subscribe(event => {
+  config.queryCache.subscribe(event => {
     if (event.type === 'removed') {
       normalizer.removeQuery(event.query.queryKey.join(','));
     } else if (
@@ -23,11 +28,10 @@ export const createNormalizedQueryClient = (
       (event.query.meta ?? {}).normalize !== false
     ) {
       normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
-      console.log('lala', normalizer.getNormalizedData());
     }
   });
 
-  reactQueryConfig.mutationCache.subscribe(event => {
+  config.mutationCache.subscribe(event => {
     if (
       event.type === 'updated' &&
       event.action.type === 'success' &&
@@ -69,7 +73,7 @@ export const createNormalizedQueryClient = (
     }
   });
 
-  const queryClient = new QueryClient(reactQueryConfig);
+  const queryClient = new QueryClient(config);
 
   return queryClient;
 };
