@@ -4,6 +4,8 @@ import { mergeData } from './merge-data';
 import { defaultConfig } from './default-config';
 import { Data, DataObject, NormalizerConfig, UsedKeys } from './types';
 
+export { NormalizerConfig };
+
 type NormalizedData = {
   queries: {
     [queryKey: string]: {
