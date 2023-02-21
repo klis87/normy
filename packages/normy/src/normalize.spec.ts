@@ -313,8 +313,8 @@ describe('normalize', () => {
           { _id: '2', key: 'b' },
         ],
         {
-          getNormalisationObjectKey: obj => obj._id + obj.key,
-          shouldObjectBeNormalized: obj => obj._id,
+          getNormalisationObjectKey: obj => `${obj._id}${obj.key}`,
+          shouldObjectBeNormalized: obj => !!obj._id,
         },
       ),
     ).toEqual([
