@@ -6,4 +6,8 @@ module.exports = {
     '/node_modules/',
     '<rootDir>/packages/(?:.+?)/lib/',
   ],
+  collectCoverageFrom: [
+    'packages/*/src/**/*.{js,jsx,ts}',
+    '!**/node_modules/**',
+  ],
 };
