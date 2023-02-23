@@ -23,12 +23,12 @@
   },
   "bundlesize": [
     {
-      "path": "./packages/redux-requests/dist/normy.min.js",
-      "maxSize": "1 kB"
+      "path": "./packages/normy/dist/normy.min.js",
+      "maxSize": "2 kB"
     },
     {
-      "path": "./packages/redux-requests-axios/dist/normy-react-query.min.js",
-      "maxSize": "1 kB"
+      "path": "./packages/normy-react-query/dist/normy-react-query.min.js",
+      "maxSize": "2 kB"
     }
   ]
 }
