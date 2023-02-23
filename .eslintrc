@@ -6,6 +6,7 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
+    "plugin:import/recommended",
     "plugin:import/typescript"
   ],
   "plugins": ["@typescript-eslint", "import", "react"],
@@ -19,6 +20,14 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
     }
   },
   "rules": {

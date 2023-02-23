@@ -8,6 +8,7 @@ export type DataPrimitiveArray =
   | undefined[];
 
 export type DataObject = {
+  // eslint-disable-next-line no-use-before-define
   [index: string]: Data;
 };
 
