@@ -3,24 +3,10 @@ import { denormalize } from './denormalize';
 import { mergeData } from './merge-data';
 import { defaultConfig } from './default-config';
 import { addOrRemoveDependencies } from './add-or-remove-dependencies';
+import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
 import { Data, NormalizerConfig, NormalizedData } from './types';
 
 export { NormalizerConfig };
-
-const getQueriesDependentOnMutation = (
-  dependentQueries: NormalizedData['dependentQueries'],
-  mutationDependencies: ReadonlyArray<string>,
-): ReadonlyArray<string> => {
-  const queries: string[] = [];
-
-  mutationDependencies.forEach(dependency => {
-    if (dependentQueries[dependency]) {
-      queries.push(...dependentQueries[dependency]);
-    }
-  });
-
-  return Array.from(new Set(queries));
-};
 
 const getDependenciesDiff = (
   oldDependencies: ReadonlyArray<string>,
