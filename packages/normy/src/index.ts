@@ -2,58 +2,10 @@ import { normalize } from './normalize';
 import { denormalize } from './denormalize';
 import { mergeData } from './merge-data';
 import { defaultConfig } from './default-config';
-import { Data, DataObject, NormalizerConfig, UsedKeys } from './types';
+import { addOrRemoveDependencies } from './add-or-remove-dependencies';
+import { Data, NormalizerConfig, NormalizedData } from './types';
 
 export { NormalizerConfig };
-
-type NormalizedData = {
-  queries: {
-    [queryKey: string]: {
-      data: Data;
-      dependencies: ReadonlyArray<string>;
-      usedKeys: UsedKeys;
-    };
-  };
-  objects: { [objectId: string]: DataObject };
-  dependentQueries: { [objectId: string]: ReadonlyArray<string> };
-};
-
-const addOrRemoveDependencies = (
-  dependentQueries: NormalizedData['dependentQueries'],
-  objects: NormalizedData['objects'],
-  queryKey: string,
-  dependenciesToAdd: ReadonlyArray<string>,
-  dependenciesToRemove: ReadonlyArray<string>,
-) => {
-  dependentQueries = { ...dependentQueries };
-  objects = { ...objects };
-
-  dependenciesToAdd.forEach(dependency => {
-    if (!dependentQueries[dependency]) {
-      dependentQueries[dependency] = [queryKey];
-    }
-
-    if (!dependentQueries[dependency].includes(queryKey)) {
-      dependentQueries[dependency] = [
-        ...dependentQueries[dependency],
-        queryKey,
-      ];
-    }
-  });
-
-  dependenciesToRemove.forEach(dependency => {
-    if (dependentQueries[dependency].length > 1) {
-      dependentQueries[dependency] = dependentQueries[dependency].filter(
-        v => v !== queryKey,
-      );
-    } else {
-      delete dependentQueries[dependency];
-      delete objects[dependency];
-    }
-  });
-
-  return { dependentQueries, objects };
-};
 
 const getQueriesDependentOnMutation = (
   dependentQueries: NormalizedData['dependentQueries'],

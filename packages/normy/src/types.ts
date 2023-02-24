@@ -24,3 +24,15 @@ export type NormalizerConfig = {
 };
 
 export type UsedKeys = { [path: string]: ReadonlyArray<string> };
+
+export type NormalizedData = {
+  queries: {
+    [queryKey: string]: {
+      data: Data;
+      dependencies: ReadonlyArray<string>;
+      usedKeys: UsedKeys;
+    };
+  };
+  objects: { [objectId: string]: DataObject };
+  dependentQueries: { [objectId: string]: ReadonlyArray<string> };
+};
