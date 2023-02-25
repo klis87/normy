@@ -19,7 +19,7 @@
     "url": "https://github.com/klis87/normy/issues"
   },
   "scripts": {
-    "clean": "rimraf es lib dist",
+    "clean": "rimraf es lib dist types",
     "lint": "eslint 'src/**'",
     "test": "jest src",
     "test:cover": "jest --coverage src",
@@ -28,7 +28,7 @@
     "build:es": "babel src --extensions '.ts' --out-dir es --ignore 'src/**/*.spec.js'",
     "build:umd": "webpack --mode development -o dist --output-filename normy-react-query.js",
     "build:umd:min": "webpack --mode production -o dist --output-filename normy-react-query.min.js",
-    "build": "npm-run-all clean -p build-types build:commonjs build:es build:umd build:umd:min",
+    "build": "npm-run-all clean build-types -p build:commonjs build:es build:umd build:umd:min",
     "build:watch": "nodemon --watch src --ignore src/**/*.spec.js --exec 'yarn run build:es'",
     "prepublish": "yarn run build"
   },
