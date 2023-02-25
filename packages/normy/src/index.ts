@@ -4,21 +4,10 @@ import { mergeData } from './merge-data';
 import { defaultConfig } from './default-config';
 import { addOrRemoveDependencies } from './add-or-remove-dependencies';
 import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
+import { getDependenciesDiff } from './get-dependencies-diff';
 import { Data, NormalizerConfig, NormalizedData } from './types';
 
 export { NormalizerConfig };
-
-const getDependenciesDiff = (
-  oldDependencies: ReadonlyArray<string>,
-  newDependencies: ReadonlyArray<string>,
-) => ({
-  addedDependencies: newDependencies.filter(
-    newDependency => !oldDependencies.includes(newDependency),
-  ),
-  removedDependencies: oldDependencies.filter(
-    oldDependency => !newDependencies.includes(oldDependency),
-  ),
-});
 
 export const createNormalizer = (normalizerConfig: NormalizerConfig) => {
   const config = { ...defaultConfig, ...normalizerConfig };
