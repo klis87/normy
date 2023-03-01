@@ -220,7 +220,6 @@ describe('createNormalizer', () => {
   it('allows to override normalisation key', () => {
     const normalizer = createNormalizer({
       getNormalisationObjectKey: obj => obj._id as string,
-      // shouldObjectBeNormalized: obj => obj._id !== undefined,
     });
     normalizer.setQuery('query', {
       _id: '1',
@@ -246,7 +245,6 @@ describe('createNormalizer', () => {
   it('allows to disable normalisation per object', () => {
     const normalizer = createNormalizer({
       getNormalisationObjectKey: obj => obj._id as string,
-      shouldObjectBeNormalized: obj => obj._id !== undefined,
     });
     normalizer.setQuery('query', {
       _id: '1',

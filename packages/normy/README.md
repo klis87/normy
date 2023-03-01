@@ -163,16 +163,14 @@ In order to make automatic normalisation work, the following conditions must be 
 3. objects with the same ids should have a consistent structure, if an object like book in one
    query has `title` key, it should be `title` in others, not `name` out of a sudden
 
-Two functions which can be passed to `createNormalizedQueryClient` can help to meet those requirements,
-`shouldObjectBeNormalized` and `getNormalisationObjectKey`.
+There is a function which can be passed to `createNormalizedQueryClient` can help to meet those requirements, namely `getNormalisationObjectKey`.
 
-`shouldObjectBeNormalized` and `getNormalisationObjectKey` can help you with 1st point, if for instance you identify
-objects differently, like by `_id` key, then you can pass
-`shouldObjectBeNormalized: obj => obj._id !== undefined` and `getNormalisationObjectKey: obj => obj._id`.
+`getNormalisationObjectKey` can help you with 1st point, if for instance you identify
+objects differently, like by `_id` key, then you can pass `getNormalisationObjectKey: obj => obj._id`.
 
 `getNormalisationObjectKey` also allows you to pass the 2nd requirement. For example, if your ids
 are unique, but not across the whole app, but within object types, you could use
-`getNormalisationObjectKey: obj => obj.id + obj.type` or something similar.
+`getNormalisationObjectKey: obj => obj.id && obj.type ? obj.id + obj.type : undefined` or something similar.
 If that is not possible, then you could just compute a suffix yourself, for example:
 
 ```js
@@ -185,11 +183,11 @@ const getType = obj => {
     return 'user';
   }
 
-  throw 'we support only book and user object';
+  return undefined;
 };
 
 const queryClient = createNormalizedQueryClient(reactQueryConfig, {
-  getNormalisationObjectKey: obj => obj.id + getType(obj),
+  getNormalisationObjectKey: obj => getType(obj) && obj.id + getType(obj),
 });
 ```
 

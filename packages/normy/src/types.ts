@@ -19,8 +19,7 @@ export type Data =
   | DataObject[];
 
 export type NormalizerConfig = {
-  getNormalisationObjectKey?: (obj: DataObject) => string;
-  shouldObjectBeNormalized?: (obj: DataObject) => boolean;
+  getNormalisationObjectKey?: (obj: DataObject) => string | undefined;
 };
 
 export type UsedKeys = { [path: string]: ReadonlyArray<string> };

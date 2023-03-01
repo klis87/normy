@@ -20,7 +20,7 @@ const stipFromDeps = (
   }
 
   if (data !== null && typeof data === 'object') {
-    if (config.shouldObjectBeNormalized(data) && root) {
+    if (config.getNormalisationObjectKey(data) && root) {
       return `@@${config.getNormalisationObjectKey(data)}`;
     }
 
@@ -56,7 +56,7 @@ export const getDependencies = (
   }
 
   if (data !== null && typeof data === 'object') {
-    if (config.shouldObjectBeNormalized(data)) {
+    if (config.getNormalisationObjectKey(data)) {
       usedKeys[path] = Object.keys(data);
     }
 
@@ -66,7 +66,7 @@ export const getDependencies = (
           ...prev,
           ...getDependencies(v, config, usedKeys, `${path}.${k}`)[0],
         ],
-        config.shouldObjectBeNormalized(data) ? [data] : [],
+        config.getNormalisationObjectKey(data) ? [data] : [],
       ),
       usedKeys,
     ];
