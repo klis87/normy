@@ -7,10 +7,13 @@ import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutati
 import { getDependenciesDiff } from './get-dependencies-diff';
 import { Data, NormalizerConfig, NormalizedData } from './types';
 
-export const createNormalizer = (normalizerConfig: NormalizerConfig) => {
+export const createNormalizer = (
+  normalizerConfig?: NormalizerConfig,
+  initialNormalizedData?: NormalizedData,
+) => {
   const config = { ...defaultConfig, ...normalizerConfig };
 
-  let normalizedData: NormalizedData = {
+  let normalizedData: NormalizedData = initialNormalizedData ?? {
     queries: {},
     objects: {},
     dependentQueries: {},
