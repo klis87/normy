@@ -351,4 +351,165 @@ describe('createNormalizer', () => {
       });
     });
   });
+
+  describe('getQueriesToUpdate', () => {
+    it('returns empty array when no queries to update', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', { id: '1', name: 'name' });
+
+      expect(
+        normalizer.getQueriesToUpdate({ id: '2', name: 'name 2' }),
+      ).toEqual([]);
+    });
+
+    it('returns query to update when found matching object', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        surname: 'surname',
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({ id: '1', name: 'name 2' }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: { id: '1', name: 'name 2', surname: 'surname' },
+        },
+      ]);
+    });
+
+    it('can find multiple queries, even with nested dependencies', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        surname: 'surname',
+      });
+      normalizer.setQuery('query2', {
+        id: '2',
+        name: 'name',
+        nested: {
+          id: '1',
+          name: 'name',
+        },
+      });
+      normalizer.setQuery('query3', {
+        id: '3',
+        name: 'name',
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({ id: '1', name: 'name 2' }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            name: 'name 2',
+            surname: 'surname',
+          },
+        },
+        {
+          queryKey: 'query2',
+          data: {
+            id: '2',
+            name: 'name',
+            nested: {
+              id: '1',
+              name: 'name 2',
+            },
+          },
+        },
+      ]);
+    });
+
+    it('can find dependencies in arrays', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', [
+        {
+          id: '1',
+          name: 'name',
+        },
+        {
+          id: '2',
+          name: 'name 2',
+        },
+      ]);
+
+      expect(
+        normalizer.getQueriesToUpdate({ id: '1', name: 'name updated' }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: [
+            {
+              id: '1',
+              name: 'name updated',
+            },
+            {
+              id: '2',
+              name: 'name 2',
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('works with one to one dependencies', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        self: {
+          id: '1',
+          name: 'name',
+          surname: 'surname',
+        },
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({ id: '1', name: 'name updated' }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            name: 'name updated',
+            self: {
+              id: '1',
+              name: 'name updated',
+              surname: 'surname',
+            },
+          },
+        },
+      ]);
+    });
+
+    it('works with null into object updates', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: null,
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          nested: { id: '2', surname: 'surname' },
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            name: 'name',
+            nested: { id: '2', surname: 'surname' },
+          },
+        },
+      ]);
+    });
+  });
 });
