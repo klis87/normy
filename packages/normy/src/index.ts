@@ -1,2 +1,2 @@
-export { NormalizerConfig } from './types';
+export type { NormalizerConfig } from './types';
 export { createNormalizer } from './create-normalizer';
