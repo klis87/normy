@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-const sleep = () => new Promise(resolve => setTimeout(resolve, 5000));
+const sleep = () => new Promise(resolve => setTimeout(resolve, 10));
 
 const Books = () => {
   const { data: booksData = [] } = useQuery(['books'], () =>
@@ -19,7 +19,7 @@ const Books = () => {
   ));
 };
 
-const Nested = () => {
+const BooksApp = () => {
   const queryClient = useQueryClient();
 
   const { data: bookData } = useQuery(
@@ -82,18 +82,16 @@ const Nested = () => {
         name: 'Name 1 Updated',
       };
     },
-    onMutate: () => {
-      return {
-        optimisticData: {
-          id: '1',
-          name: 'Name 1 Updated',
-        },
-        rollbackData: {
-          id: '1',
-          name: 'Name 1',
-        },
-      };
-    },
+    onMutate: () => ({
+      optimisticData: {
+        id: '1',
+        name: 'Name 1 Updated',
+      },
+      rollbackData: {
+        id: '1',
+        name: 'Name 1',
+      },
+    }),
     meta: {
       normalize: false,
     },
@@ -101,15 +99,6 @@ const Nested = () => {
 
   return (
     <div>
-      <h2>Books</h2>
-      <Books />
-      <hr />
-      {bookData && (
-        <>
-          <h2>Book detail</h2>
-          {bookData.nameLong} {bookData.author && bookData.author.name}
-        </>
-      )}{' '}
       <button type="button" onClick={() => updateBookNameMutation.mutate()}>
         Update book name {updateBookNameMutation.isLoading && 'loading.....'}
       </button>{' '}
@@ -125,18 +114,26 @@ const Nested = () => {
         onClick={() => updateBookNameMutationOptimistic.mutate()}
       >
         Update book name optimistic
-      </button>{' '}
+      </button>
+      <hr />
+      <h2>Books</h2>
+      <Books />
+      <hr />
+      {bookData && (
+        <>
+          <h2>Book detail</h2>
+          {bookData.nameLong} {bookData.author && bookData.author.name}
+        </>
+      )}
     </div>
   );
 };
 
-const App = () => {
-  return (
-    <div>
-      <h1>Normy React Query example</h1>
-      <Nested />
-    </div>
-  );
-};
+const App = () => (
+  <div>
+    <h1>Normy React Query example</h1>
+    <BooksApp />
+  </div>
+);
 
 export default App;
