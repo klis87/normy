@@ -163,7 +163,7 @@ In order to make automatic normalisation work, the following conditions must be 
 3. objects with the same ids should have a consistent structure, if an object like book in one
    query has `title` key, it should be `title` in others, not `name` out of a sudden
 
-There is a function which can be passed to `createNormalizedQueryClient` can help to meet those requirements, namely `getNormalisationObjectKey`.
+There is a function which can be passed to `createNormalizedQueryClient` to meet those requirements, namely `getNormalisationObjectKey`.
 
 `getNormalisationObjectKey` can help you with 1st point, if for instance you identify
 objects differently, like by `_id` key, then you can pass `getNormalisationObjectKey: obj => obj._id`.
@@ -187,7 +187,8 @@ const getType = obj => {
 };
 
 const queryClient = createNormalizedQueryClient(reactQueryConfig, {
-  getNormalisationObjectKey: obj => getType(obj) && obj.id + getType(obj),
+  getNormalisationObjectKey: obj =>
+    obj.id && getType(obj) && obj.id + getType(obj),
 });
 ```
 
@@ -205,6 +206,25 @@ level arrays though. For instance, if you have a book with some id and another k
 then if you return new book with updated list in `likedByUsers`, this will work again automatically.
 
 In the future version of the library though, with some additional pointers, it will be possible to do above updates as well!
+
+## Performance
+
+As always, any automatisation comes with a cost. In the future some benchmarks could be added, but for now manual tests
+showed that unless in your data you have tens of thousands of normalized objects, then the overhead should be not noticable.
+However, you have several flexible ways to improve performance:
+
+1. You can normalize only queries which have data updates, and only mutations which should update data - that's it,
+   you can have only part of your data normalized. Check an integration documentation how to do it.
+2. Like `1.`, but for queries and mutations with extremely big data.
+3. You can use `getNormalisationObjectKey` function to set globally which objects should be actually normalized. For example:
+
+```js
+const queryClient = createNormalizedQueryClient(reactQueryConfig, {
+  getNormalisationObjectKey: obj => (obj.normalizable ? obj.id : undefined),
+});
+```
+
+Moreover, in the future some additional performance specifiv options will be added.
 
 ## Integrations [:arrow_up:](#table-of-content)
 
