@@ -6,10 +6,22 @@ import {
 } from '@tanstack/react-query';
 import { createNormalizer, NormalizerConfig } from '@normy/core';
 
-export const createNormalizedQueryClient = (
-  reactQueryConfig: QueryClientConfig,
-  normalizerConfig: NormalizerConfig,
+const shouldBeNormalized = (
+  globalNormalize: boolean,
+  localNormalize: boolean | undefined,
 ) => {
+  if (localNormalize === undefined) {
+    return globalNormalize;
+  }
+
+  return localNormalize;
+};
+
+export const createNormalizedQueryClient = (
+  reactQueryConfig: QueryClientConfig = {},
+  normalizerConfig: NormalizerConfig & { normalize?: boolean } = {},
+) => {
+  const normalize = normalizerConfig.normalize ?? true;
   const normalizer = createNormalizer(normalizerConfig);
 
   const config = {
@@ -25,7 +37,10 @@ export const createNormalizedQueryClient = (
       event.type === 'updated' &&
       event.action.type === 'success' &&
       event.action.data !== undefined &&
-      (event.query.meta ?? {}).normalize !== false
+      shouldBeNormalized(
+        normalize,
+        event.query.meta?.normalize as boolean | undefined,
+      )
     ) {
       normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
     }
@@ -36,7 +51,10 @@ export const createNormalizedQueryClient = (
       event.type === 'updated' &&
       event.action.type === 'success' &&
       event.action.data &&
-      (event.mutation.meta ?? {}).normalize !== false
+      shouldBeNormalized(
+        normalize,
+        event.mutation.meta?.normalize as boolean | undefined,
+      )
     ) {
       const queriesToUpdate = normalizer.getQueriesToUpdate(event.action.data);
 
