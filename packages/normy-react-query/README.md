@@ -144,16 +144,23 @@ the official `QueryClient` and you can use all `react-query` features normally.
 - `reactQueryConfig` - this is just normal `react-query` config, which you would pass as `new QueryClient(reactQueryConfig)`,
   with `normy` you can do it with `createNormalizedQueryClient(reactQueryConfig)`
 - `normalizerConfig` - this is `normy` config, which you might need to meet requirements for data normalisation to work - see
-  [explanation](https://github.com/klis87/normy/tree/master/#required-conditions-arrow_up) for more details.
+  [explanation](https://github.com/klis87/normy/tree/master/#required-conditions-arrow_up) for more details. Additionally to `normy` config, you can also pass `normalize` option, which is `true` by default - if you pass `false`, nothing will be normalized unless explicitely set (see the next paragraph)
 
 ## Disabling of normalisation per query and mutation [:arrow_up:](#table-of-content)
 
 By default all your queries and mutations will be normalized. That means that for each query there will be normalized representation
 of its data and for each mutation its response data will be read and all dependent normalized queries will be updated.
 
-You might want to disable data normalisation per query/mutation, for example for performance reason for some extreme big queries,
+However, it does not always make sense to normalize all data. You might want to disable data normalisation, for example for performance reason for some extreme big queries,
 or just if you do not need it for a given query, for instance if a query data will be never updated.
 
+Anyway, you might want to change this globally by passing `normalize` to `createNormalizedQueryClient`:
+
+```js
+createNormalizedQueryClient(reactQueryConfig, { normalize: false });
+```
+
+Then, you may override the global default `normalize` setting per query and mutation.
 For this, you can use `meta` option, for example for `useQuery`:
 
 ```js
