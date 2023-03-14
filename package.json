@@ -1,8 +1,5 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "build": "lerna run build",
     "clean": "lerna run clean",
