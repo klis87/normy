@@ -12,8 +12,10 @@
     "bundlesize": "bundlesize"
   },
   "devDependencies": {
+    "@types/jest": "29.4.0",
     "bundlesize": "0.18.0",
     "coveralls": "3.1.0",
+    "jest": "29.4.2",
     "lerna": "6.5.1",
     "prettier": "2.8.4"
   },

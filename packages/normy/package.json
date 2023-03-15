@@ -24,7 +24,7 @@
     "lint": "eslint 'src/**'",
     "test": "jest src",
     "test:cover": "jest --coverage src",
-    "build-types": "tsc src/index.ts --strict --esModuleInterop --lib es2015 --declaration --emitDeclarationOnly --declarationDir types",
+    "build-types": "tsc src/index.ts --strict --esModuleInterop --lib es2017,dom --declaration --emitDeclarationOnly --declarationDir types",
     "build:commonjs": "cross-env BABEL_ENV=cjs babel src --extensions '.ts' --out-dir lib --ignore 'src/**/*.spec.js'",
     "build:es": "babel src --extensions '.ts' --out-dir es --ignore 'src/**/*.spec.js'",
     "build:umd": "webpack --mode development -o dist --output-filename normy.js",

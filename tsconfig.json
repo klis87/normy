@@ -2,7 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib": ["DOM", "es2017"]
   },
   "typeAcquisition": {
     "include": ["jest"]
