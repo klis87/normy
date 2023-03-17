@@ -207,6 +207,22 @@ then if you return new book with updated list in `likedByUsers`, this will work 
 
 In the future version of the library though, with some additional pointers, it will be possible to do above updates as well!
 
+## Debugging
+
+If you are interested, what data manipulations `normy` actually does, you can use `devLogging` option:
+
+```js
+const queryClient = createNormalizedQueryClient(reactQueryConfig, {
+  devLogging: true,
+});
+```
+
+`false` by default, if set to `true`, you could see in the console information, when queries are set or removed.
+
+Note that this works only in development, even if you pass `true`, no logging will be done in production
+(when precisely `process.env.NODE_ENV === 'production'`). `NODE_ENV` is usually set by module bundlers like
+`webpack` for you, so probably you do not need to worry about setting `NODE_ENV` yourself.
+
 ## Performance
 
 As always, any automatisation comes with a cost. In the future some benchmarks could be added, but for now manual tests

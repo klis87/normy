@@ -5,7 +5,7 @@ import { defaultConfig } from './default-config';
 import { addOrRemoveDependencies } from './add-or-remove-dependencies';
 import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
 import { getDependenciesDiff } from './get-dependencies-diff';
-import { warning } from './log';
+import { warning } from './warning';
 import { Data, NormalizerConfig, NormalizedData } from './types';
 
 export const createNormalizer = (
