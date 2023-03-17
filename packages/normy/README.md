@@ -209,7 +209,7 @@ then if you return new book with updated list in `likedByUsers`, this will work 
 
 In the future version of the library though, with some additional pointers, it will be possible to do above updates as well!
 
-## Debugging
+## Debugging [:arrow_up:](#table-of-content)
 
 If you are interested, what data manipulations `normy` actually does, you can use `devLogging` option:
 
@@ -225,7 +225,7 @@ Note that this works only in development, even if you pass `true`, no logging wi
 (when precisely `process.env.NODE_ENV === 'production'`). `NODE_ENV` is usually set by module bundlers like
 `webpack` for you, so probably you do not need to worry about setting `NODE_ENV` yourself.
 
-## Performance
+## Performance [:arrow_up:](#table-of-content)
 
 As always, any automatisation comes with a cost. In the future some benchmarks could be added, but for now manual tests
 showed that unless in your data you have tens of thousands of normalized objects, then the overhead should be not noticable.
