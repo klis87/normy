@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
-  "unpkg": "dist/normy.min.js",
+  "unpkg": "dist/normy-react-query.min.js",
   "repository": "git@github.com:klis87/normy.git",
   "author": "Konrad Lisiczynski <klisiczynski@gmail.com>",
   "license": "MIT",
