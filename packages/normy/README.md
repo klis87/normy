@@ -18,6 +18,8 @@ Automatic normalisation and data updates for data fetching libraries
 - [Installation](#installation-arrow_up)
 - [Required conditions](#required-conditions-arrow_up)
 - [Normalisation of arrays](#normalisation-of-arrays-arrow_up)
+- [Debugging](#debugging-arrow_up)
+- [Performance](#performance-arrow_up)
 - [Integrations](#examples-arrow_up)
 - [Examples](#examples-arrow_up)
 
