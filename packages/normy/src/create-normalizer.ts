@@ -5,6 +5,7 @@ import { defaultConfig } from './default-config';
 import { addOrRemoveDependencies } from './add-or-remove-dependencies';
 import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
 import { getDependenciesDiff } from './get-dependencies-diff';
+import { warning } from './log';
 import { Data, NormalizerConfig, NormalizedData } from './types';
 
 export const createNormalizer = (
@@ -50,7 +51,15 @@ export const createNormalizer = (
       ),
     };
 
-    console.log('onQuerySuccess', queryKey, queryData, normalizedData);
+    warning(
+      config.devLogging,
+      'set query:',
+      queryKey,
+      '\nwith data:',
+      queryData,
+      '\nnormalizedData:',
+      normalizedData,
+    );
   };
 
   const removeQuery = (queryKey: string) => {
@@ -64,7 +73,13 @@ export const createNormalizer = (
       queries,
     };
 
-    console.log('onQueryRemoval', queryKey, normalizedData);
+    warning(
+      config.devLogging,
+      'removed query:',
+      queryKey,
+      '\nnormalizedData:',
+      normalizedData,
+    );
   };
 
   const getQueriesToUpdate = (mutationData: Data) => {

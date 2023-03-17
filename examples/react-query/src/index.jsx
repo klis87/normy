@@ -6,13 +6,16 @@ import { createNormalizedQueryClient } from '@normy/react-query';
 
 import App from './components/app';
 
-const queryClient = createNormalizedQueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
+const queryClient = createNormalizedQueryClient(
+  {
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
     },
   },
-});
+  { devLogging: true },
+);
 
 const renderApp = () => {
   render(

@@ -315,6 +315,7 @@ describe('normalize', () => {
         {
           getNormalisationObjectKey: obj =>
             obj._id && obj.key ? `${obj._id}${obj.key}` : undefined,
+          devLogging: false,
         },
       ),
     ).toEqual([

@@ -20,6 +20,7 @@ export type Data =
 
 export type NormalizerConfig = {
   getNormalisationObjectKey?: (obj: DataObject) => string | undefined;
+  devLogging?: boolean;
 };
 
 export type UsedKeys = { [path: string]: ReadonlyArray<string> };
