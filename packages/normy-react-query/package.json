@@ -21,8 +21,8 @@
   "scripts": {
     "clean": "rimraf es lib dist types",
     "lint": "eslint 'src/**'",
-    "test": "jest --passWithNoTests src",
-    "test:cover": "jest --coverage --passWithNoTests src",
+    "test": "jest src",
+    "test:cover": "jest --coverage src",
     "build-types": "tsc src/index.ts --strict --esModuleInterop --lib es2018,dom --declaration --emitDeclarationOnly --declarationDir types",
     "build:commonjs": "cross-env BABEL_ENV=cjs babel src --extensions '.ts' --out-dir lib --ignore 'src/**/*.spec.js'",
     "build:es": "babel src --extensions '.ts' --out-dir es --ignore 'src/**/*.spec.js'",
@@ -45,6 +45,7 @@
     "@babel/preset-typescript": "7.18.6",
     "@babel/types": "^7.20.0",
     "@tanstack/react-query": "4.22.0",
+    "@types/node": "18.15.3",
     "@types/react": "18.0.28",
     "@typescript-eslint/eslint-plugin": "5.52.0",
     "@typescript-eslint/parser": "5.52.0",
