@@ -93,5 +93,7 @@ export const createNormalizedQueryClient = (
 
   const queryClient = new QueryClient(config);
 
-  return queryClient;
+  return Object.assign(queryClient, {
+    getNormalizedData: () => normalizer.getNormalizedData(),
+  });
 };
