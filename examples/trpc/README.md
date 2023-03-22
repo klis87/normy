@@ -1,8 +1,8 @@
-# normy react query example
+# normy trcp example
 
 In order to launch this example, execute:
 
-- `yarn install` or `npm install` (or `yarn install` from the parent directory to install all examples at once)
-- `yarn start` or `npm start`
+- `pnpm install` or `npm install` (or `pnpm install` from the parent directory to install all examples at once)
+- `pnpm start` or `npm start`
 
 Demo will be available on `localhost:3000`.
