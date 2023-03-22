@@ -256,6 +256,7 @@ I highly recommend to try examples how this package could be used in real applic
 There are following examples currently:
 
 - [react-query](https://github.com/klis87/normy/tree/master/examples/react-query)
+- [trpc](https://github.com/klis87/normy/tree/master/examples/trpc)
 
 ## Licence [:arrow_up:](#table-of-content)
 

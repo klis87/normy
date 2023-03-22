@@ -1,0 +1,42 @@
+{
+  "name": "normy-trpc-example",
+  "version": "1.0.0",
+  "description": "normy trpc example",
+  "main": "src/index.js",
+  "repository": "git@github.com:klis87/normy.git",
+  "author": "Konrad Lisiczynski <klisiczynski@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node dev-server.ts"
+  },
+  "dependencies": {
+    "@babel/polyfill": "7.12.1",
+    "@normy/react-query": "0.6.0",
+    "@tanstack/react-query": "4.22.0",
+    "@trpc/client": "^10.17.0",
+    "@trpc/react-query": "^10.17.0",
+    "@trpc/server": "^10.17.0",
+    "express": "4.17.1",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@babel/core": "7.12.9",
+    "@babel/preset-env": "7.12.7",
+    "@babel/preset-react": "7.12.7",
+    "@babel/preset-typescript": "^7.21.0",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.15.5",
+    "@types/react": "16.9.0",
+    "@types/react-dom": "16.9.0",
+    "@types/webpack-dev-middleware": "^5.3.0",
+    "babel-loader": "8.2.2",
+    "html-webpack-plugin": "4.5.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2",
+    "webpack": "5.9.0",
+    "webpack-cli": "4.2.0",
+    "webpack-dev-middleware": "4.0.2"
+  }
+}
