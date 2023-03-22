@@ -11,7 +11,7 @@ importers:
       '@babel/polyfill': 7.12.1
       '@babel/preset-env': 7.12.7
       '@babel/preset-react': 7.12.7
-      '@normy/react-query': 0.5.0
+      '@normy/react-query': 0.6.1
       '@tanstack/react-query': 4.22.0
       babel-loader: 8.2.2
       html-webpack-plugin: 4.5.0
@@ -22,7 +22,7 @@ importers:
       webpack-dev-server: 3.11.0
     dependencies:
       '@babel/polyfill': 7.12.1
-      '@normy/react-query': 0.5.0_tqsbl3x6ixew47ctvte2nz2yki
+      '@normy/react-query': 0.6.1_tqsbl3x6ixew47ctvte2nz2yki
       '@tanstack/react-query': 4.22.0_dsp4qj7lggdet3zmisfy3gq4ym
       react: 16.9.0
       react-dom: 16.9.0_react@16.9.0
@@ -43,7 +43,7 @@ importers:
       '@babel/preset-env': 7.12.7
       '@babel/preset-react': 7.12.7
       '@babel/preset-typescript': ^7.21.0
-      '@normy/react-query': 0.6.0
+      '@normy/react-query': 0.6.1
       '@tanstack/react-query': 4.22.0
       '@trpc/client': ^10.17.0
       '@trpc/react-query': ^10.17.0
@@ -66,7 +66,7 @@ importers:
       zod: ^3.21.4
     dependencies:
       '@babel/polyfill': 7.12.1
-      '@normy/react-query': 0.6.0_tqsbl3x6ixew47ctvte2nz2yki
+      '@normy/react-query': 0.6.1_tqsbl3x6ixew47ctvte2nz2yki
       '@tanstack/react-query': 4.22.0_dsp4qj7lggdet3zmisfy3gq4ym
       '@trpc/client': 10.17.0_@trpc+server@10.17.0
       '@trpc/react-query': 10.17.0_hbmpky5vjpvgj6qepsohtcohvi
@@ -1263,35 +1263,19 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@normy/core/0.4.0:
-    resolution: {integrity: sha512-7i6p2TBRBGsxMX0T9ZdmC/1IsnZoldz3/hwD2mziaq0cVkdPA69X8Q/mbZLWrAqpGdtmTwxoK/ogTJvk3CeisA==}
+  /@normy/core/0.5.1:
+    resolution: {integrity: sha512-T9x2w9xfBcVcpNBaNZ9URCg3erRvk0PS8kjmeEaZ2C3zbF2YchLEYTdeRqSLl5Pys/MrrRiiIrkVIBRODWpC2w==}
     dependencies:
       '@babel/runtime': 7.21.0
       deepmerge: 4.0.0
     dev: false
 
-  /@normy/core/0.5.0:
-    resolution: {integrity: sha512-IaZn3DTbq6ZSXczaRDKSVn3M+2gRfyz7NYHuQ1MT1JSu91SarDM2WSbnxMosvBPkYfJI0TtD5noir+9I0Q3g1w==}
-    dependencies:
-      '@babel/runtime': 7.21.0
-      deepmerge: 4.0.0
-    dev: false
-
-  /@normy/react-query/0.5.0_tqsbl3x6ixew47ctvte2nz2yki:
-    resolution: {integrity: sha512-a6mYfiXAT4Isy8i/Re6wKfblPOw5kipRGPC3dB4ZcsnN7DG4psSD88lNfR0NiFk/55dGJbVR5oC+akpBtzPJqA==}
+  /@normy/react-query/0.6.1_tqsbl3x6ixew47ctvte2nz2yki:
+    resolution: {integrity: sha512-chPegxGnch5xVDQwFtNcI+TLWdZ0w0J+LGG1RVFdBBupjmFZz0pe7WYQp0R4j2rA9a7wu/AEDhkKeuUPsJptOA==}
     peerDependencies:
       '@tanstack/react-query': '>=4.22.0'
     dependencies:
-      '@normy/core': 0.4.0
-      '@tanstack/react-query': 4.22.0_dsp4qj7lggdet3zmisfy3gq4ym
-    dev: false
-
-  /@normy/react-query/0.6.0_tqsbl3x6ixew47ctvte2nz2yki:
-    resolution: {integrity: sha512-AN9fhjH21VRvYRM9yS6QJ5V21dz08J9nzUGrJIXVttzjccPR54YHmCuvA/HRy83q4fLWKN8bn89hCPRPaEIPjg==}
-    peerDependencies:
-      '@tanstack/react-query': '>=4.22.0'
-    dependencies:
-      '@normy/core': 0.5.0
+      '@normy/core': 0.5.1
       '@tanstack/react-query': 4.22.0_dsp4qj7lggdet3zmisfy3gq4ym
     dev: false
 
@@ -2950,7 +2934,7 @@ packages:
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
-      nan: 2.14.2
+      nan: 2.17.0
     dev: true
     optional: true
 
@@ -3802,8 +3786,8 @@ packages:
       thunky: 1.1.0
     dev: true
 
-  /nan/2.14.2:
-    resolution: {integrity: sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==}
+  /nan/2.17.0:
+    resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
     requiresBuild: true
     dev: true
     optional: true
