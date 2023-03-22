@@ -32,7 +32,7 @@ export const createNormalizedQueryClient = (
 
   config.queryCache.subscribe(event => {
     if (event.type === 'removed') {
-      normalizer.removeQuery(event.query.queryKey.join(','));
+      normalizer.removeQuery(JSON.stringify(event.query.queryKey));
     } else if (
       event.type === 'updated' &&
       event.action.type === 'success' &&
@@ -42,7 +42,10 @@ export const createNormalizedQueryClient = (
         event.query.meta?.normalize as boolean | undefined,
       )
     ) {
-      normalizer.setQuery(event.query.queryKey.join(','), event.action.data);
+      normalizer.setQuery(
+        JSON.stringify(event.query.queryKey),
+        event.action.data,
+      );
     }
   });
 
@@ -60,7 +63,7 @@ export const createNormalizedQueryClient = (
 
       queriesToUpdate.forEach(query => {
         // eslint-disable-next-line no-use-before-define
-        queryClient.setQueryData(query.queryKey.split(','), () => query.data);
+        queryClient.setQueryData(JSON.parse(query.queryKey), () => query.data);
       });
     } else if (
       event.type === 'updated' &&
@@ -73,7 +76,7 @@ export const createNormalizedQueryClient = (
 
       queriesToUpdate.forEach(query => {
         // eslint-disable-next-line no-use-before-define
-        queryClient.setQueryData(query.queryKey.split(','), () => query.data);
+        queryClient.setQueryData(JSON.parse(query.queryKey), () => query.data);
       });
     } else if (
       event.type === 'updated' &&
@@ -86,7 +89,7 @@ export const createNormalizedQueryClient = (
 
       queriesToUpdate.forEach(query => {
         // eslint-disable-next-line no-use-before-define
-        queryClient.setQueryData(query.queryKey.split(','), () => query.data);
+        queryClient.setQueryData(JSON.parse(query.queryKey), () => query.data);
       });
     }
   });

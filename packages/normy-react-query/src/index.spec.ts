@@ -29,7 +29,7 @@ describe('createNormalizedQueryClient', () => {
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
-        book: {
+        '["book"]': {
           data: '@@1',
           dependencies: ['@@1'],
           usedKeys: {
@@ -38,7 +38,7 @@ describe('createNormalizedQueryClient', () => {
         },
       },
       dependentQueries: {
-        '@@1': ['book'],
+        '@@1': ['["book"]'],
       },
       objects: {
         '@@1': {
@@ -70,7 +70,7 @@ describe('createNormalizedQueryClient', () => {
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
-        book: {
+        '["book"]': {
           data: '@@1',
           dependencies: ['@@1'],
           usedKeys: {
@@ -79,7 +79,7 @@ describe('createNormalizedQueryClient', () => {
         },
       },
       dependentQueries: {
-        '@@1': ['book'],
+        '@@1': ['["book"]'],
       },
       objects: {
         '@@1': {
