@@ -18,7 +18,7 @@ describe('createNormalizedQueryClient', () => {
   it('updates normalizedData after a successful query', async () => {
     const client = createNormalizedQueryClient();
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -26,8 +26,6 @@ describe('createNormalizedQueryClient', () => {
           name: 'Name',
         }),
     });
-
-    await sleep(100);
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
@@ -54,7 +52,7 @@ describe('createNormalizedQueryClient', () => {
   it('does not update normalizedData after a successful query when global normalize option is false', async () => {
     const client = createNormalizedQueryClient({}, { normalize: false });
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -62,8 +60,6 @@ describe('createNormalizedQueryClient', () => {
           name: 'Name',
         }),
     });
-
-    await sleep(100);
 
     expect(client.getNormalizedData()).toEqual({
       queries: {},
@@ -75,7 +71,7 @@ describe('createNormalizedQueryClient', () => {
   it('does not update normalizedData after a successful query when query normalize option is false', async () => {
     const client = createNormalizedQueryClient();
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -87,8 +83,6 @@ describe('createNormalizedQueryClient', () => {
       },
     });
 
-    await sleep(100);
-
     expect(client.getNormalizedData()).toEqual({
       queries: {},
       dependentQueries: {},
@@ -99,7 +93,7 @@ describe('createNormalizedQueryClient', () => {
   it('updates normalizedData after a successful query when global normalize is false but query explicitly true', async () => {
     const client = createNormalizedQueryClient({}, { normalize: false });
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -108,8 +102,6 @@ describe('createNormalizedQueryClient', () => {
         }),
       meta: { normalize: true },
     });
-
-    await sleep(100);
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
@@ -136,18 +128,15 @@ describe('createNormalizedQueryClient', () => {
   it('clears query', async () => {
     const client = createNormalizedQueryClient();
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
           id: '1',
           name: 'Name',
         }),
-      cacheTime: 150,
-      staleTime: 150,
+      cacheTime: 10,
     });
-
-    await sleep(100);
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
@@ -170,7 +159,7 @@ describe('createNormalizedQueryClient', () => {
       },
     });
 
-    await sleep(100);
+    await sleep(10);
 
     expect(client.getNormalizedData()).toEqual({
       queries: {},
@@ -182,7 +171,7 @@ describe('createNormalizedQueryClient', () => {
   it('updates normalizedData after a successful mutation', async () => {
     const client = createNormalizedQueryClient();
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -190,8 +179,6 @@ describe('createNormalizedQueryClient', () => {
           name: 'Name',
         }),
     });
-
-    await sleep(100);
 
     const mutationObserver = new MutationObserver(client, {
       mutationFn: () =>
@@ -201,9 +188,7 @@ describe('createNormalizedQueryClient', () => {
         }),
     });
 
-    void mutationObserver.mutate();
-
-    await sleep(100);
+    await mutationObserver.mutate();
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
@@ -230,7 +215,7 @@ describe('createNormalizedQueryClient', () => {
   it('updates normalizedData after an optimistic update', async () => {
     const client = createNormalizedQueryClient();
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -238,8 +223,6 @@ describe('createNormalizedQueryClient', () => {
           name: 'Name',
         }),
     });
-
-    await sleep(100);
 
     const mutationObserver = new MutationObserver(client, {
       mutationFn: () => Promise.resolve(null),
@@ -251,9 +234,7 @@ describe('createNormalizedQueryClient', () => {
       }),
     });
 
-    void mutationObserver.mutate();
-
-    await sleep(100);
+    await mutationObserver.mutate();
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
@@ -280,7 +261,7 @@ describe('createNormalizedQueryClient', () => {
   it('reverts normalizedData after error of an optimistic update', async () => {
     const client = createNormalizedQueryClient({ logger: undefined });
 
-    void client.prefetchQuery({
+    await client.prefetchQuery({
       queryKey: ['book'],
       queryFn: () =>
         Promise.resolve({
@@ -288,8 +269,6 @@ describe('createNormalizedQueryClient', () => {
           name: 'Name',
         }),
     });
-
-    await sleep(100);
 
     const mutationObserver = new MutationObserver(client, {
       mutationFn: async () => {
@@ -309,7 +288,7 @@ describe('createNormalizedQueryClient', () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    mutationObserver.mutate().catch(() => {});
+    const mutation = mutationObserver.mutate().catch(() => {});
 
     await sleep(1);
 
@@ -334,7 +313,7 @@ describe('createNormalizedQueryClient', () => {
       },
     });
 
-    await sleep(150);
+    await mutation;
 
     expect(client.getNormalizedData()).toEqual({
       queries: {
