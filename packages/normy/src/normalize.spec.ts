@@ -314,7 +314,9 @@ describe('normalize', () => {
         ],
         {
           getNormalisationObjectKey: obj =>
-            obj._id && obj.key ? `${obj._id}${obj.key}` : undefined,
+            obj._id && obj.key
+              ? `${obj._id as string}${obj.key as string}`
+              : undefined,
           devLogging: false,
         },
       ),

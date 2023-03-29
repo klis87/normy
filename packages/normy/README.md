@@ -242,7 +242,7 @@ const queryClient = createNormalizedQueryClient(reactQueryConfig, {
 });
 ```
 
-Moreover, in the future some additional performance specifiv options will be added.
+Moreover, in the future some additional performance specific options will be added.
 
 ## Integrations [:arrow_up:](#table-of-content)
 

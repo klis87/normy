@@ -20,8 +20,10 @@ const stipFromDeps = (
   }
 
   if (data !== null && typeof data === 'object') {
-    if (config.getNormalisationObjectKey(data) && root) {
-      return `@@${config.getNormalisationObjectKey(data)}`;
+    const objectKey = config.getNormalisationObjectKey(data);
+
+    if (objectKey && root) {
+      return `@@${objectKey}`;
     }
 
     return Object.entries(data).reduce((prev, [k, v]) => {
@@ -84,7 +86,7 @@ export const normalize = (
   return [
     stipFromDeps(data, config, true),
     dependencies.reduce((prev, v) => {
-      const key = config.getNormalisationObjectKey(v);
+      const key = config.getNormalisationObjectKey(v) as string;
 
       prev[`@@${key}`] = prev[`@@${key}`]
         ? mergeData(prev[`@@${key}`], stipFromDeps(v, config, false))

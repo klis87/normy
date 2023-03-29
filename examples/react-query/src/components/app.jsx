@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  MutationObserver,
-} from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 10));
 
@@ -104,42 +99,6 @@ const BooksApp = () => {
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => {
-          queryClient.prefetchQuery({
-            queryKey: ['book'],
-            queryFn: () =>
-              Promise.resolve({
-                id: '1',
-                name: 'Name 1 prefetched',
-                author: { id: '1000', name: 'User1' },
-              }),
-          });
-        }}
-      >
-        prefetch
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          const observer = new MutationObserver(queryClient, {
-            mutationFn: async () => {
-              await sleep();
-
-              return {
-                id: '3',
-                name: 'Name 3',
-                author: { id: '1002', name: 'User3' },
-              };
-            },
-          });
-          observer.subscribe(() => {});
-          observer.mutate();
-        }}
-      >
-        fire mutation
-      </button>
       <button type="button" onClick={() => updateBookNameMutation.mutate()}>
         Update book name {updateBookNameMutation.isLoading && 'loading.....'}
       </button>{' '}
