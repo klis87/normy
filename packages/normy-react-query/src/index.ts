@@ -1,7 +1,5 @@
 import {
   QueryClient,
-  QueryCache,
-  MutationCache,
   QueryClientConfig,
   QueryKey,
 } from '@tanstack/react-query';
@@ -25,13 +23,9 @@ export const createNormalizedQueryClient = (
   const normalize = normalizerConfig.normalize ?? true;
   const normalizer = createNormalizer(normalizerConfig);
 
-  const config = {
-    ...reactQueryConfig,
-    queryCache: reactQueryConfig.queryCache ?? new QueryCache(),
-    mutationCache: reactQueryConfig.mutationCache ?? new MutationCache(),
-  };
+  const queryClient = new QueryClient(reactQueryConfig);
 
-  config.queryCache.subscribe(event => {
+  queryClient.getQueryCache().subscribe(event => {
     if (event.type === 'removed') {
       normalizer.removeQuery(JSON.stringify(event.query.queryKey));
     } else if (
@@ -50,7 +44,7 @@ export const createNormalizedQueryClient = (
     }
   });
 
-  config.mutationCache.subscribe(event => {
+  queryClient.getMutationCache().subscribe(event => {
     if (
       event.type === 'updated' &&
       event.action.type === 'success' &&
@@ -65,7 +59,6 @@ export const createNormalizedQueryClient = (
       );
 
       queriesToUpdate.forEach(query => {
-        // eslint-disable-next-line no-use-before-define
         queryClient.setQueryData(
           JSON.parse(query.queryKey) as QueryKey,
           () => query.data,
@@ -83,7 +76,6 @@ export const createNormalizedQueryClient = (
       );
 
       queriesToUpdate.forEach(query => {
-        // eslint-disable-next-line no-use-before-define
         queryClient.setQueryData(
           JSON.parse(query.queryKey) as QueryKey,
           () => query.data,
@@ -99,7 +91,6 @@ export const createNormalizedQueryClient = (
       );
 
       queriesToUpdate.forEach(query => {
-        // eslint-disable-next-line no-use-before-define
         queryClient.setQueryData(
           JSON.parse(query.queryKey) as QueryKey,
           () => query.data,
@@ -107,8 +98,6 @@ export const createNormalizedQueryClient = (
       });
     }
   });
-
-  const queryClient = new QueryClient(config);
 
   return Object.assign(queryClient, {
     getNormalizedData: () => normalizer.getNormalizedData(),

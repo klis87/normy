@@ -23,11 +23,11 @@
   "bundlesize": [
     {
       "path": "./packages/normy/dist/normy.min.js",
-      "maxSize": "2 kB"
+      "maxSize": "1.9 kB"
     },
     {
       "path": "./packages/normy-react-query/dist/normy-react-query.min.js",
-      "maxSize": "2 kB"
+      "maxSize": "1 kB"
     }
   ]
 }
