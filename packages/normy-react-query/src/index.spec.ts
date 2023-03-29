@@ -212,6 +212,53 @@ describe('createNormalizedQueryClient', () => {
     });
   });
 
+  it('does not update normalizedData after a successful mutation with meta normalize as false', async () => {
+    const client = createNormalizedQueryClient();
+
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () =>
+        Promise.resolve({
+          id: '1',
+          name: 'Name',
+        }),
+    });
+
+    const mutationObserver = new MutationObserver(client, {
+      mutationFn: () =>
+        Promise.resolve({
+          id: '1',
+          name: 'Name updated',
+        }),
+      meta: {
+        normalize: false,
+      },
+    });
+
+    await mutationObserver.mutate();
+
+    expect(client.getNormalizedData()).toEqual({
+      queries: {
+        '["book"]': {
+          data: '@@1',
+          dependencies: ['@@1'],
+          usedKeys: {
+            '': ['id', 'name'],
+          },
+        },
+      },
+      dependentQueries: {
+        '@@1': ['["book"]'],
+      },
+      objects: {
+        '@@1': {
+          id: '1',
+          name: 'Name',
+        },
+      },
+    });
+  });
+
   it('updates normalizedData after an optimistic update', async () => {
     const client = createNormalizedQueryClient();
 
