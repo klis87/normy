@@ -1,4 +1,4 @@
-**/*.spec.js
+**/*.spec.ts
 *.tgz
 .babelrc
 webpack.config.js
