@@ -1,8 +1,4 @@
-import {
-  QueryClient,
-  QueryClientConfig,
-  QueryKey,
-} from '@tanstack/react-query';
+import { QueryClient, QueryKey } from '@tanstack/react-query';
 import { createNormalizer, NormalizerConfig, Data } from '@normy/core';
 
 const shouldBeNormalized = (
@@ -16,14 +12,12 @@ const shouldBeNormalized = (
   return localNormalize;
 };
 
-export const createNormalizedQueryClient = (
-  reactQueryConfig: QueryClientConfig = {},
+export const createQueryNormalizer = (
+  queryClient: QueryClient,
   normalizerConfig: NormalizerConfig & { normalize?: boolean } = {},
 ) => {
   const normalize = normalizerConfig.normalize ?? true;
   const normalizer = createNormalizer(normalizerConfig);
-
-  const queryClient = new QueryClient(reactQueryConfig);
 
   queryClient.getQueryCache().subscribe(event => {
     if (event.type === 'removed') {
@@ -99,7 +93,7 @@ export const createNormalizedQueryClient = (
     }
   });
 
-  return Object.assign(queryClient, {
-    getNormalizedData: () => normalizer.getNormalizedData(),
-  });
+  return {
+    getNormalizedData: normalizer.getNormalizedData,
+  };
 };

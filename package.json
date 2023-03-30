@@ -27,7 +27,7 @@
     },
     {
       "path": "./packages/normy-react-query/dist/normy-react-query.min.js",
-      "maxSize": "1 kB"
+      "maxSize": "0.9 kB"
     }
   ]
 }

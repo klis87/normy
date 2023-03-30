@@ -37,13 +37,13 @@ In order to understand what `normy` actually does, it is the best to see an exam
   import React from 'react';
   import {
     QueryClientProvider,
--   QueryClient,
+    QueryClient,
     useQueryClient,
   } from '@tanstack/react-query';
-+ import { createNormalizedQueryClient } from '@normy/react-query';
++ import { createQueryNormalizer } from '@normy/react-query';
 
-- const queryClient = new QueryClient();
-+ const queryClient = createNormalizedQueryClient();
+  const queryClient = new QueryClient();
++ createQueryNormalizer(queryClient);
 
 const Books = () => {
   const queryClient = useQueryClient();
@@ -165,7 +165,7 @@ In order to make automatic normalisation work, the following conditions must be 
 3. objects with the same ids should have a consistent structure, if an object like book in one
    query has `title` key, it should be `title` in others, not `name` out of a sudden
 
-There is a function which can be passed to `createNormalizedQueryClient` to meet those requirements, namely `getNormalisationObjectKey`.
+There is a function which can be passed to `createQueryNormalizer` to meet those requirements, namely `getNormalisationObjectKey`.
 
 `getNormalisationObjectKey` can help you with 1st point, if for instance you identify
 objects differently, like by `_id` key, then you can pass `getNormalisationObjectKey: obj => obj._id`.
@@ -188,7 +188,7 @@ const getType = obj => {
   return undefined;
 };
 
-const queryClient = createNormalizedQueryClient(reactQueryConfig, {
+createQueryNormalizer(queryClient, {
   getNormalisationObjectKey: obj =>
     obj.id && getType(obj) && obj.id + getType(obj),
 });
@@ -214,7 +214,7 @@ In the future version of the library though, with some additional pointers, it w
 If you are interested, what data manipulations `normy` actually does, you can use `devLogging` option:
 
 ```js
-const queryClient = createNormalizedQueryClient(reactQueryConfig, {
+createQueryNormalizer(queryClient, {
   devLogging: true,
 });
 ```
@@ -237,7 +237,7 @@ However, you have several flexible ways to improve performance:
 3. You can use `getNormalisationObjectKey` function to set globally which objects should be actually normalized. For example:
 
 ```js
-const queryClient = createNormalizedQueryClient(reactQueryConfig, {
+createQueryNormalizer(queryClient, {
   getNormalisationObjectKey: obj => (obj.normalizable ? obj.id : undefined),
 });
 ```

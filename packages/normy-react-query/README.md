@@ -35,13 +35,13 @@ In order to understand what `@normy/react-query` actually does, it is the best t
   import React from 'react';
   import {
     QueryClientProvider,
--   QueryClient,
+    QueryClient,
     useQueryClient,
   } from '@tanstack/react-query';
-+ import { createNormalizedQueryClient } from '@normy/react-query';
++ import { createQueryNormalizer } from '@normy/react-query';
 
-- const queryClient = new QueryClient();
-+ const queryClient = createNormalizedQueryClient();
+  const queryClient = new QueryClient();
++ createQueryNormalizer(queryClient);
 
 const Books = () => {
   const queryClient = useQueryClient();
@@ -135,14 +135,13 @@ You do not need to install `@normy/core`, because it will be installed as `@norm
 
 ## Basic usage [:arrow_up:](#table-of-content)
 
-For the basic usage, see `Motivation` paragraph. The only thing which you need to actually do is to create `queryClient`
-with `createNormalizedQueryClient` instead of `new QueryClient()`. `createNormalizedQueryClient` is just a thin wrapper around
-the official `QueryClient` and you can use all `react-query` features normally.
+For the basic usage, see `Motivation` paragraph. The only thing which you need to actually do is to pass `queryClient`
+to `createQueryNormalizer`. After doing this, you can use `react-query` as you normally do, but you don't need to make any data updates
+most of the time anymore.
 
-`createNormalizedQueryClient` accepts two optional arguments:
+`createQueryNormalizer` accepts two arguments:
 
-- `reactQueryConfig` - this is just normal `react-query` config, which you would pass as `new QueryClient(reactQueryConfig)`,
-  with `normy` you can do it with `createNormalizedQueryClient(reactQueryConfig)`
+- `queryClient` - this is just a react-query instance you create by `new QueryClient(config)`,
 - `normalizerConfig` - this is `normy` config, which you might need to meet requirements for data normalisation to work - see
   [explanation](https://github.com/klis87/normy/tree/master/#required-conditions-arrow_up) for more details. Additionally to `normy` config, you can also pass `normalize` option, which is `true` by default - if you pass `false`, nothing will be normalized unless explicitely set (see the next paragraph)
 
@@ -154,10 +153,10 @@ of its data and for each mutation its response data will be read and all depende
 However, it does not always make sense to normalize all data. You might want to disable data normalisation, for example for performance reason for some extreme big queries,
 or just if you do not need it for a given query, for instance if a query data will be never updated.
 
-Anyway, you might want to change this globally by passing `normalize` to `createNormalizedQueryClient`:
+Anyway, you might want to change this globally by passing `normalize` to `createQueryNormalizer`:
 
 ```js
-createNormalizedQueryClient(reactQueryConfig, { normalize: false });
+createQueryNormalizer(queryClient, { normalize: false });
 ```
 
 Then, you may override the global default `normalize` setting per query and mutation.

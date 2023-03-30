@@ -1,21 +1,19 @@
 import '@babel/polyfill';
 import React from 'react';
 import { render } from 'react-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { createNormalizedQueryClient } from '@normy/react-query';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { createQueryNormalizer } from '@normy/react-query';
 
 import App from './components/app';
 
-const queryClient = createNormalizedQueryClient(
-  {
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      },
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
     },
   },
-  { devLogging: true },
-);
+});
+createQueryNormalizer(queryClient, { devLogging: true });
 
 const renderApp = () => {
   render(

@@ -1,14 +1,14 @@
-import { MutationObserver } from '@tanstack/react-query';
+import { MutationObserver, QueryClient } from '@tanstack/react-query';
 
-import { createNormalizedQueryClient } from '.';
+import { createQueryNormalizer } from '.';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-describe('createNormalizedQueryClient', () => {
+describe('createQueryNormalizer', () => {
   it('has correct default state', () => {
-    const client = createNormalizedQueryClient();
+    const normalizer = createQueryNormalizer(new QueryClient());
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {},
       dependentQueries: {},
       objects: {},
@@ -16,7 +16,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('updates normalizedData after a successful query', async () => {
-    const client = createNormalizedQueryClient();
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -27,7 +28,7 @@ describe('createNormalizedQueryClient', () => {
         }),
     });
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -50,7 +51,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('does not update normalizedData after a successful query when global normalize option is false', async () => {
-    const client = createNormalizedQueryClient({}, { normalize: false });
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client, { normalize: false });
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -61,7 +63,7 @@ describe('createNormalizedQueryClient', () => {
         }),
     });
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {},
       dependentQueries: {},
       objects: {},
@@ -69,7 +71,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('does not update normalizedData after a successful query when query normalize option is false', async () => {
-    const client = createNormalizedQueryClient();
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -83,7 +86,7 @@ describe('createNormalizedQueryClient', () => {
       },
     });
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {},
       dependentQueries: {},
       objects: {},
@@ -91,7 +94,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('updates normalizedData after a successful query when global normalize is false but query explicitly true', async () => {
-    const client = createNormalizedQueryClient({}, { normalize: false });
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client, { normalize: false });
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -103,7 +107,7 @@ describe('createNormalizedQueryClient', () => {
       meta: { normalize: true },
     });
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -126,7 +130,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('clears query', async () => {
-    const client = createNormalizedQueryClient();
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -138,7 +143,7 @@ describe('createNormalizedQueryClient', () => {
       cacheTime: 10,
     });
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -161,7 +166,7 @@ describe('createNormalizedQueryClient', () => {
 
     await sleep(10);
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {},
       dependentQueries: {},
       objects: {},
@@ -169,7 +174,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('updates normalizedData after a successful mutation', async () => {
-    const client = createNormalizedQueryClient();
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -190,7 +196,7 @@ describe('createNormalizedQueryClient', () => {
 
     await mutationObserver.mutate();
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -213,7 +219,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('does not update normalizedData after a successful mutation with meta normalize as false', async () => {
-    const client = createNormalizedQueryClient();
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -237,7 +244,7 @@ describe('createNormalizedQueryClient', () => {
 
     await mutationObserver.mutate();
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -260,7 +267,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('updates normalizedData after an optimistic update', async () => {
-    const client = createNormalizedQueryClient();
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -283,7 +291,7 @@ describe('createNormalizedQueryClient', () => {
 
     await mutationObserver.mutate();
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -306,7 +314,8 @@ describe('createNormalizedQueryClient', () => {
   });
 
   it('reverts normalizedData after error of an optimistic update', async () => {
-    const client = createNormalizedQueryClient({ logger: undefined });
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -339,7 +348,7 @@ describe('createNormalizedQueryClient', () => {
 
     await sleep(1);
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
@@ -362,7 +371,7 @@ describe('createNormalizedQueryClient', () => {
 
     await mutation;
 
-    expect(client.getNormalizedData()).toEqual({
+    expect(normalizer.getNormalizedData()).toEqual({
       queries: {
         '["book"]': {
           data: '@@1',
