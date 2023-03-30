@@ -20,6 +20,7 @@
 - [Disabling of normalisation per query and mutation](#disabling-of-normalisation-per-query-and-mutation-arrow_up)
 - [Optimistic updates](#optimistic-updates-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
+- [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
 - [Examples](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
@@ -247,6 +248,17 @@ useMutation({
 
 `normy` know how to clean after itself. When a query is removed from the store, `normy` will do the same, removing all redundant
 information.
+
+## Clearing and unsubscribing from updates [:arrow_up:](#table-of-content)
+
+Typically you won't need it, but in case you do, it is possible to clear normalized data and unsubscribe from `react-query`
+events by calling `clear` method:
+
+```js
+const normalizer = createQueryNormalizer(queryClient, { normalize: false });
+
+normalizer.clear();
+```
 
 ## Examples [:arrow_up:](#table-of-content)
 
