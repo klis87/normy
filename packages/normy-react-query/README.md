@@ -255,7 +255,7 @@ Typically you won't need it, but in case you do, it is possible to clear normali
 events by calling `clear` method:
 
 ```js
-const normalizer = createQueryNormalizer(queryClient, { normalize: false });
+const normalizer = createQueryNormalizer(queryClient);
 
 normalizer.clear();
 ```
