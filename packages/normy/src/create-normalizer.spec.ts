@@ -512,4 +512,18 @@ describe('createNormalizer', () => {
       ]);
     });
   });
+
+  describe('clearNormalizedData', () => {
+    it('clears normalized data', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', { id: '1', name: 'name' });
+      normalizer.clearNormalizedData();
+
+      expect(normalizer.getNormalizedData()).toEqual({
+        queries: {},
+        objects: {},
+        dependentQueries: {},
+      });
+    });
+  });
 });

@@ -392,4 +392,35 @@ describe('createQueryNormalizer', () => {
       },
     });
   });
+
+  it('clears data and unsubscribes from updates', async () => {
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
+
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () =>
+        Promise.resolve({
+          id: '1',
+          name: 'Name',
+        }),
+    });
+
+    normalizer.clear();
+
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () =>
+        Promise.resolve({
+          id: '2',
+          name: 'Name 2',
+        }),
+    });
+
+    expect(normalizer.getNormalizedData()).toEqual({
+      queries: {},
+      dependentQueries: {},
+      objects: {},
+    });
+  });
 });

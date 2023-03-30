@@ -8,17 +8,19 @@ import { getDependenciesDiff } from './get-dependencies-diff';
 import { warning } from './warning';
 import { Data, NormalizerConfig, NormalizedData } from './types';
 
+const initialData: NormalizedData = {
+  queries: {},
+  objects: {},
+  dependentQueries: {},
+};
+
 export const createNormalizer = (
   normalizerConfig?: NormalizerConfig,
   initialNormalizedData?: NormalizedData,
 ) => {
   const config = { ...defaultConfig, ...normalizerConfig };
 
-  let normalizedData: NormalizedData = initialNormalizedData ?? {
-    queries: {},
-    objects: {},
-    dependentQueries: {},
-  };
+  let normalizedData: NormalizedData = initialNormalizedData ?? initialData;
 
   const setQuery = (queryKey: string, queryData: Data) => {
     const [normalizedQueryData, normalizedObjectsData, usedKeys] = normalize(
@@ -107,6 +109,9 @@ export const createNormalizer = (
 
   return {
     getNormalizedData: () => normalizedData,
+    clearNormalizedData: () => {
+      normalizedData = initialData;
+    },
     setQuery,
     removeQuery,
     getQueriesToUpdate,

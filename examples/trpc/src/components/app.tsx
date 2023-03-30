@@ -89,7 +89,7 @@ const BooksApp = () => {
 
 const App = () => (
   <div>
-    <h1>Normy React Query example</h1>
+    <h1>Normy trpc example</h1>
     <BooksApp />
   </div>
 );
