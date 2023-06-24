@@ -1,6 +1,6 @@
 import { MutationObserver, QueryClient } from '@tanstack/react-query';
 
-import { createQueryNormalizer } from '.';
+import { createQueryNormalizer } from './create-query-normalizer';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
