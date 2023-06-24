@@ -19,7 +19,7 @@ export type Data =
   | DataObject[];
 
 export type NormalizerConfig = {
-  getNormalisationObjectKey?: (obj: DataObject) => string | undefined;
+  getNormalizationObjectKey?: (obj: DataObject) => string | undefined;
   devLogging?: boolean;
 };
 

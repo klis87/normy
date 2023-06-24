@@ -305,7 +305,7 @@ describe('normalize', () => {
     ]);
   });
 
-  it('should support configurable normalisation options', () => {
+  it('should support configurable normalization options', () => {
     expect(
       normalize(
         [
@@ -313,7 +313,7 @@ describe('normalize', () => {
           { _id: '2', key: 'b' },
         ],
         {
-          getNormalisationObjectKey: obj =>
+          getNormalizationObjectKey: obj =>
             obj._id && obj.key
               ? `${obj._id as string}${obj.key as string}`
               : undefined,

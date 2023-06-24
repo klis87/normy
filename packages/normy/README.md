@@ -10,7 +10,7 @@
 
 <!-- [![Known Vulnerabilities](https://snyk.io/test/github/klis87/normy/badge.svg)](https://snyk.io/test/github/klis87/normy) -->
 
-Automatic normalisation and data updates for data fetching libraries
+Automatic normalization and data updates for data fetching libraries
 
 ## Table of content
 
@@ -18,7 +18,7 @@ Automatic normalisation and data updates for data fetching libraries
 - [Motivation](#motivation-arrow_up)
 - [Installation](#installation-arrow_up)
 - [Required conditions](#required-conditions-arrow_up)
-- [Normalisation of arrays](#normalisation-of-arrays-arrow_up)
+- [Normalization of arrays](#normalization-of-arrays-arrow_up)
 - [Debugging](#debugging-arrow_up)
 - [Performance](#performance-arrow_up)
 - [Integrations](#examples-arrow_up)
@@ -158,7 +158,7 @@ in the future a guide will be created.
 
 ## Required conditions [:arrow_up:](#table-of-content)
 
-In order to make automatic normalisation work, the following conditions must be met:
+In order to make automatic normalization work, the following conditions must be met:
 
 1. you must have a standardized way to identify your objects, usually this is done by key `id`
 2. ids must be unique across the whole app, not only across object types, if not, you will need to append something to them,
@@ -166,14 +166,14 @@ In order to make automatic normalisation work, the following conditions must be 
 3. objects with the same ids should have a consistent structure, if an object like book in one
    query has `title` key, it should be `title` in others, not `name` out of a sudden
 
-There is a function which can be passed to `createQueryNormalizer` to meet those requirements, namely `getNormalisationObjectKey`.
+There is a function which can be passed to `createQueryNormalizer` to meet those requirements, namely `getNormalizationObjectKey`.
 
-`getNormalisationObjectKey` can help you with 1st point, if for instance you identify
-objects differently, like by `_id` key, then you can pass `getNormalisationObjectKey: obj => obj._id`.
+`getNormalizationObjectKey` can help you with 1st point, if for instance you identify
+objects differently, like by `_id` key, then you can pass `getNormalizationObjectKey: obj => obj._id`.
 
-`getNormalisationObjectKey` also allows you to pass the 2nd requirement. For example, if your ids
+`getNormalizationObjectKey` also allows you to pass the 2nd requirement. For example, if your ids
 are unique, but not across the whole app, but within object types, you could use
-`getNormalisationObjectKey: obj => obj.id && obj.type ? obj.id + obj.type : undefined` or something similar.
+`getNormalizationObjectKey: obj => obj.id && obj.type ? obj.id + obj.type : undefined` or something similar.
 If that is not possible, then you could just compute a suffix yourself, for example:
 
 ```js
@@ -190,7 +190,7 @@ const getType = obj => {
 };
 
 createQueryNormalizer(queryClient, {
-  getNormalisationObjectKey: obj =>
+  getNormalizationObjectKey: obj =>
     obj.id && getType(obj) && obj.id + getType(obj),
 });
 ```
@@ -198,7 +198,7 @@ createQueryNormalizer(queryClient, {
 Point 3 should always be met, if not, your really should ask your backend developers
 to keep things standardized and consistent. As a last resort, you can amend responses on your side.
 
-## Normalisation of arrays [:arrow_up:](#table-of-content)
+## Normalization of arrays [:arrow_up:](#table-of-content)
 
 Unfortunately it does not mean you will never need to update data manually anymore. Some updates still need
 to be done manually like usually, namely adding and removing items from array. Why? Imagine a `REMOVE_BOOK`
@@ -235,11 +235,11 @@ However, you have several flexible ways to improve performance:
 1. You can normalize only queries which have data updates, and only mutations which should update data - that's it,
    you can have only part of your data normalized. Check an integration documentation how to do it.
 2. Like `1.`, but for queries and mutations with extremely big data.
-3. You can use `getNormalisationObjectKey` function to set globally which objects should be actually normalized. For example:
+3. You can use `getNormalizationObjectKey` function to set globally which objects should be actually normalized. For example:
 
 ```js
 createQueryNormalizer(queryClient, {
-  getNormalisationObjectKey: obj => (obj.normalizable ? obj.id : undefined),
+  getNormalizationObjectKey: obj => (obj.normalizable ? obj.id : undefined),
 });
 ```
 

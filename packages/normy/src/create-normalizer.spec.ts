@@ -218,9 +218,9 @@ describe('createNormalizer', () => {
       });
     });
 
-    it('allows to override normalisation key', () => {
+    it('allows to override normalization key', () => {
       const normalizer = createNormalizer({
-        getNormalisationObjectKey: obj => obj._id as string,
+        getNormalizationObjectKey: obj => obj._id as string,
       });
       normalizer.setQuery('query', {
         _id: '1',
@@ -243,9 +243,9 @@ describe('createNormalizer', () => {
       });
     });
 
-    it('allows to disable normalisation per object', () => {
+    it('allows to disable normalization per object', () => {
       const normalizer = createNormalizer({
-        getNormalisationObjectKey: obj => obj._id as string,
+        getNormalizationObjectKey: obj => obj._id as string,
       });
       normalizer.setQuery('query', {
         _id: '1',

@@ -10,7 +10,7 @@
 
 <!-- [![Known Vulnerabilities](https://snyk.io/test/github/klis87/normy/badge.svg)](https://snyk.io/test/github/klis87/normy) -->
 
-`react-query` integration with `normy` - automatic normalisation and data updates for data fetching libraries
+`react-query` integration with `normy` - automatic normalization and data updates for data fetching libraries
 
 ## Table of content
 
@@ -18,7 +18,7 @@
 - [Motivation](#motivation-arrow_up)
 - [Installation](#installation-arrow_up)
 - [Basic usage](#basic-usage-arrow_up)
-- [Disabling of normalisation per query and mutation](#disabling-of-normalisation-per-query-and-mutation-arrow_up)
+- [Disabling of normalization per query and mutation](#disabling-of-normalization-per-query-and-mutation-arrow_up)
 - [Optimistic updates](#optimistic-updates-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
 - [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
@@ -144,15 +144,15 @@ most of the time anymore.
 `createQueryNormalizer` accepts two arguments:
 
 - `queryClient` - this is just a react-query instance you create by `new QueryClient(config)`,
-- `normalizerConfig` - this is `normy` config, which you might need to meet requirements for data normalisation to work - see
+- `normalizerConfig` - this is `normy` config, which you might need to meet requirements for data normalization to work - see
   [explanation](https://github.com/klis87/normy/tree/master/#required-conditions-arrow_up) for more details. Additionally to `normy` config, you can also pass `normalize` option, which is `true` by default - if you pass `false`, nothing will be normalized unless explicitely set (see the next paragraph)
 
-## Disabling of normalisation per query and mutation [:arrow_up:](#table-of-content)
+## Disabling of normalization per query and mutation [:arrow_up:](#table-of-content)
 
 By default all your queries and mutations will be normalized. That means that for each query there will be normalized representation
 of its data and for each mutation its response data will be read and all dependent normalized queries will be updated.
 
-However, it does not always make sense to normalize all data. You might want to disable data normalisation, for example for performance reason for some extreme big queries,
+However, it does not always make sense to normalize all data. You might want to disable data normalization, for example for performance reason for some extreme big queries,
 or just if you do not need it for a given query, for instance if a query data will be never updated.
 
 Anyway, you might want to change this globally by passing `normalize` to `createQueryNormalizer`:
@@ -216,8 +216,8 @@ The above code will immediately update all queries which have object with `id: 1
 a mutation error, data will be reverted to original `rollbackData`.
 
 It will work at the same time as a normal mutation too, so on mutation success, all dependent queries will be updated
-again. If you are sure about the response structure, you might want to disable normalisation for this mutation,
-so that on successful response the normalisation won't be repeted unnecessarily:
+again. If you are sure about the response structure, you might want to disable normalization for this mutation,
+so that on successful response the normalization won't be repeted unnecessarily:
 
 ```jsx
 useMutation({
