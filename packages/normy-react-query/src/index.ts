@@ -17,17 +17,6 @@ const shouldBeNormalized = (
   return localNormalize;
 };
 
-const shouldBeSynchronized = (
-  globalSynchronize: boolean,
-  localSynchronize: boolean | undefined,
-) => {
-  if (localSynchronize === undefined) {
-    return globalSynchronize;
-  }
-
-  return localSynchronize;
-};
-
 const updateQueriesFromQueryData = (
   originalQueryKey: string,
   queryData: Data,
@@ -64,11 +53,9 @@ export const createQueryNormalizer = (
   queryClient: QueryClient,
   normalizerConfig: NormalizerConfig & {
     normalize?: boolean;
-    synchronize?: boolean;
   } = {},
 ) => {
   const normalize = normalizerConfig.normalize ?? true;
-  const synchronize = normalizerConfig.synchronize ?? true;
   const normalizer = createNormalizer(normalizerConfig);
 
   const unsubscribeQueryCache = queryClient.getQueryCache().subscribe(event => {
@@ -88,13 +75,7 @@ export const createQueryNormalizer = (
 
       normalizer.setQuery(queryKey, data);
 
-      if (
-        !event.action.manual &&
-        shouldBeSynchronized(
-          synchronize,
-          event.query.meta?.synchronize as boolean | undefined,
-        )
-      ) {
+      if (!event.action.manual) {
         updateQueriesFromQueryData(queryKey, data, normalizer, queryClient);
       }
     }
