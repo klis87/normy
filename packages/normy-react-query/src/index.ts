@@ -1,4 +1,9 @@
-import { QueryClient, QueryKey } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryKey,
+  SetDataOptions,
+  Updater,
+} from '@tanstack/react-query';
 import { createNormalizer, NormalizerConfig, Data } from '@normy/core';
 
 const shouldBeNormalized = (
@@ -10,6 +15,34 @@ const shouldBeNormalized = (
   }
 
   return localNormalize;
+};
+
+const shouldBeSynchronized = (
+  globalSynchronize: boolean,
+  localSynchronize: boolean | undefined,
+) => {
+  if (localSynchronize === undefined) {
+    return globalSynchronize;
+  }
+
+  return localSynchronize;
+};
+
+const updateQueriesFromQueryData = (
+  originalQueryKey: string,
+  queryData: Data,
+  normalizer: ReturnType<typeof createNormalizer>,
+  queryClient: QueryClient,
+) => {
+  const queriesToUpdate = normalizer
+    .getQueriesToUpdate(queryData)
+    .filter(query => query.queryKey !== originalQueryKey);
+  queriesToUpdate.forEach(query => {
+    queryClient.setQueryData(
+      JSON.parse(query.queryKey) as QueryKey,
+      () => query.data,
+    );
+  });
 };
 
 const updateQueriesFromMutationData = (
@@ -29,9 +62,13 @@ const updateQueriesFromMutationData = (
 
 export const createQueryNormalizer = (
   queryClient: QueryClient,
-  normalizerConfig: NormalizerConfig & { normalize?: boolean } = {},
+  normalizerConfig: NormalizerConfig & {
+    normalize?: boolean;
+    synchronize?: boolean;
+  } = {},
 ) => {
   const normalize = normalizerConfig.normalize ?? true;
+  const synchronize = normalizerConfig.synchronize ?? true;
   const normalizer = createNormalizer(normalizerConfig);
 
   const unsubscribeQueryCache = queryClient.getQueryCache().subscribe(event => {
@@ -46,10 +83,20 @@ export const createQueryNormalizer = (
         event.query.meta?.normalize as boolean | undefined,
       )
     ) {
-      normalizer.setQuery(
-        JSON.stringify(event.query.queryKey),
-        event.action.data as Data,
-      );
+      const queryKey = JSON.stringify(event.query.queryKey);
+      const data = event.action.data as Data;
+
+      normalizer.setQuery(queryKey, data);
+
+      if (
+        !event.action.manual &&
+        shouldBeSynchronized(
+          synchronize,
+          event.query.meta?.synchronize as boolean | undefined,
+        )
+      ) {
+        updateQueriesFromQueryData(queryKey, data, normalizer, queryClient);
+      }
     }
   });
 
@@ -95,6 +142,24 @@ export const createQueryNormalizer = (
       }
     });
 
+  const setQueryData = <TQueryFnData>(
+    queryKey: QueryKey,
+    updater: Updater<TQueryFnData | undefined, TQueryFnData | undefined>,
+    options?: SetDataOptions,
+  ): TQueryFnData | undefined => {
+    const data = queryClient.setQueryData(queryKey, updater, options);
+    const queryKeyString = JSON.stringify(queryKey);
+
+    updateQueriesFromQueryData(
+      queryKeyString,
+      data as Data,
+      normalizer,
+      queryClient,
+    );
+
+    return data;
+  };
+
   return {
     getNormalizedData: normalizer.getNormalizedData,
     clear: () => {
@@ -102,5 +167,6 @@ export const createQueryNormalizer = (
       unsubscribeMutationCache();
       normalizer.clearNormalizedData();
     },
+    setQueryData,
   };
 };
