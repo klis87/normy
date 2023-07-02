@@ -18,6 +18,7 @@ describe('createQueryNormalizer', () => {
   it('updates normalizedData after a successful query', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -53,6 +54,7 @@ describe('createQueryNormalizer', () => {
   it('does not update normalizedData after a successful query when global normalize option is false', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client, { normalize: false });
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -73,6 +75,7 @@ describe('createQueryNormalizer', () => {
   it('does not update normalizedData after a successful query when query normalize option is false', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -96,6 +99,7 @@ describe('createQueryNormalizer', () => {
   it('updates normalizedData after a successful query when global normalize is false but query explicitly true', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client, { normalize: false });
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -132,6 +136,7 @@ describe('createQueryNormalizer', () => {
   it('clears query', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -176,6 +181,7 @@ describe('createQueryNormalizer', () => {
   it('updates normalizedData after a successful mutation', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -221,6 +227,7 @@ describe('createQueryNormalizer', () => {
   it('does not update normalizedData after a successful mutation with meta normalize as false', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -269,6 +276,7 @@ describe('createQueryNormalizer', () => {
   it('updates normalizedData after an optimistic update', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -316,6 +324,7 @@ describe('createQueryNormalizer', () => {
   it('reverts normalizedData after error of an optimistic update', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -396,6 +405,7 @@ describe('createQueryNormalizer', () => {
   it('clears data and unsubscribes from updates', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],
@@ -407,6 +417,7 @@ describe('createQueryNormalizer', () => {
     });
 
     normalizer.clear();
+    normalizer.unsubscribe();
 
     await client.prefetchQuery({
       queryKey: ['book'],

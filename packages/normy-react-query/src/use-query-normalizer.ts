@@ -12,7 +12,14 @@ export const useQueryNormalizer = (
     createQueryNormalizer(queryClient, normalizerConfig),
   );
 
-  useEffect(() => () => queryNormalizer.clear(), []);
+  useEffect(() => {
+    queryNormalizer.subscribe();
+
+    return () => {
+      queryNormalizer.unsubscribe();
+      queryNormalizer.clear();
+    };
+  }, []);
 
   return queryNormalizer;
 };
