@@ -1,2 +1,5 @@
 export { createQueryNormalizer } from './create-query-normalizer';
-export { useQueryNormalizer } from './use-query-normalizer';
+export {
+  QueryNormalizerProvider,
+  useQueryNormalizer,
+} from './QueryNormalizerProvider';
