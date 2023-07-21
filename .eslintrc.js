@@ -111,7 +111,7 @@ module.exports = {
     'react/jsx-no-script-url': 2,
     'react/jsx-no-useless-fragment': 2,
     'react/jsx-pascal-case': 2,
-    'react/jsx-filename-extension': 2,
+    'react/jsx-filename-extension': [2, { extensions: ['.jsx', '.tsx'] }],
 
     'react-hooks/exhaustive-deps': 0,
   },
