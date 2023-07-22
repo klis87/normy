@@ -30,6 +30,15 @@ module.exports = {
         'normy-react-query',
         'es',
       ),
+      react: path.join(
+        __dirname,
+        '..',
+        '..',
+        'packages',
+        'normy-react-query',
+        'node_modules',
+        'react',
+      ),
     },
   },
   module: {

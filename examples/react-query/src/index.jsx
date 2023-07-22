@@ -2,7 +2,7 @@ import '@babel/polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { createQueryNormalizer } from '@normy/react-query';
+import { QueryNormalizerProvider } from '@normy/react-query';
 
 import App from './components/app';
 
@@ -13,13 +13,17 @@ const queryClient = new QueryClient({
     },
   },
 });
-createQueryNormalizer(queryClient, { devLogging: true });
 
 const renderApp = () => {
   render(
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>,
+    <QueryNormalizerProvider
+      queryClient={queryClient}
+      normalizerConfig={{ devLogging: true }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </QueryNormalizerProvider>,
     document.getElementById('root'),
   );
 };
