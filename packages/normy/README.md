@@ -41,83 +41,84 @@ In order to understand what `normy` actually does, it is the best to see an exam
     QueryClient,
     useQueryClient,
   } from '@tanstack/react-query';
-+ import { createQueryNormalizer } from '@normy/react-query';
++ import { QueryNormalizerProvider } from '@normy/react-query';
 
   const queryClient = new QueryClient();
-+ createQueryNormalizer(queryClient);
 
-const Books = () => {
-  const queryClient = useQueryClient();
+  const Books = () => {
+    const queryClient = useQueryClient();
 
-  const { data: booksData = [] } = useQuery(['books'], () =>
-    Promise.resolve([
-      { id: '1', name: 'Name 1', author: { id: '1001', name: 'User1' } },
-      { id: '2', name: 'Name 2', author: { id: '1002', name: 'User2' } },
-    ]),
+    const { data: booksData = [] } = useQuery(['books'], () =>
+      Promise.resolve([
+        { id: '1', name: 'Name 1', author: { id: '1001', name: 'User1' } },
+        { id: '2', name: 'Name 2', author: { id: '1002', name: 'User2' } },
+      ]),
+    );
+
+    const { data: bookData } = useQuery(['book'], () =>
+      Promise.resolve({
+        id: '1',
+        name: 'Name 1',
+        author: { id: '1001', name: 'User1' },
+      }),
+    );
+
+    const updateBookNameMutation = useMutation({
+      mutationFn: () => ({
+        id: '1',
+        name: 'Name 1 Updated',
+      }),
+-     onSuccess: mutationData => {
+-       queryClient.setQueryData(['books'], data =>
+-         data.map(book =>
+-           book.id === mutationData.id ? { ...book, ...mutationData } : book,
+-         ),
+-       );
+-       queryClient.setQueryData(['book'], data =>
+-         data.id === mutationData.id ? { ...data, ...mutationData } : data,
+-       );
+-     },
+    });
+
+    const updateBookAuthorMutation = useMutation({
+      mutationFn: () => ({
+        id: '1',
+        author: { id: '1004', name: 'User4' },
+      }),
+-     onSuccess: mutationData => {
+-       queryClient.setQueryData(['books'], data =>
+-         data.map(book =>
+-           book.id === mutationData.id ? { ...book, ...mutationData } : book,
+-         ),
+-       );
+-       queryClient.setQueryData(['book'], data =>
+-         data.id === mutationData.id ? { ...data, ...mutationData } : data,
+-       );
+-     },
+    });
+
+    const addBookMutation = useMutation({
+      mutationFn: () => ({
+        id: '3',
+        name: 'Name 3',
+        author: { id: '1003', name: 'User3' },
+      }),
+      // with data with top level arrays, you still need to update data manually
+      onSuccess: mutationData => {
+        queryClient.setQueryData(['books'], data => data.concat(mutationData));
+      },
+    });
+
+    // return some JSX
+  };
+
+  const App = () => (
++   <QueryNormalizerProvider queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Books />
+      </QueryClientProvider>
++   </QueryNormalizerProvider>
   );
-
-  const { data: bookData } = useQuery(['book'], () =>
-    Promise.resolve({
-      id: '1',
-      name: 'Name 1',
-      author: { id: '1001', name: 'User1' },
-    }),
-  );
-
-  const updateBookNameMutation = useMutation({
-    mutationFn: () => ({
-      id: '1',
-      name: 'Name 1 Updated',
-    }),
--   onSuccess: mutationData => {
--     queryClient.setQueryData(['books'], data =>
--       data.map(book =>
--         book.id === mutationData.id ? { ...book, ...mutationData } : book,
--       ),
--     );
--     queryClient.setQueryData(['book'], data =>
--       data.id === mutationData.id ? { ...data, ...mutationData } : data,
--     );
--   },
-  });
-
-  const updateBookAuthorMutation = useMutation({
-    mutationFn: () => ({
-      id: '1',
-      author: { id: '1004', name: 'User4' },
-    }),
--   onSuccess: mutationData => {
--     queryClient.setQueryData(['books'], data =>
--       data.map(book =>
--         book.id === mutationData.id ? { ...book, ...mutationData } : book,
--       ),
--     );
--     queryClient.setQueryData(['book'], data =>
--       data.id === mutationData.id ? { ...data, ...mutationData } : data,
--     );
--   },
-  });
-
-  const addBookMutation = useMutation({
-    mutationFn: () => ({
-      id: '3',
-      name: 'Name 3',
-      author: { id: '1003', name: 'User3' },
-    }),
-    // with data with top level arrays, you still need to update data manually
-    onSuccess: mutationData => {
-      queryClient.setQueryData(['books'], data => data.concat(mutationData));
-    },
-  });
-
-  // return some JSX
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <Books />
-  </QueryClientProvider>
-);
 ```
 
 So, as you can see, apart from top level arrays, no manual data updates are necessary anymore. This is especially handy if a given mutation
@@ -214,10 +215,13 @@ In the future version of the library though, with some additional pointers, it w
 
 If you are interested, what data manipulations `normy` actually does, you can use `devLogging` option:
 
-```js
-createQueryNormalizer(queryClient, {
-  devLogging: true,
-});
+```jsx
+<QueryNormalizerProvider
+  queryClient={queryClient}
+  normalizerConfig={{ devLogging: true }}
+>
+  {children}
+</QueryNormalizerProvider>
 ```
 
 `false` by default, if set to `true`, you could see in the console information, when queries are set or removed.
@@ -237,10 +241,15 @@ However, you have several flexible ways to improve performance:
 2. Like `1.`, but for queries and mutations with extremely big data.
 3. You can use `getNormalizationObjectKey` function to set globally which objects should be actually normalized. For example:
 
-```js
-createQueryNormalizer(queryClient, {
-  getNormalizationObjectKey: obj => (obj.normalizable ? obj.id : undefined),
-});
+```jsx
+<QueryNormalizerProvider
+  queryClient={queryClient}
+  normalizerConfig={{
+    getNormalizationObjectKey: obj => (obj.normalizable ? obj.id : undefined),
+  }}
+>
+  {children}
+</QueryNormalizerProvider>
 ```
 
 Moreover, in the future some additional performance specific options will be added.
