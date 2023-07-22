@@ -1,7 +1,8 @@
 {
   "presets": [
     "@babel/preset-typescript",
-    ["@babel/preset-env", { "loose": true, "modules": false }]
+    ["@babel/preset-env", { "loose": true, "modules": false }],
+    "@babel/preset-react"
   ],
   "env": {
     "cjs": {
