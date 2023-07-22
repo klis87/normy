@@ -12,7 +12,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-
     alias: {
       '@normy/core': path.join(
         __dirname,
