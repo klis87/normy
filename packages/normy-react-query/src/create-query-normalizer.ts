@@ -39,6 +39,8 @@ export const createQueryNormalizer = (
 
   return {
     getNormalizedData: normalizer.getNormalizedData,
+    setNormalizedData: (data: Data) =>
+      updateQueriesFromMutationData(data, normalizer, queryClient),
     clear: normalizer.clearNormalizedData,
     subscribe: () => {
       unsubscribeQueryCache = queryClient.getQueryCache().subscribe(event => {

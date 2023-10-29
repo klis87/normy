@@ -20,6 +20,7 @@
 - [Basic usage](#basic-usage-arrow_up)
 - [Disabling of normalization per query and mutation](#disabling-of-normalization-per-query-and-mutation-arrow_up)
 - [Optimistic updates](#optimistic-updates-arrow_up)
+- [useQueryNormalizer and manual updates](#useQueryNormalizer-and-manual-updates-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
 - [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
 - [Examples](#examples-arrow_up)
@@ -156,12 +157,12 @@ of its data and for each mutation its response data will be read and all depende
 However, it does not always make sense to normalize all data. You might want to disable data normalization, for example for performance reason for some extreme big queries,
 or just if you do not need it for a given query, for instance if a query data will be never updated.
 
-Anyway, you might want to change this globally by passing `normalize` to `QueryNormalizerProvider`:
+Anyway, you might want to change this globally by passing `normalize: false` to `QueryNormalizerProvider`:
 
 ```jsx
 <QueryNormalizerProvider
   queryClient={queryClient}
-  normalizerConfig={{ normalize: true }}
+  normalizerConfig={{ normalize: false }}
 >
   {children}
 </QueryNormalizerProvider>
@@ -173,7 +174,7 @@ For this, you can use `meta` option, for example for `useQuery`:
 ```js
 useQuery(['query-key'], loadData, {
   meta: {
-    normalize: false,
+    normalize: true,
   },
 });
 ```
@@ -183,6 +184,17 @@ or for `useMutation`:
 ```js
 useMutation({
   mutationFn,
+  meta: {
+    normalize: true,
+  },
+});
+```
+
+Similarly, you can have `normalize: true` set globally (default), but you could disable normalization
+for a specific query or a mutation, for example:
+
+```js
+useQuery(['query-key'], loadData, {
   meta: {
     normalize: false,
   },
@@ -250,6 +262,31 @@ useMutation({
   },
 });
 ```
+
+## useQueryNormalizer and manual updates [:arrow_up:](#table-of-content)
+
+Sometimes you might need to update your data manually, without having API response. One of examples could be having a websocket event that
+an object name has been changed. Now, instead of manually updating all your relevant queries, instead you could do below:
+
+```jsx
+import { useQueryNormalizer } from '@normy/react-query';
+
+const SomeComponent = () => {
+  const queryNormalizer = useQueryNormalizer();
+
+  return (
+    <button
+      onClick={() =>
+        queryNormalizer.setNormalizedData({ id: '1', name: 'Updated name' })
+      }
+    >
+      Update user
+    </button>
+  );
+};
+```
+
+What it will do is updating normalized store, as well as finding all queries which contain user with `id` equal `'1'` and updating them with `name: 'Updated name'`.
 
 ## Garbage collection [:arrow_up:](#table-of-content)
 

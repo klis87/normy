@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryNormalizer } from '@normy/react-query';
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 10));
 
@@ -21,6 +22,7 @@ const Books = () => {
 
 const BooksApp = () => {
   const queryClient = useQueryClient();
+  const queryNormalizer = useQueryNormalizer();
 
   const { data: bookData } = useQuery(
     ['book'],
@@ -114,6 +116,16 @@ const BooksApp = () => {
         onClick={() => updateBookNameMutationOptimistic.mutate()}
       >
         Update book name optimistic
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          queryNormalizer.setNormalizedData({
+            author: { id: '1000', name: 'User1 updated' },
+          })
+        }
+      >
+        Update user1 name manually
       </button>
       <hr />
       <h2>Books</h2>

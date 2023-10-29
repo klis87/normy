@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useQueryNormalizer } from '@normy/react-query';
 
 import { trpc } from '../trpc';
 
@@ -17,6 +18,7 @@ const Books = () => {
 
 const BooksApp = () => {
   const trpcContext = trpc.useContext();
+  const queryNormalizer = useQueryNormalizer();
 
   const { data: bookData } = trpc.book.useQuery(undefined, {
     select: data => ({ ...data, nameLong: data.name, name: undefined }),
@@ -72,6 +74,16 @@ const BooksApp = () => {
         onClick={() => updateBookNameMutationOptimistic.mutate()}
       >
         Update book name optimistic
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          queryNormalizer.setNormalizedData({
+            author: { id: '1000', name: 'User1 updated' },
+          })
+        }
+      >
+        Update user1 name manually
       </button>
       <hr />
       <h2>Books</h2>

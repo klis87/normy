@@ -434,4 +434,50 @@ describe('createQueryNormalizer', () => {
       objects: {},
     });
   });
+
+  it('updates queries and normalizedData after setNormalizedData', async () => {
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
+
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () =>
+        Promise.resolve({
+          id: '1',
+          name: 'Name',
+        }),
+    });
+
+    normalizer.setNormalizedData({
+      id: '1',
+      name: 'Name updated',
+    });
+
+    expect(normalizer.getNormalizedData()).toEqual({
+      queries: {
+        '["book"]': {
+          data: '@@1',
+          dependencies: ['@@1'],
+          usedKeys: {
+            '': ['id', 'name'],
+          },
+        },
+      },
+      dependentQueries: {
+        '@@1': ['["book"]'],
+      },
+      objects: {
+        '@@1': {
+          id: '1',
+          name: 'Name updated',
+        },
+      },
+    });
+
+    expect(client.getQueryData(['book'])).toEqual({
+      id: '1',
+      name: 'Name updated',
+    });
+  });
 });
