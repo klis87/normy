@@ -10,8 +10,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/react-query':
-        specifier: 0.9.0
-        version: 0.9.0(@tanstack/react-query@4.22.0)
+        specifier: 0.10.0
+        version: 0.10.0(@tanstack/react-query@4.22.0)
       '@tanstack/react-query':
         specifier: 4.22.0
         version: 4.22.0(react-dom@16.9.0)(react@16.9.0)
@@ -53,8 +53,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/react-query':
-        specifier: 0.9.0
-        version: 0.9.0(@tanstack/react-query@4.22.0)
+        specifier: 0.10.0
+        version: 0.10.0(@tanstack/react-query@4.22.0)
       '@tanstack/react-query':
         specifier: 4.22.0
         version: 4.22.0(react-dom@16.9.0)(react@16.9.0)
@@ -1218,6 +1218,14 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.11
+    dev: true
+
+  /@babel/runtime@7.23.2:
+    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.0
+    dev: false
 
   /@babel/template@7.20.7:
     resolution: {integrity: sha512-8SegXApWe6VoNw0r9JHpSteLKTpTiLZ4rMlGIm9JQ18KiCtyQiAMEazujAHrUS5flrcqYZa75ukev3P6QmUwUw==}
@@ -1302,12 +1310,12 @@ packages:
   /@normy/core@0.7.1:
     resolution: {integrity: sha512-Bnp9wjTpZE+Gnu9IUsRluDOMHLbxa3CaLTMwQoPxCrPPYN9FG0VN4l+udWSqBrn6AifHzOhDGXDAElR4ULrBXQ==}
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.2
       deepmerge: 4.0.0
     dev: false
 
-  /@normy/react-query@0.9.0(@tanstack/react-query@4.22.0):
-    resolution: {integrity: sha512-h85dcBafzlyULVITEtp2wnGiY7QMgaM5Sk/2EvDriZ7exvnncuWXA4MKtqVCvCDiBpnrG9rXyZnkLuBQTgi+Fw==}
+  /@normy/react-query@0.10.0(@tanstack/react-query@4.22.0):
+    resolution: {integrity: sha512-UBkSlXjboXhX9wzipxj0OULncOJN14f8uMioQ53nQ4PQaO9MG5vCdK1rbv40124enSHKKjtJLKmKHSihOM0jAw==}
     peerDependencies:
       '@tanstack/react-query': '>=4.22.0'
     dependencies:
@@ -2860,7 +2868,7 @@ packages:
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
-      nan: 2.17.0
+      nan: 2.18.0
     dev: true
     optional: true
 
@@ -3711,8 +3719,8 @@ packages:
       thunky: 1.1.0
     dev: true
 
-  /nan@2.17.0:
-    resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
+  /nan@2.18.0:
+    resolution: {integrity: sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==}
     requiresBuild: true
     dev: true
     optional: true
@@ -4231,6 +4239,10 @@ packages:
 
   /regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
+
+  /regenerator-runtime@0.14.0:
+    resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
+    dev: false
 
   /regenerator-transform@0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==}

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.12.1",
-    "@normy/react-query": "0.9.0",
+    "@normy/react-query": "0.10.0",
     "@tanstack/react-query": "4.22.0",
     "@trpc/client": "^10.17.0",
     "@trpc/react-query": "^10.17.0",
