@@ -145,7 +145,7 @@ describe('createQueryNormalizer', () => {
           id: '1',
           name: 'Name',
         }),
-      cacheTime: 10,
+      gcTime: 10,
     });
 
     expect(normalizer.getNormalizedData()).toEqual({

@@ -1,6 +1,6 @@
 import '@babel/polyfill';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { QueryNormalizerProvider } from '@normy/react-query';
 
@@ -15,7 +15,9 @@ const queryClient = new QueryClient({
 });
 
 const renderApp = () => {
-  render(
+  const container = document.getElementById('root');
+  const root = createRoot(container);
+  root.render(
     <QueryNormalizerProvider
       queryClient={queryClient}
       normalizerConfig={{ devLogging: true }}
@@ -24,7 +26,6 @@ const renderApp = () => {
         <App />
       </QueryClientProvider>
     </QueryNormalizerProvider>,
-    document.getElementById('root'),
   );
 };
 

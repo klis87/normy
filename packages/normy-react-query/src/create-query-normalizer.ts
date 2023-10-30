@@ -81,7 +81,7 @@ export const createQueryNormalizer = (
             );
           } else if (
             event.type === 'updated' &&
-            event.action.type === 'loading' &&
+            event.action.type === 'pending' &&
             (event.mutation.state?.context as { optimisticData?: Data })
               ?.optimisticData
           ) {

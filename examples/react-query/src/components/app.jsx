@@ -5,13 +5,15 @@ import { useQueryNormalizer } from '@normy/react-query';
 const sleep = () => new Promise(resolve => setTimeout(resolve, 10));
 
 const Books = () => {
-  const { data: booksData = [] } = useQuery(['books'], () =>
-    Promise.resolve([
-      { id: '0', name: 'Name 0', author: null },
-      { id: '1', name: 'Name 1', author: { id: '1000', name: 'User1' } },
-      { id: '2', name: 'Name 2', author: { id: '1001', name: 'User2' } },
-    ]),
-  );
+  const { data: booksData = [] } = useQuery({
+    queryKey: ['books'],
+    queryFn: () =>
+      Promise.resolve([
+        { id: '0', name: 'Name 0', author: null },
+        { id: '1', name: 'Name 1', author: { id: '1000', name: 'User1' } },
+        { id: '2', name: 'Name 2', author: { id: '1001', name: 'User2' } },
+      ]),
+  });
 
   return booksData.map(book => (
     <div key={book.id}>
@@ -24,18 +26,16 @@ const BooksApp = () => {
   const queryClient = useQueryClient();
   const queryNormalizer = useQueryNormalizer();
 
-  const { data: bookData } = useQuery(
-    ['book'],
-    () =>
+  const { data: bookData } = useQuery({
+    queryKey: ['book'],
+    queryFn: () =>
       Promise.resolve({
         id: '1',
         name: 'Name 1',
         author: { id: '1000', name: 'User1' },
       }),
-    {
-      select: data => ({ ...data, nameLong: data.name, name: undefined }),
-    },
-  );
+    select: data => ({ ...data, nameLong: data.name, name: undefined }),
+  });
   const updateBookNameMutation = useMutation({
     mutationFn: async () => {
       await sleep();
