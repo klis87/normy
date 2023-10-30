@@ -12,6 +12,10 @@
 
 `react-query` integration with `normy` - automatic normalization and data updates for data fetching libraries
 
+> **Note**
+>
+> The newest version supports `react-query: 5` and `trpc: 11`! If you still use older versions, you must use `@normy/react-query@0.10.0`
+
 ## Table of content
 
 - [Introduction](#introduction-arrow_up)
