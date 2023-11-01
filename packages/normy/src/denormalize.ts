@@ -12,7 +12,11 @@ export const denormalize = (
     return data.map(value =>
       denormalize(value, normalizedData, usedKeys, path),
     ) as DataPrimitiveArray | DataObject[];
-  } else if (data !== null && typeof data === 'object') {
+  } else if (
+    data !== null &&
+    typeof data === 'object' &&
+    !(data instanceof Date)
+  ) {
     const objectEntries = usedKeys[path]
       ? Object.entries(data).filter(([k]) => usedKeys[path].includes(k))
       : Object.entries(data);
