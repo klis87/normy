@@ -526,4 +526,126 @@ describe('createNormalizer', () => {
       });
     });
   });
+
+  describe.only('getObjectById', () => {
+    it('gets object without dependencies', () => {
+      const normalizer = createNormalizer(
+        {},
+        {
+          queries: {
+            query: {
+              data: '@@1',
+              dependencies: ['@@1'],
+              usedKeys: { '': ['id', 'name'] },
+            },
+          },
+          objects: { '@@1': { id: '1', name: 'name' } },
+          dependentQueries: { '@@1': ['query'] },
+        },
+      );
+
+      expect(normalizer.getObjectById('1')).toEqual({ id: '1', name: 'name' });
+    });
+
+    it('returns undefined if object not found', () => {
+      const normalizer = createNormalizer(
+        {},
+        {
+          queries: {
+            query: {
+              data: '@@1',
+              dependencies: ['@@1'],
+              usedKeys: { '': ['id', 'name'] },
+            },
+          },
+          objects: { '@@1': { id: '1', name: 'name' } },
+          dependentQueries: { '@@1': ['query'] },
+        },
+      );
+
+      expect(normalizer.getObjectById('2')).toBe(undefined);
+    });
+
+    it('gets object with dependencies', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: {
+          id: '2',
+          key: 'value',
+        },
+      });
+
+      expect(normalizer.getObjectById('1')).toEqual({
+        id: '1',
+        name: 'name',
+        nested: {
+          id: '2',
+          key: 'value',
+        },
+      });
+    });
+
+    it('fails for self dependencies', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        self: {
+          id: '1',
+          name: 'name',
+          surname: 'surname',
+        },
+      });
+
+      expect(normalizer.getObjectById('1')).toBe(undefined);
+    });
+
+    it('allows defining data structure', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: {
+          id: '2',
+          key: 'value',
+        },
+      });
+
+      expect(normalizer.getObjectById('1', { id: '0', name: 'x' })).toEqual({
+        id: '1',
+        name: 'name',
+      });
+    });
+
+    it('works with self dependencies with defined data structure', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        self: {
+          id: '1',
+          name: 'name',
+          surname: 'surname',
+        },
+      });
+
+      expect(
+        normalizer.getObjectById('1', {
+          id: '0',
+          self: {
+            id: '0',
+            name: 'name',
+          },
+        }),
+      ).toEqual({
+        id: '1',
+        self: {
+          id: '1',
+          name: 'name',
+        },
+      });
+    });
+  });
 });
