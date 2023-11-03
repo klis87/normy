@@ -107,16 +107,10 @@ export const createNormalizer = (
     }));
   };
 
-  const getObjectById = <T extends Data>(
-    id: string,
+  const getQueryFragment = <T extends Data>(
+    fragment: Data,
     exampleObject?: T,
   ): T | undefined => {
-    const object = normalizedData.objects[`@@${id}`];
-
-    if (!object) {
-      return undefined;
-    }
-
     let usedKeys = {};
 
     if (exampleObject) {
@@ -125,13 +119,13 @@ export const createNormalizer = (
     }
 
     try {
-      const response = denormalize(object, normalizedData.objects, usedKeys);
+      const response = denormalize(fragment, normalizedData.objects, usedKeys);
       return response as T;
     } catch (error) {
       if (error instanceof RangeError) {
         warning(
           true,
-          'Recursive dependency detected. Pass example object as second argument to getObjectById.',
+          'Recursive dependency detected. Pass example object as second argument to getQueryFragment.',
         );
 
         return undefined;
@@ -140,6 +134,11 @@ export const createNormalizer = (
       throw error;
     }
   };
+
+  const getObjectById = <T extends Data>(
+    id: string,
+    exampleObject?: T,
+  ): T | undefined => getQueryFragment(`@@${id}`, exampleObject);
 
   return {
     getNormalizedData: () => normalizedData,
@@ -150,5 +149,6 @@ export const createNormalizer = (
     removeQuery,
     getQueriesToUpdate,
     getObjectById,
+    getQueryFragment,
   };
 };

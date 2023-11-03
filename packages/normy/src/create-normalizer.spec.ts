@@ -648,4 +648,64 @@ describe('createNormalizer', () => {
       });
     });
   });
+
+  describe.only('getQueryFragment', () => {
+    it('gets fragment with two objects', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+      });
+      normalizer.setQuery('query2', {
+        id: '2',
+        name: 'name2',
+      });
+
+      expect(normalizer.getQueryFragment(['@@1', '@@2'])).toEqual([
+        {
+          id: '1',
+          name: 'name',
+        },
+        {
+          id: '2',
+          name: 'name2',
+        },
+      ]);
+    });
+
+    it('gets undefined for a missing object', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+      });
+
+      expect(normalizer.getQueryFragment(['@@1', '@@2'])).toEqual([
+        {
+          id: '1',
+          name: 'name',
+        },
+        undefined,
+      ]);
+    });
+
+    it('allows defining data structure', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        surname: 'surname',
+      });
+
+      expect(
+        normalizer.getQueryFragment(['@@1', '@@2'], [{ id: '0', name: '' }]),
+      ).toEqual([
+        {
+          id: '1',
+          name: 'name',
+        },
+        undefined,
+      ]);
+    });
+  });
 });
