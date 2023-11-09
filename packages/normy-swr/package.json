@@ -1,0 +1,76 @@
+{
+  "name": "@normy/swr",
+  "version": "0.0.1",
+  "description": "swr addon for normy - automatic normalization and data updates for data fetching libraries",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "unpkg": "dist/normy-swr.min.js",
+  "repository": "git@github.com:klis87/normy.git",
+  "author": "Konrad Lisiczynski <klisiczynski@gmail.com>",
+  "license": "MIT",
+  "typings": "types/index.d.ts",
+  "keywords": [
+    "normalization",
+    "swr"
+  ],
+  "homepage": "https://github.com/klis87/normy",
+  "bugs": {
+    "url": "https://github.com/klis87/normy/issues"
+  },
+  "scripts": {
+    "clean": "rimraf es lib dist types",
+    "lint": "eslint 'src/**'",
+    "test": "jest src",
+    "test:cover": "jest --coverage src",
+    "build-types": "tsc src/index.ts --strict --esModuleInterop --lib es2018,dom --skipLibCheck --jsx react --declaration --emitDeclarationOnly --declarationDir types",
+    "build:commonjs": "cross-env BABEL_ENV=cjs babel src --extensions '.ts,.tsx' --out-dir lib --ignore 'src/**/*.spec.js'",
+    "build:es": "babel src --extensions '.ts,.tsx' --out-dir es --ignore 'src/**/*.spec.js'",
+    "build:umd": "webpack --mode development -o dist --output-filename normy-swr.js",
+    "build:umd:min": "webpack --mode production -o dist --output-filename normy-swr.min.js",
+    "build": "npm-run-all clean build-types -p build:commonjs build:es build:umd build:umd:min",
+    "build:watch": "nodemon --watch src --ignore src/**/*.spec.js --exec 'yarn run build:es'",
+    "prepublish": "npm run build"
+  },
+  "peerDependencies": {
+    "swr": ">=5.4.3"
+  },
+  "dependencies": {
+    "@normy/core": "workspace:~"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.23.0",
+    "@babel/core": "7.23.2",
+    "@babel/preset-env": "7.23.2",
+    "@babel/preset-react": "7.22.15",
+    "@babel/preset-typescript": "7.23.2",
+    "@babel/types": "7.23.0",
+    "@types/node": "18.15.3",
+    "@types/react": "18.2.33",
+    "@typescript-eslint/eslint-plugin": "5.52.0",
+    "@typescript-eslint/parser": "5.52.0",
+    "babel-loader": "9.1.2",
+    "cross-env": "7.0.2",
+    "eslint": "8.34.0",
+    "eslint-config-prettier": "8.6.0",
+    "eslint-import-resolver-typescript": "3.5.3",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "jest": "29.4.2",
+    "nodemon": "2.0.6",
+    "npm-run-all": "4.1.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "rimraf": "3.0.2",
+    "swr": "2.2.4",
+    "ts-jest": "29.0.5",
+    "typescript": "4.9.5",
+    "webpack": "5.9.0",
+    "webpack-cli": "4.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
