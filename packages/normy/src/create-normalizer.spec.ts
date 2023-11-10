@@ -614,7 +614,7 @@ describe('createNormalizer', () => {
         },
       });
 
-      expect(normalizer.getObjectById('1', { id: '0', name: 'x' })).toEqual({
+      expect(normalizer.getObjectById('1', { id: '', name: '' })).toEqual({
         id: '1',
         name: 'name',
       });
@@ -634,10 +634,10 @@ describe('createNormalizer', () => {
 
       expect(
         normalizer.getObjectById('1', {
-          id: '0',
+          id: '',
           self: {
-            id: '0',
-            name: 'name',
+            id: '',
+            name: '',
           },
         }),
       ).toEqual({
@@ -701,7 +701,7 @@ describe('createNormalizer', () => {
       expect(
         normalizer.getQueryFragment(
           [getId('1'), getId('2')],
-          [{ id: '0', name: '' }],
+          [{ id: '', name: '' }],
         ),
       ).toEqual([
         {

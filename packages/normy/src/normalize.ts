@@ -22,7 +22,7 @@ const stipFromDeps = (
   if (data !== null && typeof data === 'object' && !(data instanceof Date)) {
     const objectKey = config.getNormalizationObjectKey(data);
 
-    if (objectKey && root) {
+    if (objectKey !== undefined && root) {
       return `@@${objectKey}`;
     }
 
@@ -58,7 +58,7 @@ export const getDependencies = (
   }
 
   if (data !== null && typeof data === 'object' && !(data instanceof Date)) {
-    if (config.getNormalizationObjectKey(data)) {
+    if (config.getNormalizationObjectKey(data) !== undefined) {
       usedKeys[path] = Object.keys(data);
     }
 
@@ -68,7 +68,7 @@ export const getDependencies = (
           ...prev,
           ...getDependencies(v, config, usedKeys, `${path}.${k}`)[0],
         ],
-        config.getNormalizationObjectKey(data) ? [data] : [],
+        config.getNormalizationObjectKey(data) !== undefined ? [data] : [],
       ),
       usedKeys,
     ];
