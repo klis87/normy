@@ -1,4 +1,5 @@
 import { createNormalizer } from './create-normalizer';
+import { getId } from './get-id';
 
 describe('createNormalizer', () => {
   describe('setQuery', () => {
@@ -661,7 +662,7 @@ describe('createNormalizer', () => {
         name: 'name2',
       });
 
-      expect(normalizer.getQueryFragment(['@@1', '@@2'])).toEqual([
+      expect(normalizer.getQueryFragment([getId('1'), getId('2')])).toEqual([
         {
           id: '1',
           name: 'name',
@@ -680,7 +681,7 @@ describe('createNormalizer', () => {
         name: 'name',
       });
 
-      expect(normalizer.getQueryFragment(['@@1', '@@2'])).toEqual([
+      expect(normalizer.getQueryFragment([getId('1'), getId('2')])).toEqual([
         {
           id: '1',
           name: 'name',
@@ -698,7 +699,10 @@ describe('createNormalizer', () => {
       });
 
       expect(
-        normalizer.getQueryFragment(['@@1', '@@2'], [{ id: '0', name: '' }]),
+        normalizer.getQueryFragment(
+          [getId('1'), getId('2')],
+          [{ id: '0', name: '' }],
+        ),
       ).toEqual([
         {
           id: '1',

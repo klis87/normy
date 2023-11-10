@@ -400,11 +400,18 @@ under the hood. Basically `getQueryFragment` allows you to get multiple objects 
 for example:
 
 ```js
-const users = getQueryFragment(['@@1', '@@2']);
-const usersAndBook = getQueryFragment({ users: ['@@1', '@@2'], book: ['@@3'] });
+import { getId } from '@normy/react-query';
+
+const users = getQueryFragment([getId('1'), getId('2')]);
+const usersAndBook = getQueryFragment({
+  users: [getId('1'), getId('2')],
+  book: getId('3'),
+});
 ```
 
-If any object does not exist, it will be `undefined`. For example, assuming user with id `1` exists and `2` does not,
+Notice we need to use `getId` helper, which transform `id` you pass into its internal format.
+
+Anyway. if any object does not exist, it will be `undefined`. For example, assuming user with id `1` exists and `2` does not,
 `users` will be:
 
 ```js
@@ -420,8 +427,10 @@ If any object does not exist, it will be `undefined`. For example, assuming user
 Like for `getObjectById`, you can also pass data structure, for example:
 
 ```js
+import { getId } from '@normy/react-query';
+
 const usersAndBook = getQueryFragment(
-  { users: ['@@1', '@@2'], book: ['@@3'] },
+  { users: [getId('1'), getId('2')], book: getId('3') },
   {
     users: [{ id: '', name: '' }],
     book: { id: '', name: '', author: '' },
