@@ -125,7 +125,7 @@ export const createNormalizer = (
       if (error instanceof RangeError) {
         warning(
           true,
-          'Recursive dependency detected. Pass example object as second argument to getQueryFragment.',
+          'Recursive dependency detected. Pass example object as second argument.',
         );
 
         return undefined;

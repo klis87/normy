@@ -528,7 +528,7 @@ describe('createNormalizer', () => {
     });
   });
 
-  describe.only('getObjectById', () => {
+  describe('getObjectById', () => {
     it('gets object without dependencies', () => {
       const normalizer = createNormalizer(
         {},
@@ -650,7 +650,7 @@ describe('createNormalizer', () => {
     });
   });
 
-  describe.only('getQueryFragment', () => {
+  describe('getQueryFragment', () => {
     it('gets fragment with two objects', () => {
       const normalizer = createNormalizer();
       normalizer.setQuery('query', {
