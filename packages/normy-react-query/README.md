@@ -389,7 +389,7 @@ type User = {
 
 So, passing optional 2nd argument has the following use cases:
 
-- controlling structure of returned object, for example you might be interested only in `{ name: '' }`
+- controlling structure of returned object, for example you might be interested only in `{ id: '', name: '' }`
 - preventing infinite recursions for relationships like friends
 - having automatic Typescript type
 
