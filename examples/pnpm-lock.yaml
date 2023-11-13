@@ -10,8 +10,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/react-query':
-        specifier: 0.10.0
-        version: 0.10.0(@tanstack/react-query@5.4.3)
+        specifier: 0.12.0
+        version: 0.12.0(@tanstack/react-query@5.4.3)
       '@tanstack/react-query':
         specifier: 5.4.3
         version: 5.4.3(react-dom@18.2.0)(react@18.2.0)
@@ -53,8 +53,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/react-query':
-        specifier: 0.10.0
-        version: 0.10.0(@tanstack/react-query@5.4.3)
+        specifier: 0.12.0
+        version: 0.12.0(@tanstack/react-query@5.4.3)
       '@tanstack/react-query':
         specifier: 5.4.3
         version: 5.4.3(react-dom@18.2.0)(react@18.2.0)
@@ -1307,19 +1307,19 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@normy/core@0.7.1:
-    resolution: {integrity: sha512-Bnp9wjTpZE+Gnu9IUsRluDOMHLbxa3CaLTMwQoPxCrPPYN9FG0VN4l+udWSqBrn6AifHzOhDGXDAElR4ULrBXQ==}
+  /@normy/core@0.8.0:
+    resolution: {integrity: sha512-+KzcqlDclDOW0sei3xLG5+Cu4FRc6Hiq3H/GASxS8UaqHin08ivIaxiB8TAIrGKvWumzAbw/ukoAhqwfxdPHBg==}
     dependencies:
       '@babel/runtime': 7.23.2
       deepmerge: 4.0.0
     dev: false
 
-  /@normy/react-query@0.10.0(@tanstack/react-query@5.4.3):
-    resolution: {integrity: sha512-UBkSlXjboXhX9wzipxj0OULncOJN14f8uMioQ53nQ4PQaO9MG5vCdK1rbv40124enSHKKjtJLKmKHSihOM0jAw==}
+  /@normy/react-query@0.12.0(@tanstack/react-query@5.4.3):
+    resolution: {integrity: sha512-N/+Sm4MMy1HMBfc9B8N5WQl1kLApAzRKrb7nhavjPV1wv/i6KDnUK3r/CHtNUbP+iUnP87ZgR3pl5hLjK7CwKA==}
     peerDependencies:
-      '@tanstack/react-query': '>=4.22.0'
+      '@tanstack/react-query': '>=5.4.3'
     dependencies:
-      '@normy/core': 0.7.1
+      '@normy/core': 0.8.0
       '@tanstack/react-query': 5.4.3(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
