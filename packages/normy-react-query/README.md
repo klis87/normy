@@ -439,7 +439,7 @@ const usersAndBook = getQueryFragment(
 ```
 
 Notice that to define an array type, you just need to pass one item, even though we want to have two users.
-This is because we care only about data structure
+This is because we care only about data structure.
 
 ## Garbage collection [:arrow_up:](#table-of-content)
 
