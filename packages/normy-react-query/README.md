@@ -25,6 +25,7 @@
 - [Disabling of normalization per query and mutation](#disabling-of-normalization-per-query-and-mutation-arrow_up)
 - [Optimistic updates](#optimistic-updates-arrow_up)
 - [useQueryNormalizer and manual updates](#useQueryNormalizer-and-manual-updates-arrow_up)
+- [getObjectById and getQueryFragment](#getObjectById-and-getQueryFragment-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
 - [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
 - [Examples](#examples-arrow_up)
@@ -291,6 +292,154 @@ const SomeComponent = () => {
 ```
 
 What it will do is updating normalized store, as well as finding all queries which contain user with `id` equal `'1'` and updating them with `name: 'Updated name'`.
+
+## getObjectById and getQueryFragment [:arrow_up:](#table-of-content)
+
+Sometimes it is useful to get an object from normalized store by id. You do not even need to know in which
+query/queries this object could be, all you need is an id. For example, you might want to get it just to display it.
+An even more interesting example is that you could use it as `initialData` or `placeholderData` for another `useQuery`,
+so that you could render some data before even query is fetched:
+
+```jsx
+import { useQueryNormalizer } from '@normy/react-query';
+
+const BookDetail = ({ bookId }) => {
+  const queryNormalizer = useQueryNormalizer();
+  const bookPlaceholder = queryNormalizer.getObjectById(bookId);
+  const query = useQuery({
+    queryKey: ['books', bookId],
+    placeholderData: bookPlaceholder,
+    ...otherOptions,
+  });
+
+  //
+};
+```
+
+In above example, imagine you want to display a component with a book detail. You might already have this book
+fetched from a book list query, so you would like to show something to your user before detail book query is even fetched. It is not even a problem that `bookPlaceholder` could have not complete data, for example you could have
+`name` but not `description`. `placeholderData` is perfect for this, and instead of showing just a spinner,
+you could also already show `name` for faster user experience.
+
+And what if book with this id does not exist? No harm done, `getObjectById` will just return `undefined`, so the user
+will just wait for detail query to be finished as normally.
+
+### getObjectById and recursive relationships
+
+Because `getObjectById` denormalizes an object with an id, you might get some issues with recursive relationships.
+Take below object:
+
+```js
+const user = {
+  id: '1',
+  name: 'X',
+  bestFriend: {
+    id: '2',
+    name: 'Y',
+    bestFriend: {
+      id: '1',
+      name: 'X',
+    },
+  },
+};
+```
+
+Typically `normy` saves data structure for each query automatically, so that query normalization and denormalization
+gives exactly the same results, even for above case. But `getObjectById` is different, as a given object could be
+present in multiple queries, with different attributes.
+
+With above example, you will end up with infinite recursion error and `getObjectById` will just return `undefined`.
+You will also see a warning in the console, to use a second argument for this case, which tells `getObjectById`
+what structure is should have, for example:
+
+```js
+const user = queryNormalizer.getObjectById('1', {
+  id: '',
+  name: '',
+  bestFriend: { id: '', name: '' },
+});
+```
+
+In above case, `user` would be:
+
+```js
+const user = {
+  id: '1',
+  name: 'X',
+  bestFriend: {
+    id: '2',
+    name: 'Y',
+  },
+};
+```
+
+Notice that 2nd argument - data structure you pass - contains empty strings. Why? Because it does not matter
+what primitive values you will use there, only data type is important.
+
+And now, for typescript users there is a gift - when you provide data structure as 2nd argument, `getObjectById`
+response will be properly typed, so in our user example `user` will have type:
+
+```ts
+type User = {
+  id: string;
+  name: string;
+  bestFriend: { id: string; name: string };
+};
+```
+
+So, passing optional 2nd argument has the following use cases:
+
+- controlling structure of returned object, for example you might be interested only in `{ id: '', name: '' }`
+- preventing infinite recursions for relationships like friends
+- having automatic Typescript type
+
+### getQueryFragment
+
+`getQueryFragment` is a more powerful version of `getObjectById`, actually `getObjectById` uses `getQueryFragment`
+under the hood. Basically `getQueryFragment` allows you to get multiple objects in any data structure you need,
+for example:
+
+```js
+import { getId } from '@normy/react-query';
+
+const users = getQueryFragment([getId('1'), getId('2')]);
+const usersAndBook = getQueryFragment({
+  users: [getId('1'), getId('2')],
+  book: getId('3'),
+});
+```
+
+Notice we need to use `getId` helper, which transform `id` you pass into its internal format.
+
+Anyway. if any object does not exist, it will be `undefined`. For example, assuming user with id `1` exists and `2` does not,
+`users` will be:
+
+```js
+[
+  {
+    id: '1',
+    name: 'Name 1',
+  },
+  undefined,
+];
+```
+
+Like for `getObjectById`, you can also pass data structure, for example:
+
+```js
+import { getId } from '@normy/react-query';
+
+const usersAndBook = getQueryFragment(
+  { users: [getId('1'), getId('2')], book: getId('3') },
+  {
+    users: [{ id: '', name: '' }],
+    book: { id: '', name: '', author: '' },
+  },
+);
+```
+
+Notice that to define an array type, you just need to pass one item, even though we want to have two users.
+This is because we care only about data structure.
 
 ## Garbage collection [:arrow_up:](#table-of-content)
 

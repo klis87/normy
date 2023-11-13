@@ -112,5 +112,7 @@ export const createQueryNormalizer = (
       unsubscribeQueryCache = null;
       unsubscribeMutationCache = null;
     },
+    getObjectById: normalizer.getObjectById,
+    getQueryFragment: normalizer.getQueryFragment,
   };
 };
