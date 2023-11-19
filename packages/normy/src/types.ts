@@ -1,11 +1,12 @@
-export type DataPrimitive = string | number | boolean | null | undefined;
+export type DataPrimitive = string | number | boolean | null | undefined | Date;
 
 export type DataPrimitiveArray =
   | string[]
   | number[]
   | boolean[]
   | null[]
-  | undefined[];
+  | undefined[]
+  | Date[];
 
 export type DataObject = {
   // eslint-disable-next-line no-use-before-define
