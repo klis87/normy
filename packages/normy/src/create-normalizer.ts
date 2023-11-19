@@ -6,12 +6,49 @@ import { addOrRemoveDependencies } from './add-or-remove-dependencies';
 import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
 import { getDependenciesDiff } from './get-dependencies-diff';
 import { warning } from './warning';
-import { Data, NormalizerConfig, NormalizedData } from './types';
+import { Data, NormalizerConfig, NormalizedData, DataObject } from './types';
 
 const initialData: NormalizedData = {
   queries: {},
   objects: {},
   dependentQueries: {},
+};
+
+const isMutationObjectDifferent = (
+  mutationData: Data,
+  normalizedData: Data,
+): boolean => {
+  if (Array.isArray(mutationData) && Array.isArray(normalizedData)) {
+    if (mutationData.length === 0) {
+      return normalizedData.length !== 0;
+    }
+
+    return mutationData.some((v, i) =>
+      isMutationObjectDifferent(v, (normalizedData as Data[])[i]),
+    );
+  }
+
+  if (mutationData instanceof Date && normalizedData instanceof Date) {
+    return mutationData.getTime() !== normalizedData.getTime();
+  }
+
+  if (
+    mutationData !== null &&
+    typeof mutationData === 'object' &&
+    normalizedData !== null &&
+    typeof normalizedData === 'object'
+  ) {
+    return Object.entries(mutationData).some(
+      ([key, value]) =>
+        (normalizedData as DataObject)?.[key] !== undefined &&
+        isMutationObjectDifferent(
+          value as Data,
+          (normalizedData as DataObject)[key],
+        ),
+    );
+  }
+
+  return mutationData !== normalizedData;
 };
 
 export const createNormalizer = (
@@ -84,17 +121,42 @@ export const createNormalizer = (
     );
   };
 
+  const filterMutationObjects = (
+    mutationObjects: DataObject,
+    normalizedDataObjects: DataObject,
+  ) => {
+    const differentObjects: DataObject = {};
+
+    for (const key in mutationObjects) {
+      if (
+        isMutationObjectDifferent(
+          mutationObjects[key],
+          normalizedDataObjects[key],
+        )
+      ) {
+        differentObjects[key] = mutationObjects[key];
+      }
+    }
+
+    return differentObjects;
+  };
+
   const getQueriesToUpdate = (mutationData: Data) => {
     const [, normalizedObjectsData] = normalize(mutationData, config);
 
+    const updatedObjects = filterMutationObjects(
+      normalizedObjectsData,
+      normalizedData.objects,
+    );
+
     const normalizedDataWithMutation = mergeData(
       normalizedData.objects,
-      normalizedObjectsData,
+      updatedObjects,
     );
 
     const foundQueries = getQueriesDependentOnMutation(
       normalizedData.dependentQueries,
-      Object.keys(normalizedObjectsData),
+      Object.keys(updatedObjects),
     );
 
     return foundQueries.map(queryKey => ({

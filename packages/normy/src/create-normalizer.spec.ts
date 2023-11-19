@@ -512,6 +512,187 @@ describe('createNormalizer', () => {
         },
       ]);
     });
+
+    it('works with objects into null updates', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: { id: '2', surname: 'surname' },
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          nested: null,
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            name: 'name',
+            nested: null,
+          },
+        },
+      ]);
+    });
+
+    it('does not return query if object did not change', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        surname: 'surname',
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          name: 'name',
+        }),
+      ).toEqual([]);
+    });
+
+    it('does not return query if mutation object is a superset', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          name: 'name',
+          extraProperty: 'value',
+        }),
+      ).toEqual([]);
+    });
+
+    it('does not return query if both mutation data and query data have empty array', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        list: [],
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          list: [],
+        }),
+      ).toEqual([]);
+    });
+
+    it('returns query if mutation array is not empty and query array is empty', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        list: [],
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          list: [1],
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            list: [1],
+          },
+        },
+      ]);
+    });
+
+    it('returns query if mutation array is empty and query array is not empty', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        list: [1],
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          list: [],
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            list: [],
+          },
+        },
+      ]);
+    });
+
+    it('returns query if mutation array and query array item is different', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        list: [1],
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          list: [2],
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            list: [2],
+          },
+        },
+      ]);
+    });
+
+    it('works with equal date objects', () => {
+      const normalizer = createNormalizer();
+
+      normalizer.setQuery('query', {
+        id: '1',
+        date: new Date(1),
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          date: new Date(1),
+        }),
+      ).toEqual([]);
+    });
+
+    it.only('works with different date objects', () => {
+      const normalizer = createNormalizer();
+
+      normalizer.setQuery('query', {
+        id: '1',
+        date: new Date(1),
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          date: new Date(2),
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            date: new Date(2),
+          },
+        },
+      ]);
+    });
   });
 
   describe('clearNormalizedData', () => {
