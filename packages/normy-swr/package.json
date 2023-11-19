@@ -21,8 +21,8 @@
   "scripts": {
     "clean": "rimraf es lib dist types",
     "lint": "eslint 'src/**'",
-    "test": "jest src",
-    "test:cover": "jest --coverage src",
+    "test": "jest --passWithNoTests src",
+    "test:cover": "jest --coverage --passWithNoTests src",
     "build-types": "tsc src/index.ts --strict --esModuleInterop --lib es2018,dom --skipLibCheck --jsx react --declaration --emitDeclarationOnly --declarationDir types",
     "build:commonjs": "cross-env BABEL_ENV=cjs babel src --extensions '.ts,.tsx' --out-dir lib --ignore 'src/**/*.spec.js'",
     "build:es": "babel src --extensions '.ts,.tsx' --out-dir es --ignore 'src/**/*.spec.js'",
