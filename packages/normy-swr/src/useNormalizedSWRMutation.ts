@@ -1,10 +1,75 @@
-import { Data } from '@normy/core';
-import { useSWRConfig } from 'swr';
-import useSWRMutation from 'swr/mutation';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Data as NormyData } from '@normy/core';
+import { useSWRConfig, Key } from 'swr';
+import useSWRMutation, {
+  MutationFetcher,
+  SWRMutationConfiguration,
+  SWRMutationResponse,
+} from 'swr/mutation';
 
 import { useSWRNormalizer } from './SWRNormalizerProvider';
 
-export const useNormalizedSWRMutation: typeof useSWRMutation = (
+interface NormalizedSWRMutationHook {
+  <
+    Data = any,
+    Error = any,
+    SWRMutationKey extends Key = Key,
+    ExtraArg = never,
+    SWRData = Data,
+  >(
+    key: SWRMutationKey,
+    fetcher: MutationFetcher<Data, SWRMutationKey, ExtraArg>,
+    options?: SWRMutationConfiguration<
+      Data,
+      Error,
+      SWRMutationKey,
+      ExtraArg,
+      SWRData
+    > & { rollbackData?: NormyData },
+  ): SWRMutationResponse<Data, Error, SWRMutationKey, ExtraArg>;
+  <
+    Data = any,
+    Error = any,
+    SWRMutationKey extends Key = Key,
+    ExtraArg = never,
+    SWRData = Data,
+  >(
+    key: SWRMutationKey,
+    fetcher: MutationFetcher<Data, SWRMutationKey, ExtraArg>,
+    options?: SWRMutationConfiguration<
+      Data,
+      Error,
+      SWRMutationKey,
+      ExtraArg,
+      SWRData
+    > & {
+      throwOnError: false;
+      rollbackData?: NormyData;
+    },
+  ): SWRMutationResponse<Data | undefined, Error, SWRMutationKey, ExtraArg>;
+  <
+    Data = any,
+    Error = any,
+    SWRMutationKey extends Key = Key,
+    ExtraArg = never,
+    SWRData = Data,
+  >(
+    key: SWRMutationKey,
+    fetcher: MutationFetcher<Data, SWRMutationKey, ExtraArg>,
+    options?: SWRMutationConfiguration<
+      Data,
+      Error,
+      SWRMutationKey,
+      ExtraArg,
+      SWRData
+    > & {
+      throwOnError: true;
+      rollbackData?: NormyData;
+    },
+  ): SWRMutationResponse<Data, Error, SWRMutationKey, ExtraArg>;
+}
+
+export const useNormalizedSWRMutation: NormalizedSWRMutationHook = (
   key,
   fetcher,
   options,
@@ -12,20 +77,61 @@ export const useNormalizedSWRMutation: typeof useSWRMutation = (
   const { mutate } = useSWRConfig();
   const normalizer = useSWRNormalizer();
 
-  return useSWRMutation(key, fetcher, {
-    populateCache: false,
-    revalidate: false,
-    ...options,
-    onSuccess: (data, mutationKey, config) => {
-      const queriesToUpdate = normalizer.getQueriesToUpdate(data as Data);
+  return useSWRMutation(
+    key,
+    // @ts-expect-error swr types sux
+    async (k, opts) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      if (options?.optimisticData) {
+        const queriesToUpdate = normalizer.getQueriesToUpdate(
+          options?.optimisticData as NormyData,
+        );
 
-      queriesToUpdate.forEach(query => {
-        void mutate(query.queryKey, query.data, {
-          revalidate: false,
+        queriesToUpdate.forEach(query => {
+          void mutate(query.queryKey, query.data, {
+            revalidate: false,
+          });
         });
-      });
+      }
 
-      return options?.onSuccess?.(data, mutationKey, config);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const response = await fetcher(k, opts);
+        return response;
+      } catch (error) {
+        if (options?.rollbackData) {
+          const queriesToUpdate = normalizer.getQueriesToUpdate(
+            options?.rollbackData as NormyData,
+          );
+
+          queriesToUpdate.forEach(query => {
+            void mutate(query.queryKey, query.data, {
+              revalidate: false,
+            });
+          });
+        }
+
+        throw error;
+      }
     },
-  });
+    {
+      populateCache: false,
+      revalidate: false,
+      ...options,
+      optimisticData: undefined,
+      onSuccess: (data, mutationKey, config) => {
+        const queriesToUpdate = normalizer.getQueriesToUpdate(
+          data as NormyData,
+        );
+
+        queriesToUpdate.forEach(query => {
+          void mutate(query.queryKey, query.data, {
+            revalidate: false,
+          });
+        });
+
+        return options?.onSuccess?.(data, mutationKey, config);
+      },
+    },
+  );
 };

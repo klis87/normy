@@ -2,7 +2,6 @@ import React from 'react';
 import useSWR, { SWRConfig, useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
 
-import { createNormalizer } from '@normy/core';
 import {
   SWRNormalizerProvider,
   useNormalizedSWRMutation,
@@ -31,10 +30,9 @@ const Books = () => {
 };
 
 const BooksApp = () => {
-  const [x, setX] = React.useState(0);
   // const queryClient = useQueryClient();
   const normalizer = useSWRNormalizer();
-  const { mutate } = useSWRConfig();
+  // const { mutate } = useSWRConfig();
 
   const { data: bookData } = useSWR(
     '/book',
@@ -45,6 +43,7 @@ const BooksApp = () => {
         name: 'Name 1',
         author: { id: '1000', name: 'User1' },
       }),
+    { normalize: false },
   );
 
   const updateBookNameMutation = useNormalizedSWRMutation(
@@ -61,40 +60,41 @@ const BooksApp = () => {
     {
       optimisticData: {
         id: '1',
-        name: 'Name 1 optimistic',
-        author: { id: '1000', name: 'User1 optimistic' },
+        name: 'Name 1 Updated',
+        author: { id: '1000', name: 'User1 updated' },
+      },
+      rollbackData: {
+        id: '1',
+        name: 'Name 1 rol',
+        author: { id: '1000', name: 'User1 rol' },
       },
     },
   );
-  // const updateBookAuthorMutation = useMutation({
-  //   mutationFn: async () => {
-  //     await sleep();
-  //     return {
-  //       id: '0',
-  //       author: { id: '1004', name: 'User4 new' },
-  //     };
-  //   },
-  // });
-  // const addBookMutation = useMutation({
-  //   mutationFn: async () => {
-  //     await sleep();
+  const updateBookAuthorMutation = useNormalizedSWRMutation(
+    '/book/update-author',
+    async () => {
+      await sleep(1000);
+      return {
+        id: '0',
+        author: { id: '1004', name: 'User4 new' },
+      };
+    },
+  );
+  const addBookMutation = useNormalizedSWRMutation(
+    '/books',
+    async () => {
+      await sleep(2000);
 
-  //     return {
-  //       id: '3',
-  //       name: 'Name 3',
-  //       author: { id: '1002', name: 'User3' },
-  //     };
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.setQueryData(['books'], data =>
-  //       data.concat({
-  //         id: '3',
-  //         name: 'Name 3',
-  //         author: { id: '1002', name: 'User3' },
-  //       }),
-  //     );
-  //   },
-  // });
+      return {
+        id: '3',
+        name: 'Name 3',
+        author: { id: '1002', name: 'User3' },
+      };
+    },
+    {
+      populateCache: (newBook, books) => books.concat(newBook),
+    },
+  );
 
   // const updateBookNameMutationOptimistic = useMutation({
   //   mutationFn: async () => {
@@ -128,14 +128,14 @@ const BooksApp = () => {
       <button type="button" onClick={() => updateBookNameMutation.trigger()}>
         Update book name {updateBookNameMutation.isMutating && 'loading.....'}
       </button>{' '}
-      {/* <button type="button" onClick={() => updateBookAuthorMutation.mutate()}>
+      <button type="button" onClick={() => updateBookAuthorMutation.trigger()}>
         Update book author{' '}
-        {updateBookAuthorMutation.isLoading && 'loading.....'}
+        {updateBookAuthorMutation.isMutating && 'loading.....'}
       </button>{' '}
-      <button type="button" onClick={() => addBookMutation.mutate()}>
-        Add book {addBookMutation.isLoading && 'loading.....'}
+      <button type="button" onClick={() => addBookMutation.trigger()}>
+        Add book {addBookMutation.isMutating && 'loading.....'}
       </button>{' '}
-      <button
+      {/* <button
         type="button"
         onClick={() => updateBookNameMutationOptimistic.mutate()}
       >
