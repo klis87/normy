@@ -18,7 +18,6 @@ class CacheMap extends Map {
   }
 
   set(key: string, value: { data?: Data }) {
-    // console.log('set', key, value);
     if (value.data) {
       this.normalizer?.setQuery(key, value.data);
     }
