@@ -1,14 +1,24 @@
 import * as React from 'react';
 import { NormalizerConfig, createNormalizer, Data } from '@normy/core';
 
+const createSwrNormalizer = (
+  normalizerConfig: NormalizerConfig & {
+    normalize?: (queryKey: string) => boolean;
+  } = {},
+) => {
+  const normalizer = createNormalizer(normalizerConfig);
+
+  return { ...normalizer, normalize: normalizerConfig.normalize };
+};
+
 const SWRNormalizerContext = React.createContext<
-  undefined | ReturnType<typeof createNormalizer>
+  undefined | ReturnType<typeof createSwrNormalizer>
 >(undefined);
 
 class CacheMap extends Map {
-  normalizer: ReturnType<typeof createNormalizer> | undefined;
+  normalizer: ReturnType<typeof createSwrNormalizer> | undefined;
 
-  addNormalizer(normalizer: ReturnType<typeof createNormalizer>) {
+  addNormalizer(normalizer: ReturnType<typeof createSwrNormalizer>) {
     this.normalizer = normalizer;
   }
 
@@ -18,7 +28,7 @@ class CacheMap extends Map {
   }
 
   set(key: string, value: { data?: Data }) {
-    if (value.data) {
+    if (value.data && (this.normalizer?.normalize?.(key) ?? true)) {
       this.normalizer?.setQuery(key, value.data);
     }
 
@@ -37,20 +47,25 @@ export const SWRNormalizerProvider = ({
   normalizerConfig,
   children,
 }: {
+  normalizerConfig?: NormalizerConfig & {
+    normalize: (queryKey: string) => boolean;
+  };
   children: (cacheProvider: () => CacheMap) => React.ReactNode;
-  normalizerConfig?: NormalizerConfig;
 }) => {
-  const [normalizer] = React.useState(() => createNormalizer(normalizerConfig));
+  const [swrNormalizer] = React.useState(() =>
+    createSwrNormalizer(normalizerConfig),
+  );
+
   const [cacheProvider] = React.useState(() => () => {
     const map = new CacheMap();
-    map.addNormalizer(normalizer);
+    map.addNormalizer(swrNormalizer);
     return map;
   });
 
-  React.useEffect(() => () => normalizer.clearNormalizedData(), []);
+  React.useEffect(() => () => swrNormalizer.clearNormalizedData(), []);
 
   return (
-    <SWRNormalizerContext.Provider value={normalizer}>
+    <SWRNormalizerContext.Provider value={swrNormalizer}>
       {children(cacheProvider)}
     </SWRNormalizerContext.Provider>
   );
