@@ -9,6 +9,12 @@ import useSWRMutation, {
 
 import { useSWRNormalizer } from './SWRNormalizerProvider';
 
+type NormyOptions = {
+  normalize?: boolean;
+  optimisticData?: NormyData;
+  rollbackData?: NormyData;
+};
+
 interface NormalizedSWRMutationHook {
   <
     Data = any,
@@ -25,7 +31,8 @@ interface NormalizedSWRMutationHook {
       SWRMutationKey,
       ExtraArg,
       SWRData
-    > & { rollbackData?: NormyData },
+    > &
+      NormyOptions,
   ): SWRMutationResponse<Data, Error, SWRMutationKey, ExtraArg>;
   <
     Data = any,
@@ -42,10 +49,7 @@ interface NormalizedSWRMutationHook {
       SWRMutationKey,
       ExtraArg,
       SWRData
-    > & {
-      throwOnError: false;
-      rollbackData?: NormyData;
-    },
+    > & { throwOnError: false } & NormyOptions,
   ): SWRMutationResponse<Data | undefined, Error, SWRMutationKey, ExtraArg>;
   <
     Data = any,
@@ -62,10 +66,7 @@ interface NormalizedSWRMutationHook {
       SWRMutationKey,
       ExtraArg,
       SWRData
-    > & {
-      throwOnError: true;
-      rollbackData?: NormyData;
-    },
+    > & { throwOnError: true } & NormyOptions,
   ): SWRMutationResponse<Data, Error, SWRMutationKey, ExtraArg>;
 }
 

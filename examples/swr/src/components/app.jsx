@@ -1,6 +1,5 @@
 import React from 'react';
-import useSWR, { SWRConfig, useSWRConfig } from 'swr';
-import useSWRMutation from 'swr/mutation';
+import useSWR, { SWRConfig } from 'swr';
 
 import {
   SWRNormalizerProvider,
@@ -122,9 +121,6 @@ const BooksApp = () => {
 
   return (
     <div>
-      <button type="button" onClick={() => setX(v => v + 1)}>
-        {x}
-      </button>
       <button type="button" onClick={() => updateBookNameMutation.trigger()}>
         Update book name {updateBookNameMutation.isMutating && 'loading.....'}
       </button>{' '}
@@ -170,7 +166,12 @@ const App = () => {
   return (
     <div>
       <h1>Normy Swr example</h1>
-      <SWRNormalizerProvider normalizerConfig={{ devLogging: true }}>
+      <SWRNormalizerProvider
+        normalizerConfig={{
+          devLogging: true,
+          normalize: queryKey => queryKey !== '/book',
+        }}
+      >
         {cacheProvider => (
           <SWRConfig
             value={{
