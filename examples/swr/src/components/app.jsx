@@ -1,5 +1,5 @@
 import React from 'react';
-import useSWR, { SWRConfig } from 'swr';
+import useSWR, { SWRConfig, useSWRConfig } from 'swr';
 
 import {
   SWRNormalizerProvider,
@@ -29,9 +29,7 @@ const Books = () => {
 };
 
 const BooksApp = () => {
-  // const queryClient = useQueryClient();
   const normalizer = useSWRNormalizer();
-  // const { mutate } = useSWRConfig();
 
   const { data: bookData } = useSWR(
     '/book',
@@ -52,8 +50,8 @@ const BooksApp = () => {
       // throw { error: true };
       return {
         id: '1',
-        name: 'Name 1 Updated',
-        author: { id: '1000', name: 'User1 updated' },
+        name: 'Name 1 Updated!',
+        author: { id: '1000', name: 'User1 updated!' },
       };
     },
     {
@@ -80,7 +78,7 @@ const BooksApp = () => {
     },
   );
   const addBookMutation = useNormalizedSWRMutation(
-    '/books',
+    ['/books', 2, { y: true }],
     async () => {
       await sleep(2000);
 
@@ -131,7 +129,7 @@ const BooksApp = () => {
       <button type="button" onClick={() => addBookMutation.trigger()}>
         Add book {addBookMutation.isMutating && 'loading.....'}
       </button>{' '}
-      {/* <button
+      <button
         type="button"
         onClick={() => updateBookNameMutationOptimistic.mutate()}
       >
@@ -140,14 +138,13 @@ const BooksApp = () => {
       <button
         type="button"
         onClick={() =>
-          queryNormalizer.setNormalizedData({
+          normalizer.setNormalizedData({
             author: { id: '1000', name: 'User1 updated' },
           })
         }
       >
         Update user1 name manually
       </button>
-    )} */}
       <hr />
       <h2>Books</h2>
       <Books />
@@ -167,21 +164,14 @@ const App = () => {
     <div>
       <h1>Normy Swr example</h1>
       <SWRNormalizerProvider
+        swrConfigValue={{
+          revalidateOnFocus: false,
+        }}
         normalizerConfig={{
           devLogging: true,
-          normalize: queryKey => queryKey !== '/book',
         }}
       >
-        {cacheProvider => (
-          <SWRConfig
-            value={{
-              revalidateOnFocus: false,
-              provider: cacheProvider,
-            }}
-          >
-            <BooksApp />
-          </SWRConfig>
-        )}
+        <BooksApp />
       </SWRNormalizerProvider>
     </div>
   );

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NormalizerConfig, createNormalizer, Data } from '@normy/core';
+import { useSWRConfig, SWRConfig } from 'swr';
 
 const createSwrNormalizer = (
   normalizerConfig: NormalizerConfig & {
@@ -7,8 +8,25 @@ const createSwrNormalizer = (
   } = {},
 ) => {
   const normalizer = createNormalizer(normalizerConfig);
+  // we solve chicken egg problem this way, we need normalizer to create swr context, and we cannot have mutate before it is created
+  let mutate: ReturnType<typeof useSWRConfig>['mutate'] | null = null;
 
-  return { ...normalizer, normalize: normalizerConfig.normalize };
+  return {
+    ...normalizer,
+    addMutate: (mutateCallback: ReturnType<typeof useSWRConfig>['mutate']) => {
+      mutate = mutateCallback;
+    },
+    normalize: normalizerConfig.normalize,
+    setNormalizedData: (data: Data) => {
+      const queriesToUpdate = normalizer.getQueriesToUpdate(data);
+
+      queriesToUpdate.forEach(query => {
+        void mutate?.(query.queryKey, query.data, {
+          revalidate: false,
+        });
+      });
+    },
+  };
 };
 
 const SWRNormalizerContext = React.createContext<
@@ -22,11 +40,6 @@ class CacheMap extends Map {
     this.normalizer = normalizer;
   }
 
-  get(key: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return super.get(key);
-  }
-
   set(key: string, value: { data?: Data }) {
     if (value.data && (this.normalizer?.normalize?.(key) ?? true)) {
       this.normalizer?.setQuery(key, value.data);
@@ -37,20 +50,38 @@ class CacheMap extends Map {
 
   delete(key: string) {
     this.normalizer?.removeQuery(key);
-    const exists = !!super.get(key);
-    super.delete(key);
-    return exists;
+    return super.delete(key);
   }
 }
 
+const SWRNormalizerProviderInternal = ({
+  swrNormalizer,
+  children,
+}: {
+  swrNormalizer: ReturnType<typeof createSwrNormalizer>;
+  children: React.ReactNode;
+}) => {
+  const { mutate } = useSWRConfig();
+
+  React.useEffect(() => swrNormalizer.addMutate(mutate), []);
+
+  return (
+    <SWRNormalizerContext.Provider value={swrNormalizer}>
+      {children}
+    </SWRNormalizerContext.Provider>
+  );
+};
+
 export const SWRNormalizerProvider = ({
   normalizerConfig,
+  swrConfigValue,
   children,
 }: {
   normalizerConfig?: NormalizerConfig & {
     normalize: (queryKey: string) => boolean;
   };
-  children: (cacheProvider: () => CacheMap) => React.ReactNode;
+  swrConfigValue: React.ComponentProps<typeof SWRConfig>['value'];
+  children: React.ReactNode;
 }) => {
   const [swrNormalizer] = React.useState(() =>
     createSwrNormalizer(normalizerConfig),
@@ -65,9 +96,16 @@ export const SWRNormalizerProvider = ({
   React.useEffect(() => () => swrNormalizer.clearNormalizedData(), []);
 
   return (
-    <SWRNormalizerContext.Provider value={swrNormalizer}>
-      {children(cacheProvider)}
-    </SWRNormalizerContext.Provider>
+    <SWRConfig
+      value={{
+        ...swrConfigValue,
+        provider: cacheProvider,
+      }}
+    >
+      <SWRNormalizerProviderInternal swrNormalizer={swrNormalizer}>
+        {children}
+      </SWRNormalizerProviderInternal>
+    </SWRConfig>
   );
 };
 
