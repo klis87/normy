@@ -21,7 +21,7 @@
 - [Optimistic updates](#optimistic-updates-arrow_up)
 - [useSWRNormalizer and manual updates](#useSWRNormalizer-and-manual-updates-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
-- [Clearing](#clearing-collection-arrow_up)
+- [Clearing](#clearing-arrow_up)
 - [Examples](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
