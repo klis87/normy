@@ -1,6 +1,10 @@
 import * as React from 'react';
-import { NormalizerConfig, createNormalizer, Data } from '@normy/core';
-import { useSWRConfig, SWRConfig } from 'swr';
+import {
+  type NormalizerConfig,
+  createNormalizer,
+  type Data,
+} from '@normy/core';
+import { useSWRConfig, type SWRConfig, type Key } from 'swr';
 
 const createSwrNormalizer = (
   normalizerConfig: NormalizerConfig & {
@@ -78,7 +82,7 @@ export const SWRNormalizerProvider = ({
   children,
 }: {
   normalizerConfig?: NormalizerConfig & {
-    normalize: (queryKey: string) => boolean;
+    normalize: (queryKey: Key) => boolean;
   };
   swrConfigValue: React.ComponentProps<typeof SWRConfig>['value'];
   children: React.ReactNode;

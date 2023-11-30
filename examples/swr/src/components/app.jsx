@@ -10,15 +10,12 @@ import {
 const sleep = (x = 10) => new Promise(resolve => setTimeout(resolve, x));
 
 const Books = () => {
-  const { data: booksData = [] } = useSWR(
-    '/books',
-    () =>
-      console.log('fetching book list') ||
-      Promise.resolve([
-        { id: '0', name: 'Name 0', author: null },
-        { id: '1', name: 'Name 1', author: { id: '1000', name: 'User1' } },
-        { id: '2', name: 'Name 2', author: { id: '1001', name: 'User2' } },
-      ]),
+  const { data: booksData = [] } = useSWR('/books', () =>
+    Promise.resolve([
+      { id: '0', name: 'Name 0', author: null },
+      { id: '1', name: 'Name 1', author: { id: '1000', name: 'User1' } },
+      { id: '2', name: 'Name 2', author: { id: '1001', name: 'User2' } },
+    ]),
   );
 
   return booksData.map(book => (
@@ -34,7 +31,6 @@ const BooksApp = () => {
   const { data: bookData } = useSWR(
     '/book',
     () =>
-      console.log('fetching book detail') ||
       Promise.resolve({
         id: '1',
         name: 'Name 1',
