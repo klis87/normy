@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Data as NormyData } from '@normy/core';
-import { useSWRConfig, Key } from 'swr';
+import type { Data as NormyData } from '@normy/core';
+import { useSWRConfig, type Key } from 'swr';
 import useSWRMutation, {
-  MutationFetcher,
-  SWRMutationConfiguration,
-  SWRMutationResponse,
+  type MutationFetcher,
+  type SWRMutationConfiguration,
+  type SWRMutationResponse,
 } from 'swr/mutation';
 
 import { useSWRNormalizer } from './SWRNormalizerProvider';
