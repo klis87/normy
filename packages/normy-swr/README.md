@@ -261,7 +261,7 @@ What it will do is updating normalized store, as well as finding all queries whi
 `normy` know how to clean after itself. When a query is removed from the store, `normy` will do the same, removing all redundant
 information.
 
-## Clearing and unsubscribing from updates [:arrow_up:](#table-of-content)
+## Clearing [:arrow_up:](#table-of-content)
 
 When `SWRNormalizerProvider` is unmounted, all normalized data will be automatically cleared.
 
