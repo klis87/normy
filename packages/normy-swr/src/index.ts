@@ -1,3 +1,5 @@
+export { getId } from '@normy/core';
+
 export {
   SWRNormalizerProvider,
   useSWRNormalizer,
