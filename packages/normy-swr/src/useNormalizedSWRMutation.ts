@@ -80,8 +80,8 @@ export const useNormalizedSWRMutation: NormalizedSWRMutationHook = (
 
   return useSWRMutation(
     key,
-    // @ts-expect-error swr types sux
-    async (k, opts) => {
+    // @ts-expect-error swr types compatiblity issue, perhaps due to ts version mismatch
+    (k, opts) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (options?.optimisticData) {
         const queriesToUpdate = normalizer.getQueriesToUpdate(
@@ -95,11 +95,30 @@ export const useNormalizedSWRMutation: NormalizedSWRMutationHook = (
         });
       }
 
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const response = await fetcher(k, opts);
-        return response;
-      } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return fetcher(k, opts);
+    },
+    {
+      populateCache: false,
+      revalidate: false,
+      ...options,
+      optimisticData: undefined,
+      onSuccess: (data, mutationKey, config) => {
+        if (options?.normalize ?? true) {
+          const queriesToUpdate = normalizer.getQueriesToUpdate(
+            data as NormyData,
+          );
+
+          queriesToUpdate.forEach(query => {
+            void mutate(query.queryKey, query.data, {
+              revalidate: false,
+            });
+          });
+        }
+
+        return options?.onSuccess?.(data, mutationKey, config);
+      },
+      onError: (error, mutationKey, config) => {
         if (options?.rollbackData) {
           const queriesToUpdate = normalizer.getQueriesToUpdate(
             options?.rollbackData as NormyData,
@@ -112,26 +131,7 @@ export const useNormalizedSWRMutation: NormalizedSWRMutationHook = (
           });
         }
 
-        throw error;
-      }
-    },
-    {
-      populateCache: false,
-      revalidate: false,
-      ...options,
-      optimisticData: undefined,
-      onSuccess: (data, mutationKey, config) => {
-        const queriesToUpdate = normalizer.getQueriesToUpdate(
-          data as NormyData,
-        );
-
-        queriesToUpdate.forEach(query => {
-          void mutate(query.queryKey, query.data, {
-            revalidate: false,
-          });
-        });
-
-        return options?.onSuccess?.(data, mutationKey, config);
+        return options?.onError?.(error, mutationKey, config);
       },
     },
   );
