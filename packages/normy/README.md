@@ -28,7 +28,7 @@ Automatic normalization and data updates for data fetching libraries
 
 `normy` is a library, which allows your application data to be normalized automatically. Then, once data is normalized, in many cases your data can be updated automatically.
 
-The core of `normy` - namely `@normy/core` library, which is not meant to be used directly in applications, has logic inside which allows an easily integration with your favourite data fetching libraries, be it `react-query`, `swr`, `RTK Query` and so on. For now only `@normy/react-query` exists, but there are more to come.
+The core of `normy` - namely `@normy/core` library, which is not meant to be used directly in applications, has logic inside which allows an easily integration with your favourite data fetching libraries, be it `react-query`, `swr`, `RTK Query` and so on. For now only `@normy/react-query` and `@normy/swr` exist, but there are more to come.
 
 ## Motivation [:arrow_up:](#table-of-content)
 
@@ -138,6 +138,8 @@ objects.
 
 ## Installation [:arrow_up:](#table-of-content)
 
+### react-query
+
 To install the package, just run:
 
 ```
@@ -146,7 +148,19 @@ $ npm install @normy/react-query
 
 or you can just use CDN: `https://unpkg.com/@normy/react-query`.
 
-If you want to write a plugin to another library than `react-query`:
+### swr
+
+To install the package, just run:
+
+```
+$ npm install @normy/swr
+```
+
+or you can just use CDN: `https://unpkg.com/@normy/swr`.
+
+### another lirary
+
+If you want to write a plugin to another library than `react-query` or `swr`:
 
 ```
 $ npm install @normy/core
@@ -239,7 +253,10 @@ However, you have several flexible ways to improve performance:
 1. You can normalize only queries which have data updates, and only mutations which should update data - that's it,
    you can have only part of your data normalized. Check an integration documentation how to do it.
 2. Like `1.`, but for queries and mutations with extremely big data.
-3. You can use `getNormalizationObjectKey` function to set globally which objects should be actually normalized. For example:
+3. There is a built-in optimalization, which checks data from mutation responses if they are actually different than data
+   in the normalized store. If it is the same, dependent queries will not be updated. So, it is good for mutation data to
+   include only things which could actually be different, which could prevent unnecessary normalization and queries updates.
+4. You can use `getNormalizationObjectKey` function to set globally which objects should be actually normalized. For example:
 
 ```jsx
 <QueryNormalizerProvider
@@ -256,10 +273,11 @@ Moreover, in the future some additional performance specific options will be add
 
 ## Integrations [:arrow_up:](#table-of-content)
 
-Currently the is only one official integration with data fetching libraries, namely with `react-query`. There are more
+Currently the is only two official integrations with data fetching libraries, namely with `react-query` and `swr`. There are more
 to come though. See dedicated documentations for specific integrations:
 
 - [react-query](https://github.com/klis87/normy/tree/master/packages/normy-react-query)
+- [swr](https://github.com/klis87/normy/tree/master/packages/swr)
 
 ## Examples [:arrow_up:](#table-of-content)
 
@@ -269,6 +287,7 @@ There are following examples currently:
 
 - [react-query](https://github.com/klis87/normy/tree/master/examples/react-query)
 - [trpc](https://github.com/klis87/normy/tree/master/examples/trpc)
+- [swr](https://github.com/klis87/normy/tree/master/examples/swr)
 
 ## Licence [:arrow_up:](#table-of-content)
 
