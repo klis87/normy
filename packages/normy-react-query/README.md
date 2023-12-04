@@ -240,7 +240,7 @@ a mutation error, data will be reverted to original `rollbackData`.
 
 It will work at the same time as a normal mutation too, so on mutation success, all dependent queries will be updated
 again. If you are sure about the response structure, you might want to disable normalization for this mutation,
-so that on successful response the normalization won't be repeted unnecessarily:
+so that on successful response the normalization won't be repeated unnecessarily:
 
 ```jsx
 useMutation({
@@ -353,6 +353,9 @@ You will also see a warning in the console, to use a second argument for this ca
 what structure is should have, for example:
 
 ```js
+import { useQueryNormalizer } from '@normy/react-query';
+
+const queryNormalizer = useQueryNormalizer();
 const user = queryNormalizer.getObjectById('1', {
   id: '',
   name: '',
@@ -402,8 +405,8 @@ for example:
 ```js
 import { getId } from '@normy/react-query';
 
-const users = getQueryFragment([getId('1'), getId('2')]);
-const usersAndBook = getQueryFragment({
+const users = queryNormalizer.getQueryFragment([getId('1'), getId('2')]);
+const usersAndBook = queryNormalizer.getQueryFragment({
   users: [getId('1'), getId('2')],
   book: getId('3'),
 });
@@ -429,7 +432,7 @@ Like for `getObjectById`, you can also pass data structure, for example:
 ```js
 import { getId } from '@normy/react-query';
 
-const usersAndBook = getQueryFragment(
+const usersAndBook = queryNormalizer.getQueryFragment(
   { users: [getId('1'), getId('2')], book: getId('3') },
   {
     users: [{ id: '', name: '' }],
