@@ -4,7 +4,7 @@ import {
   createNormalizer,
   type Data,
 } from '@normy/core';
-import { useSWRConfig, type SWRConfig, type Key } from 'swr';
+import { useSWRConfig, SWRConfig, type Key } from 'swr';
 
 const createSwrNormalizer = (
   normalizerConfig: NormalizerConfig & {
