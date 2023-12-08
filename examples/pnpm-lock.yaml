@@ -52,9 +52,9 @@ importers:
       '@babel/polyfill':
         specifier: 7.12.1
         version: 7.12.1
-      '@normy/react-query':
-        specifier: 0.10.0
-        version: 0.10.0(@tanstack/react-query@5.4.3)
+      '@normy/swr':
+        specifier: 0.0.2
+        version: 0.0.2(swr@2.2.4)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -1362,6 +1362,13 @@ packages:
       deepmerge: 4.0.0
     dev: false
 
+  /@normy/core@0.9.0:
+    resolution: {integrity: sha512-aw4igbkL9eMwegRDvQE2QdqNKTZnFbf7Nz1PgaTwt/SVWe/dKZGuqiJFLeHfcHGDcI7vGyI8ru/BPpnIcOiHPw==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+      deepmerge: 4.0.0
+    dev: false
+
   /@normy/react-query@0.12.0(@tanstack/react-query@5.4.3):
     resolution: {integrity: sha512-N/+Sm4MMy1HMBfc9B8N5WQl1kLApAzRKrb7nhavjPV1wv/i6KDnUK3r/CHtNUbP+iUnP87ZgR3pl5hLjK7CwKA==}
     peerDependencies:
@@ -1369,6 +1376,15 @@ packages:
     dependencies:
       '@normy/core': 0.8.0
       '@tanstack/react-query': 5.4.3(react-dom@18.2.0)(react@18.2.0)
+    dev: false
+
+  /@normy/swr@0.0.2(swr@2.2.4):
+    resolution: {integrity: sha512-Y4bkRE/aIxUQl5FD6/lCK1vmzwFP/3tjIwWUPmnqp1QN/PjNqVIl6FYNvJQCX+itSEa7pJSEzrYGFpp2Ja183A==}
+    peerDependencies:
+      swr: '>=5.4.3'
+    dependencies:
+      '@normy/core': 0.9.0
+      swr: 2.2.4(react@18.2.0)
     dev: false
 
   /@tanstack/query-core@5.4.3:

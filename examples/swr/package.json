@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.12.1",
-    "@normy/react-query": "0.10.0",
+    "@normy/swr": "0.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "swr": "2.2.4"
