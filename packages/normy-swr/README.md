@@ -192,7 +192,7 @@ useNormalizedSWRMutation(
   {
     optimisticData: {
       id: '1',
-      name: 'Name 1 Updated',
+      name: 'Name updated',
     },
     rollbackData: {
       id: '1',
@@ -221,7 +221,7 @@ useNormalizedSWRMutation(
   {
     optimisticData: {
       id: '1',
-      name: 'Name 1 Updated',
+      name: 'Name updated',
     },
     rollbackData: {
       id: '1',

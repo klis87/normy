@@ -1,6 +1,5 @@
 import React from 'react';
-import useSWR, { SWRConfig, useSWRConfig } from 'swr';
-
+import useSWR from 'swr';
 import {
   SWRNormalizerProvider,
   useNormalizedSWRMutation,
@@ -43,11 +42,10 @@ const BooksApp = () => {
     '/book',
     async () => {
       await sleep(3000);
-      // throw { error: true };
       return {
         id: '1',
-        name: 'Name 1 Updated!',
-        author: { id: '1000', name: 'User1 updated!' },
+        name: 'Name 1 Updated',
+        author: { id: '1000', name: 'User1 updated' },
       };
     },
     {
@@ -58,8 +56,8 @@ const BooksApp = () => {
       },
       rollbackData: {
         id: '1',
-        name: 'Name 1 rol',
-        author: { id: '1000', name: 'User1 rol' },
+        name: 'Name 1',
+        author: { id: '1000', name: 'User1' },
       },
     },
   );
@@ -74,7 +72,7 @@ const BooksApp = () => {
     },
   );
   const addBookMutation = useNormalizedSWRMutation(
-    ['/books', 2, { y: true }],
+    '/books',
     async () => {
       await sleep(2000);
 
@@ -89,30 +87,6 @@ const BooksApp = () => {
     },
   );
 
-  // const updateBookNameMutationOptimistic = useMutation({
-  //   mutationFn: async () => {
-  //     await sleep();
-
-  //     return {
-  //       id: '1',
-  //       name: 'Name 1 Updated',
-  //     };
-  //   },
-  //   onMutate: () => ({
-  //     optimisticData: {
-  //       id: '1',
-  //       name: 'Name 1 Updated',
-  //     },
-  //     rollbackData: {
-  //       id: '1',
-  //       name: 'Name 1',
-  //     },
-  //   }),
-  //   meta: {
-  //     normalize: false,
-  //   },
-  // });
-
   return (
     <div>
       <button type="button" onClick={() => updateBookNameMutation.trigger()}>
@@ -125,12 +99,6 @@ const BooksApp = () => {
       <button type="button" onClick={() => addBookMutation.trigger()}>
         Add book {addBookMutation.isMutating && 'loading.....'}
       </button>{' '}
-      <button
-        type="button"
-        onClick={() => updateBookNameMutationOptimistic.mutate()}
-      >
-        Update book name optimistic
-      </button>
       <button
         type="button"
         onClick={() =>

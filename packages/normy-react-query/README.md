@@ -224,7 +224,7 @@ useMutation({
     return {
       optimisticData: {
         id: '1',
-        name: 'Name 1 Updated',
+        name: 'Name updated',
       },
       rollbackData: {
         id: '1',
@@ -254,7 +254,7 @@ useMutation({
     return {
       optimisticData: {
         id: '1',
-        name: 'Name 1 Updated',
+        name: 'Name updated',
       },
       rollbackData: {
         id: '1',
