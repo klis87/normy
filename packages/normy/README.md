@@ -277,7 +277,7 @@ Currently the is only two official integrations with data fetching libraries, na
 to come though. See dedicated documentations for specific integrations:
 
 - [react-query](https://github.com/klis87/normy/tree/master/packages/normy-react-query)
-- [swr](https://github.com/klis87/normy/tree/master/packages/swr)
+- [swr](https://github.com/klis87/normy/tree/master/packages/normy-swr)
 
 ## Examples [:arrow_up:](#table-of-content)
 
