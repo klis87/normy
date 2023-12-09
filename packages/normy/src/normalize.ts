@@ -85,15 +85,18 @@ export const normalize = (
 
   return [
     stipFromDeps(data, config, true),
-    dependencies.reduce((prev, v) => {
-      const key = config.getNormalizationObjectKey(v) as string;
+    dependencies.reduce(
+      (prev, v) => {
+        const key = config.getNormalizationObjectKey(v) as string;
 
-      prev[`@@${key}`] = prev[`@@${key}`]
-        ? mergeData(prev[`@@${key}`], stipFromDeps(v, config, false))
-        : stipFromDeps(v, config, false);
+        prev[`@@${key}`] = prev[`@@${key}`]
+          ? mergeData(prev[`@@${key}`], stipFromDeps(v, config, false))
+          : stipFromDeps(v, config, false);
 
-      return prev;
-    }, {} as { [objectId: string]: DataObject }) as {
+        return prev;
+      },
+      {} as { [objectId: string]: DataObject },
+    ) as {
       [objectId: string]: DataObject;
     },
     usedKeys,

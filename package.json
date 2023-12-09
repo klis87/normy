@@ -8,17 +8,15 @@
     "test": "lerna run test",
     "test:cover": "jest --coverage packages/*/src",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "prettify": "prettier --write '{packages,examples}/**/*.{js,jsx,ts}'",
-    "bundlesize": "bundlesize"
+    "prettify": "prettier --write '{packages,examples}/**/*.{js,jsx,ts,tsx,md}'"
   },
   "devDependencies": {
-    "@types/jest": "29.4.0",
-    "@types/node": "18.15.3",
-    "bundlesize": "0.18.0",
-    "coveralls": "3.1.0",
-    "jest": "29.4.2",
+    "@types/jest": "29.5.11",
+    "@types/node": "20.10.4",
+    "coveralls": "3.1.1",
+    "jest": "29.7.0",
     "lerna": "6.5.1",
-    "prettier": "2.8.4"
+    "prettier": "3.1.0"
   },
   "bundlesize": [
     {

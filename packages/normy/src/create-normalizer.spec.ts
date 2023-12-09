@@ -670,7 +670,7 @@ describe('createNormalizer', () => {
       ).toEqual([]);
     });
 
-    it.only('works with different date objects', () => {
+    it('works with different date objects', () => {
       const normalizer = createNormalizer();
 
       normalizer.setQuery('query', {
