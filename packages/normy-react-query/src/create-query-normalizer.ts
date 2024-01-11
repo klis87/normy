@@ -1,5 +1,9 @@
-import { QueryClient, QueryKey } from '@tanstack/react-query';
-import { createNormalizer, NormalizerConfig, Data } from '@normy/core';
+import type { QueryClient, QueryKey } from '@tanstack/react-query';
+import {
+  createNormalizer,
+  type NormalizerConfig,
+  type Data,
+} from '@normy/core';
 
 const shouldBeNormalized = (
   globalNormalize: boolean,
