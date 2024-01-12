@@ -30,14 +30,14 @@
     "build:umd": "webpack --mode development -o dist --output-filename normy-rtk-query.js",
     "build:umd:min": "webpack --mode production -o dist --output-filename normy-rtk-query.min.js",
     "build": "npm-run-all clean build-types -p build:commonjs build:es build:umd build:umd:min",
-    "build:watch": "nodemon --watch src --ignore src/**/*.spec.js --exec 'yarn run build:es'",
-    "prepublish": "yarn run build"
+    "build:watch": "nodemon --watch src --ignore src/**/*.spec.js --exec 'pnpm run build:es'",
+    "prepublish": "pnpm run build"
   },
   "peerDependencies": {
     "@reduxjs/toolkit": ">=2.0.1"
   },
   "dependencies": {
-    "@normy/core": "workspace:~"
+    "@normy/core": "~0.9.1"
   },
   "devDependencies": {
     "@babel/cli": "7.23.4",
@@ -73,5 +73,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "0f322466821c75aefec9bafb41f28118a1f6789b"
 }
