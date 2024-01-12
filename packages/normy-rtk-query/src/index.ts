@@ -101,7 +101,8 @@ export const createNormalizationMiddleware = (
       normalizer.setQuery(
         action.payload.queryCacheKey,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        store.getState().api.queries[action.payload.queryCacheKey].data as Data,
+        store.getState()[api.reducerPath].queries[action.payload.queryCacheKey]
+          .data as Data,
       );
 
       return response;
