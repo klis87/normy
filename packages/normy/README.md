@@ -28,7 +28,8 @@ Automatic normalization and data updates for data fetching libraries
 
 `normy` is a library, which allows your application data to be normalized automatically. Then, once data is normalized, in many cases your data can be updated automatically.
 
-The core of `normy` - namely `@normy/core` library, which is not meant to be used directly in applications, has logic inside which allows an easily integration with your favourite data fetching libraries, be it `react-query`, `swr`, `RTK Query` and so on. For now only `@normy/react-query` and `@normy/swr` exist, but there are more to come.
+The core of `normy` - namely `@normy/core` library, which is not meant to be used directly in applications, has logic inside which allows an easily integration with your favourite data fetching libraries. There are already official integrations with `react-query`, `swr` and `RTK Query`. If you use another fetching library, you could raise the Github issue, so it might be added
+as well.
 
 ## Motivation [:arrow_up:](#table-of-content)
 
@@ -158,9 +159,19 @@ $ npm install @normy/swr
 
 or you can just use CDN: `https://unpkg.com/@normy/swr`.
 
+### rtk-query
+
+To install the package, just run:
+
+```
+$ npm install @normy/rtk-query
+```
+
+or you can just use CDN: `https://unpkg.com/@normy/rtk-query`.
+
 ### another lirary
 
-If you want to write a plugin to another library than `react-query` or `swr`:
+If you want to write a plugin to another library than `react-query`, `swr` or `rtk-query`:
 
 ```
 $ npm install @normy/core
@@ -278,6 +289,7 @@ to come though. See dedicated documentations for specific integrations:
 
 - [react-query](https://github.com/klis87/normy/tree/master/packages/normy-react-query)
 - [swr](https://github.com/klis87/normy/tree/master/packages/normy-swr)
+- [rtk-query](https://github.com/klis87/normy/tree/master/packages/normy-rtk-query)
 
 ## Examples [:arrow_up:](#table-of-content)
 
@@ -288,6 +300,7 @@ There are following examples currently:
 - [react-query](https://github.com/klis87/normy/tree/master/examples/react-query)
 - [trpc](https://github.com/klis87/normy/tree/master/examples/trpc)
 - [swr](https://github.com/klis87/normy/tree/master/examples/swr)
+- [rtk-query](https://github.com/klis87/normy/tree/master/examples/rtk-query)
 
 ## Licence [:arrow_up:](#table-of-content)
 
