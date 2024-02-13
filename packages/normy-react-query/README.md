@@ -14,7 +14,7 @@
 
 > **Note**
 >
-> The newest version supports `react-query: 5` and `trpc: 11`! If you still use older versions, you must use `@normy/react-query@0.10.0`
+> The newest version supports `react-query: 5` and `trpc: 11`! If you still use older versions, you must use `@normy/react-query@0.10.2`
 
 ## Table of content
 
