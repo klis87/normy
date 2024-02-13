@@ -1,6 +1,6 @@
 {
   "name": "@normy/rtk-query",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "rtk-query addon for normy - automatic normalization and data updates for data fetching libraries",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,7 +37,7 @@
     "@reduxjs/toolkit": ">=2.0.1"
   },
   "dependencies": {
-    "@normy/core": "~0.9.1"
+    "@normy/core": "^0.10.0"
   },
   "devDependencies": {
     "@babel/cli": "7.23.4",

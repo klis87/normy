@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
   .:
     devDependencies:
@@ -119,7 +123,7 @@ importers:
   packages/normy-react-query:
     dependencies:
       '@normy/core':
-        specifier: ~0.9.1
+        specifier: ^0.10.0
         version: link:../normy
     devDependencies:
       '@babel/cli':
@@ -216,7 +220,7 @@ importers:
   packages/normy-rtk-query:
     dependencies:
       '@normy/core':
-        specifier: ~0.9.1
+        specifier: ^0.10.0
         version: link:../normy
     devDependencies:
       '@babel/cli':
@@ -313,7 +317,7 @@ importers:
   packages/normy-swr:
     dependencies:
       '@normy/core':
-        specifier: ~0.9.1
+        specifier: ^0.10.0
         version: link:../normy
     devDependencies:
       '@babel/cli':
@@ -4719,6 +4723,7 @@ packages:
         integrity: sha512-Phlt0plgpIIBOGTT/ehfFnbNlfsDEiqmzE2KRXoX1bLIlir4X/MR+zSyBEkL05ffWgnRSf/DXv+WrUAVr93/ow==,
       }
     engines: { node: '>=8' }
+    requiresBuild: true
     dev: true
 
   /bl@4.1.0:
@@ -7781,6 +7786,7 @@ packages:
         integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==,
       }
     engines: { node: '>=0.10.0' }
+    requiresBuild: true
     dependencies:
       safer-buffer: 2.1.2
     dev: true
@@ -11639,6 +11645,7 @@ packages:
         integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==,
       }
     engines: { node: '>=8.10.0' }
+    requiresBuild: true
     dependencies:
       picomatch: 2.3.1
     dev: true
