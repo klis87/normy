@@ -15,7 +15,9 @@ export const QueryNormalizerProvider = ({
 }: {
   queryClient: QueryClient;
   children: React.ReactNode;
-  normalizerConfig?: NormalizerConfig & { normalize?: boolean };
+  normalizerConfig?: Omit<NormalizerConfig, 'structuralSharing'> & {
+    normalize?: boolean;
+  };
 }) => {
   const [queryNormalizer] = React.useState(() =>
     createQueryNormalizer(queryClient, normalizerConfig),

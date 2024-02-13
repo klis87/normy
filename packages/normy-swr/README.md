@@ -23,6 +23,7 @@
 - [getObjectById and getQueryFragment](#getObjectById-and-getQueryFragment-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
 - [Clearing](#clearing-arrow_up)
+- [Structural sharing](#structural-sharing-arrow_up)
 - [Examples](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
@@ -401,6 +402,15 @@ information.
 ## Clearing [:arrow_up:](#table-of-content)
 
 When `SWRNormalizerProvider` is unmounted, all normalized data will be automatically cleared.
+
+## Structural sharing [:arrow_up:](#table-of-content)
+
+By default, this library takes advantage over `swr` structural sharing feature. Structural sharing benefit is the following - if a query
+is refetched, its data will remain referentially the same if it is the same structurally (when API response is the same).
+
+Typically it was implemented in order to have optimizations like avoiding rerenders for the same data,
+but `normy` also takes advantage over it, namely, if a query was just refetched but its data is the same,
+`normy` will not unnecessarily normalize it (as it would normalize it to the same value it has now anyway).
 
 ## Examples [:arrow_up:](#table-of-content)
 

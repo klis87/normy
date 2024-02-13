@@ -267,7 +267,8 @@ However, you have several flexible ways to improve performance:
 3. There is a built-in optimalization, which checks data from mutation responses if they are actually different than data
    in the normalized store. If it is the same, dependent queries will not be updated. So, it is good for mutation data to
    include only things which could actually be different, which could prevent unnecessary normalization and queries updates.
-4. You can use `getNormalizationObjectKey` function to set globally which objects should be actually normalized. For example:
+4. Do not disable `structuralSharing` option in libraries which support it - if a query data after update is the same referentially as before update, then this query will not be normalized. This is a big performance optimization, especially after refetch on refocus, which could update multiple queries at the same time, usually to the very same data.
+5. You can use `getNormalizationObjectKey` function to set globally which objects should be actually normalized. For example:
 
 ```jsx
 <QueryNormalizerProvider

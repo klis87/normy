@@ -268,6 +268,35 @@ describe('createNormalizer', () => {
         dependentQueries: { '@@1': ['query'] },
       });
     });
+
+    it('does not update normalized data when using structural sharing and data is the same', () => {
+      const normalizer = createNormalizer();
+      const data = { id: '1', name: 'name' };
+      normalizer.setQuery('query', data);
+      const normalizedData = normalizer.getNormalizedData();
+      normalizer.setQuery('query', data);
+
+      expect(normalizedData).toBe(normalizer.getNormalizedData());
+    });
+
+    it('updates normalized data when using structural sharing but data is not the same', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', { id: '1', name: 'name' });
+      const normalizedData = normalizer.getNormalizedData();
+      normalizer.setQuery('query', { id: '1', name: 'name' });
+
+      expect(normalizedData).not.toBe(normalizer.getNormalizedData());
+    });
+
+    it('updates normalized data when data is the same but without using structural sharing', () => {
+      const normalizer = createNormalizer({ structuralSharing: false });
+      const data = { id: '1', name: 'name' };
+      normalizer.setQuery('query', data);
+      const normalizedData = normalizer.getNormalizedData();
+      normalizer.setQuery('query', data);
+
+      expect(normalizedData).not.toBe(normalizer.getNormalizedData());
+    });
   });
 
   describe('removeQuery', () => {

@@ -22,6 +22,7 @@ export type Data =
 export type NormalizerConfig = {
   getNormalizationObjectKey?: (obj: DataObject) => string | undefined;
   devLogging?: boolean;
+  structuralSharing?: boolean;
 };
 
 export type UsedKeys = { [path: string]: ReadonlyArray<string> };

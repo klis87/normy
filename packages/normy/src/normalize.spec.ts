@@ -318,6 +318,7 @@ describe('normalize', () => {
               ? `${obj._id as string}${obj.key as string}`
               : undefined,
           devLogging: false,
+          structuralSharing: true,
         },
       ),
     ).toEqual([

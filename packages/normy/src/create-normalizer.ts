@@ -58,8 +58,17 @@ export const createNormalizer = (
   const config = { ...defaultConfig, ...normalizerConfig };
 
   let normalizedData: NormalizedData = initialNormalizedData ?? initialData;
+  let currentDataReferences: Record<string, Data> = {};
 
   const setQuery = (queryKey: string, queryData: Data) => {
+    if (config.structuralSharing) {
+      if (currentDataReferences[queryKey] === queryData) {
+        return;
+      }
+
+      currentDataReferences[queryKey] = queryData;
+    }
+
     const [normalizedQueryData, normalizedObjectsData, usedKeys] = normalize(
       queryData,
       config,
@@ -106,6 +115,7 @@ export const createNormalizer = (
 
     const queries = { ...normalizedData.queries };
     delete queries[queryKey];
+    delete currentDataReferences[queryKey];
 
     normalizedData = {
       ...normalizedData,
@@ -206,6 +216,7 @@ export const createNormalizer = (
     getNormalizedData: () => normalizedData,
     clearNormalizedData: () => {
       normalizedData = initialData;
+      currentDataReferences = {};
     },
     setQuery,
     removeQuery,

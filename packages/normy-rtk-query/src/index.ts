@@ -78,12 +78,16 @@ const isNormalizerAction = (action: unknown): action is NormalizerAction =>
 
 export const createNormalizationMiddleware = (
   api: ReturnType<typeof createApi>,
-  normalizerConfig?: NormalizerConfig & {
+  normalizerConfig?: Omit<NormalizerConfig, 'structuralSharing'> & {
     normalizeQuery?: (queryType: string) => boolean;
     normalizeMutation?: (mutationEndpointName: string) => boolean;
   },
 ): Middleware => {
-  const normalizer = createNormalizer(normalizerConfig);
+  const normalizer = createNormalizer({
+    ...normalizerConfig,
+    // TODO: we wait for rtk-query maintainers to make this work
+    structuralSharing: false,
+  });
 
   const args: Record<string, unknown> = {};
 

@@ -33,7 +33,9 @@ const updateQueriesFromMutationData = (
 
 export const createQueryNormalizer = (
   queryClient: QueryClient,
-  normalizerConfig: NormalizerConfig & { normalize?: boolean } = {},
+  normalizerConfig: Omit<NormalizerConfig, 'structuralSharing'> & {
+    normalize?: boolean;
+  } = {},
 ) => {
   const normalize = normalizerConfig.normalize ?? true;
   const normalizer = createNormalizer(normalizerConfig);

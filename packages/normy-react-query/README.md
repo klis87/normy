@@ -28,6 +28,7 @@
 - [getObjectById and getQueryFragment](#getObjectById-and-getQueryFragment-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
 - [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
+- [Structural sharing](#structural-sharing-arrow_up)
 - [Examples](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
@@ -453,6 +454,21 @@ information.
 
 When `QueryNormalizerProvider` is unmounted, all normalized data will be automatically cleared and all subscribers
 to `react-query` client will be unsubscribed.
+
+## Structural sharing [:arrow_up:](#table-of-content)
+
+By default, this library takes advantage over `react-query` structural sharing feature. Structural sharing benefit is the following - if a query
+is refetched, its data will remain referentially the same if it is the same structurally (when API response is the same).
+
+Typically it was implemented in order to have optimizations like avoiding rerenders for the same data,
+but `normy` also takes advantage over it, namely, if a query was just refetched but its data is the same,
+`normy` will not unnecessarily normalize it (as it would normalize it to the same value it has now anyway).
+
+This brings big performance improvements, especially during refetches on window refocus (if you use this feature), as then
+potentially dozens of queries could be refetched simultaneously. In practice, most of those responses will be the same,
+which will prevent data to be normalized again unnecessarily (to the very same normalized value).
+
+So it is even more beneficial not to turn off `react-query` structural sharing feature!
 
 ## Examples [:arrow_up:](#table-of-content)
 

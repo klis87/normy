@@ -7,7 +7,7 @@ import {
 import { useSWRConfig, SWRConfig, type Key } from 'swr';
 
 const createSwrNormalizer = (
-  normalizerConfig: NormalizerConfig & {
+  normalizerConfig: Omit<NormalizerConfig, 'structuralSharing'> & {
     normalize?: (queryKey: string) => boolean;
   } = {},
 ) => {
@@ -81,7 +81,7 @@ export const SWRNormalizerProvider = ({
   swrConfigValue,
   children,
 }: {
-  normalizerConfig?: NormalizerConfig & {
+  normalizerConfig?: Omit<NormalizerConfig, 'structuralSharing'> & {
     normalize: (queryKey: Key) => boolean;
   };
   swrConfigValue: React.ComponentProps<typeof SWRConfig>['value'];
