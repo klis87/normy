@@ -123,7 +123,7 @@ importers:
   packages/normy-react-query:
     dependencies:
       '@normy/core':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../normy
     devDependencies:
       '@babel/cli':
@@ -220,7 +220,7 @@ importers:
   packages/normy-rtk-query:
     dependencies:
       '@normy/core':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../normy
     devDependencies:
       '@babel/cli':
@@ -317,7 +317,7 @@ importers:
   packages/normy-swr:
     dependencies:
       '@normy/core':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../normy
     devDependencies:
       '@babel/cli':
