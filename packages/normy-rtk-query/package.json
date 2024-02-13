@@ -37,7 +37,7 @@
     "@reduxjs/toolkit": ">=2.0.1"
   },
   "dependencies": {
-    "@normy/core": "*"
+    "@normy/core": "workspace:*"
   },
   "devDependencies": {
     "@babel/cli": "7.23.4",
