@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .: {}
@@ -10,8 +14,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/react-query':
-        specifier: 0.12.0
-        version: 0.12.0(@tanstack/react-query@5.4.3)
+        specifier: 0.14.0
+        version: 0.14.0(@tanstack/react-query@5.4.3)
       '@tanstack/react-query':
         specifier: 5.4.3
         version: 5.4.3(react-dom@18.2.0)(react@18.2.0)
@@ -52,9 +56,9 @@ importers:
       '@babel/polyfill':
         specifier: 7.12.1
         version: 7.12.1
-      '@normy/react-query':
-        specifier: 0.12.0
-        version: 0.12.0(@tanstack/react-query@5.4.3)
+      '@normy/rtk-query':
+        specifier: 0.1.0
+        version: 0.1.0(@reduxjs/toolkit@2.0.1)
       '@reduxjs/toolkit':
         specifier: ^2.0.1
         version: 2.0.1(react-redux@9.0.4)(react@18.2.0)
@@ -99,8 +103,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/swr':
-        specifier: 0.0.2
-        version: 0.0.2(swr@2.2.4)
+        specifier: 0.1.0
+        version: 0.1.0(swr@2.2.4)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -142,8 +146,8 @@ importers:
         specifier: 7.12.1
         version: 7.12.1
       '@normy/react-query':
-        specifier: 0.12.0
-        version: 0.12.0(@tanstack/react-query@5.4.3)
+        specifier: 0.14.0
+        version: 0.14.0(@tanstack/react-query@5.4.3)
       '@tanstack/react-query':
         specifier: 5.4.3
         version: 5.4.3(react-dom@18.2.0)(react@18.2.0)
@@ -213,7 +217,7 @@ importers:
         version: 5.9.0(webpack-cli@4.2.0)
       webpack-cli:
         specifier: 4.2.0
-        version: 4.2.0(webpack-dev-server@3.11.0)(webpack@5.9.0)
+        version: 4.2.0(webpack@5.9.0)
       webpack-dev-middleware:
         specifier: 4.0.2
         version: 4.0.2(webpack@5.9.0)
@@ -1320,6 +1324,14 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
+    dev: true
+
+  /@babel/runtime@7.23.9:
+    resolution: {integrity: sha512-0CX6F+BI2s9dkUqr08KFrAIZgNFj75rdBU/DjCyYLIaV/quFjkk6T+EJ2LkZHyZTbEV4L5p97mNkUsHl2wLFAw==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.1
+    dev: false
 
   /@babel/template@7.20.7:
     resolution: {integrity: sha512-8SegXApWe6VoNw0r9JHpSteLKTpTiLZ4rMlGIm9JQ18KiCtyQiAMEazujAHrUS5flrcqYZa75ukev3P6QmUwUw==}
@@ -1401,35 +1413,44 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@normy/core@0.8.0:
-    resolution: {integrity: sha512-+KzcqlDclDOW0sei3xLG5+Cu4FRc6Hiq3H/GASxS8UaqHin08ivIaxiB8TAIrGKvWumzAbw/ukoAhqwfxdPHBg==}
+  /@normy/core@0.10.0:
+    resolution: {integrity: sha512-3y6sjlfUYMUFwD/krfEXzHlkD4y++Fcjghh4XN3wIidDxM6aic+6GCC+t1n9RPeSNHmXO4Zx4bu63BTbRPxcrw==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       deepmerge: 4.0.0
     dev: false
 
-  /@normy/core@0.9.0:
-    resolution: {integrity: sha512-aw4igbkL9eMwegRDvQE2QdqNKTZnFbf7Nz1PgaTwt/SVWe/dKZGuqiJFLeHfcHGDcI7vGyI8ru/BPpnIcOiHPw==}
+  /@normy/core@0.9.1:
+    resolution: {integrity: sha512-Mi3+aKFq1ykpgyP/iSz/nDZ3TaTwwM3sS5Q++GIDku3/iqCYJPC6402/D2ZT8KfFqn+nYL+N87Z7kNwTPKGEOw==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       deepmerge: 4.0.0
     dev: false
 
-  /@normy/react-query@0.12.0(@tanstack/react-query@5.4.3):
-    resolution: {integrity: sha512-N/+Sm4MMy1HMBfc9B8N5WQl1kLApAzRKrb7nhavjPV1wv/i6KDnUK3r/CHtNUbP+iUnP87ZgR3pl5hLjK7CwKA==}
+  /@normy/react-query@0.14.0(@tanstack/react-query@5.4.3):
+    resolution: {integrity: sha512-8vqhytr+ry3XklOt19IrBy0WgHZHCQY4bH0uDIykAtLvtR/8x9N/fCePs9oEEqrnBK29EcMIJo3+I/wnTYrCng==}
     peerDependencies:
       '@tanstack/react-query': '>=5.4.3'
     dependencies:
-      '@normy/core': 0.8.0
+      '@normy/core': 0.10.0
       '@tanstack/react-query': 5.4.3(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /@normy/swr@0.0.2(swr@2.2.4):
-    resolution: {integrity: sha512-Y4bkRE/aIxUQl5FD6/lCK1vmzwFP/3tjIwWUPmnqp1QN/PjNqVIl6FYNvJQCX+itSEa7pJSEzrYGFpp2Ja183A==}
+  /@normy/rtk-query@0.1.0(@reduxjs/toolkit@2.0.1):
+    resolution: {integrity: sha512-KhcxGNAXyBDQxVEWYSe3zhWS1RAJd2pBhBLjBaBiiePG1+GsF0DU8X3VJNJ72d3a+Rtgo03Yh01qoPP2usQrTA==}
+    peerDependencies:
+      '@reduxjs/toolkit': '>=2.0.1'
+    dependencies:
+      '@normy/core': 0.9.1
+      '@reduxjs/toolkit': 2.0.1(react-redux@9.0.4)(react@18.2.0)
+    dev: false
+
+  /@normy/swr@0.1.0(swr@2.2.4):
+    resolution: {integrity: sha512-tUSlTHz+Sidek9OFhPCp8HIEEW1AkMSlbSwhFo+DP0mUVw4zf6+4pQcLVj1ezADmmrFpkiGsnTmqPupoVPsD5Q==}
     peerDependencies:
       swr: '>=5.4.3'
     dependencies:
-      '@normy/core': 0.9.0
+      '@normy/core': 0.10.0
       swr: 2.2.4(react@18.2.0)
     dev: false
 
@@ -1816,6 +1837,18 @@ packages:
     dependencies:
       envinfo: 7.7.3
       webpack-cli: 4.2.0(webpack-dev-server@3.11.0)(webpack@5.9.0)
+    dev: true
+
+  /@webpack-cli/serve@1.1.0(webpack-cli@4.2.0):
+    resolution: {integrity: sha512-7RfnMXCpJ/NThrhq4gYQYILB18xWyoQcBey81oIyVbmgbc6m5ZHHyFK+DyH7pLHJf0p14MxL4mTsoPAgBSTpIg==}
+    peerDependencies:
+      webpack-cli: 4.x.x
+      webpack-dev-server: '*'
+    peerDependenciesMeta:
+      webpack-dev-server:
+        optional: true
+    dependencies:
+      webpack-cli: 4.2.0(webpack@5.9.0)
     dev: true
 
   /@webpack-cli/serve@1.1.0(webpack-cli@4.2.0)(webpack-dev-server@3.11.0):
@@ -4409,6 +4442,11 @@ packages:
 
   /regenerator-runtime@0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
+    dev: true
+
+  /regenerator-runtime@0.14.1:
+    resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
+    dev: false
 
   /regenerator-transform@0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==}
@@ -5285,6 +5323,48 @@ packages:
       v8-compile-cache: 2.2.0
       webpack: 5.9.0(webpack-cli@4.2.0)
       webpack-dev-server: 3.11.0(webpack-cli@4.2.0)(webpack@5.9.0)
+      webpack-merge: 4.2.2
+    dev: true
+
+  /webpack-cli@4.2.0(webpack@5.9.0):
+    resolution: {integrity: sha512-EIl3k88vaF4fSxWSgtAQR+VwicfLMTZ9amQtqS4o+TDPW9HGaEpbFBbAZ4A3ZOT5SOnMxNOzROsSTPiE8tBJPA==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    peerDependencies:
+      '@webpack-cli/generate-loader': '*'
+      '@webpack-cli/generate-plugin': '*'
+      '@webpack-cli/init': '*'
+      '@webpack-cli/migrate': '*'
+      webpack: 4.x.x || 5.x.x
+      webpack-bundle-analyzer: '*'
+      webpack-dev-server: '*'
+    peerDependenciesMeta:
+      '@webpack-cli/generate-loader':
+        optional: true
+      '@webpack-cli/generate-plugin':
+        optional: true
+      '@webpack-cli/init':
+        optional: true
+      '@webpack-cli/migrate':
+        optional: true
+      webpack-bundle-analyzer:
+        optional: true
+      webpack-dev-server:
+        optional: true
+    dependencies:
+      '@webpack-cli/info': 1.1.0(webpack-cli@4.2.0)
+      '@webpack-cli/serve': 1.1.0(webpack-cli@4.2.0)
+      colorette: 1.2.1
+      command-line-usage: 6.1.1
+      commander: 6.2.0
+      enquirer: 2.3.6
+      execa: 4.1.0
+      import-local: 3.0.2
+      interpret: 2.2.0
+      leven: 3.1.0
+      rechoir: 0.7.0
+      v8-compile-cache: 2.2.0
+      webpack: 5.9.0(webpack-cli@4.2.0)
       webpack-merge: 4.2.2
     dev: true
 

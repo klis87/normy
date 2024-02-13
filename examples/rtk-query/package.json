@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.12.1",
-    "@normy/react-query": "0.12.0",
+    "@normy/rtk-query": "0.1.0",
     "@reduxjs/toolkit": "^2.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
