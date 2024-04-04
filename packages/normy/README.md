@@ -285,8 +285,7 @@ Moreover, in the future some additional performance specific options will be add
 
 ## Integrations [:arrow_up:](#table-of-content)
 
-Currently the is only two official integrations with data fetching libraries, namely with `react-query` and `swr`. There are more
-to come though. See dedicated documentations for specific integrations:
+Currently the are three official integrations with data fetching libraries, namely `react-query`, `swr` and `rtk-query`. See dedicated documentations for specific integrations:
 
 - [react-query](https://github.com/klis87/normy/tree/master/packages/normy-react-query)
 - [swr](https://github.com/klis87/normy/tree/master/packages/normy-swr)
