@@ -56,10 +56,7 @@ export const createQueryNormalizer = (
           event.type === 'updated' &&
           event.action.type === 'success' &&
           event.action.data !== undefined &&
-          shouldBeNormalized(
-            normalize,
-            event.query.meta?.normalize as boolean | undefined,
-          )
+          shouldBeNormalized(normalize, event.query.meta?.normalize)
         ) {
           normalizer.setQuery(
             JSON.stringify(event.query.queryKey),
@@ -75,10 +72,7 @@ export const createQueryNormalizer = (
             event.type === 'updated' &&
             event.action.type === 'success' &&
             event.action.data &&
-            shouldBeNormalized(
-              normalize,
-              event.mutation.meta?.normalize as boolean | undefined,
-            )
+            shouldBeNormalized(normalize, event.mutation.meta?.normalize)
           ) {
             updateQueriesFromMutationData(
               event.action.data as Data,
