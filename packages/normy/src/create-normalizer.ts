@@ -173,7 +173,6 @@ export const createNormalizer = (
       normalizedData.objects,
       updatedObjects,
     );
-    console.log('normalizedDataWithMutation', updatedObjects);
 
     const foundQueries = getQueriesById(Object.keys(updatedObjects));
 
