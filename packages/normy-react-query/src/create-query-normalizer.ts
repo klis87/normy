@@ -1,9 +1,9 @@
-import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import {
   createNormalizer,
-  type NormalizerConfig,
   type Data,
+  type NormalizerConfig,
 } from '@normy/core';
+import type { QueryClient, QueryKey } from '@tanstack/react-query';
 
 const shouldBeNormalized = (
   globalNormalize: boolean,
@@ -114,5 +114,6 @@ export const createQueryNormalizer = (
     },
     getObjectById: normalizer.getObjectById,
     getQueryFragment: normalizer.getQueryFragment,
+    getQueriesById: normalizer.getQueriesById,
   };
 };
