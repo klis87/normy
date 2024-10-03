@@ -1,9 +1,13 @@
-import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import {
   createNormalizer,
-  type NormalizerConfig,
   type Data,
+  type NormalizerConfig,
 } from '@normy/core';
+import type { QueryClient, QueryKey } from '@tanstack/react-query';
+
+const cleanIds = (ids: string | string[]) => {
+  return Array.isArray(ids) ? ids.map(id => `@@${id}`) : `@@${ids}`;
+};
 
 const shouldBeNormalized = (
   globalNormalize: boolean,
@@ -114,5 +118,16 @@ export const createQueryNormalizer = (
     },
     getObjectById: normalizer.getObjectById,
     getQueryFragment: normalizer.getQueryFragment,
+    getQueryKeysById: (ids: string | string[]) => {
+      return normalizer
+        .getQueriesById(cleanIds(ids))
+        .map(key => JSON.parse(key));
+    },
+    invalidateQueriesById: (ids: string | string[]) => {
+      normalizer
+        .getQueriesById(cleanIds(ids))
+        .map(key => JSON.parse(key))
+        .forEach(query => queryClient.invalidateQueries({ queryKey: query }));
+    },
   };
 };
