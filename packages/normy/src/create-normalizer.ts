@@ -151,10 +151,14 @@ export const createNormalizer = (
     return differentObjects;
   };
 
-  const getQueriesById = (mutationDependencies: ReadonlyArray<string>) =>
+  const getQueriesById = (
+    mutationDependencies: ReadonlyArray<string> | Readonly<string>,
+  ) =>
     getQueriesDependentOnMutation(
       normalizedData.dependentQueries,
-      mutationDependencies,
+      Array.isArray(mutationDependencies)
+        ? mutationDependencies
+        : [mutationDependencies],
     );
 
   const getQueriesToUpdate = (mutationData: Data) => {
@@ -169,6 +173,7 @@ export const createNormalizer = (
       normalizedData.objects,
       updatedObjects,
     );
+    console.log('normalizedDataWithMutation', updatedObjects);
 
     const foundQueries = getQueriesById(Object.keys(updatedObjects));
 
