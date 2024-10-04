@@ -1,12 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { computed } from 'vue';
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
 const queryClient = useQueryClient();
 
 // Books Query
-const { data: booksData } = useQuery({
+const { data: booksQueryData } = useQuery({
   queryKey: ['books'],
   queryFn: () =>
     Promise.resolve([
@@ -17,8 +18,10 @@ const { data: booksData } = useQuery({
   initialData: [],
 });
 
+const booksData = computed(() => booksQueryData.value);
+
 // Book Detail Query
-const { data: bookData } = useQuery({
+const { data: bookQueryData } = useQuery({
   queryKey: ['book'],
   queryFn: () =>
     Promise.resolve({
@@ -29,28 +32,43 @@ const { data: bookData } = useQuery({
   select: data => ({ ...data, nameLong: data.name, name: undefined }),
 });
 
+const bookData = computed(() => bookQueryData.value);
+
 // Mutations
-const updateBookNameMutation = useMutation({
-  mutationFn: async () => {
-    await sleep();
-    return {
-      id: '1',
-      name: 'Name 1 Updated',
-    };
-  },
-});
+const { mutate: updateBookName, isPending: isUpdateBookNamePending } =
+  useMutation({
+    mutationFn: async () => {
+      await sleep();
+      return {
+        id: '1',
+        name: 'Name 1 Updated',
+      };
+    },
+  });
 
-const updateBookAuthorMutation = useMutation({
-  mutationFn: async () => {
-    await sleep();
-    return {
-      id: '0',
-      author: { id: '1004', name: 'User4 new' },
-    };
-  },
-});
+const { mutate: updateAuthorName, isPending: isUpdateAuthorNamePending } =
+  useMutation({
+    mutationFn: async () => {
+      await sleep();
+      return {
+        id: '1000',
+        name: 'User1 new',
+      };
+    },
+  });
 
-const addBookMutation = useMutation({
+const { mutate: updateBookAuthor, isPending: isUpdateBookAuthorPending } =
+  useMutation({
+    mutationFn: async () => {
+      await sleep();
+      return {
+        id: '0',
+        author: { id: '1004', name: 'User4 new' },
+      };
+    },
+  });
+
+const { mutate: addBook, isPending: isAddBookPending } = useMutation({
   mutationFn: async () => {
     await sleep();
     return {
@@ -59,19 +77,15 @@ const addBookMutation = useMutation({
       author: { id: '1002', name: 'User3' },
     };
   },
-  onSuccess: () => {
-    queryClient.setQueryData(['books'], oldData => [
+  onSuccess: newBook => {
+    queryClient.setQueryData(['books'], (oldData: any) => [
       ...oldData,
-      {
-        id: '3',
-        name: 'Name 3',
-        author: { id: '1002', name: 'User3' },
-      },
+      newBook,
     ]);
   },
 });
 
-const updateBookNameMutationOptimistic = useMutation({
+const { mutate: updateBookNameOptimistic } = useMutation({
   mutationFn: async () => {
     await sleep();
     return {
@@ -99,22 +113,27 @@ const updateBookNameMutationOptimistic = useMutation({
   <div>
     <h1>Vue Query example</h1>
 
-    <button type="button" @click="updateBookNameMutation.mutate()">
+    <button type="button" @click="updateBookName()">
       Update book name
-      <span v-if="updateBookNameMutation.isLoading">loading.....</span>
+      <span v-if="isUpdateBookNamePending">loading.....</span>
     </button>
 
-    <button type="button" @click="updateBookAuthorMutation.mutate()">
+    <button type="button" @click="updateBookAuthor()">
       Update book author
-      <span v-if="updateBookAuthorMutation.isLoading">loading.....</span>
+      <span v-if="isUpdateBookAuthorPending">loading.....</span>
     </button>
 
-    <button type="button" @click="addBookMutation.mutate()">
+    <button type="button" @click="addBook()">
       Add book
-      <span v-if="addBookMutation.isLoading">loading.....</span>
+      <span v-if="isAddBookPending">loading.....</span>
     </button>
 
-    <button type="button" @click="updateBookNameMutationOptimistic.mutate()">
+    <button type="button" @click="updateAuthorName()">
+      Update author name
+      <span v-if="isUpdateAuthorNamePending">loading.....</span>
+    </button>
+
+    <button type="button" @click="updateBookNameOptimistic()">
       Update book name optimistic
     </button>
 
