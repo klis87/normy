@@ -2,6 +2,7 @@ import { addOrRemoveDependencies } from './add-or-remove-dependencies';
 import { defaultConfig } from './default-config';
 import { denormalize } from './denormalize';
 import { getDependenciesDiff } from './get-dependencies-diff';
+import { getId } from './get-id';
 import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
 import { mergeData } from './merge-data';
 import { normalize } from './normalize';
@@ -151,14 +152,19 @@ export const createNormalizer = (
     return differentObjects;
   };
 
-  const getQueriesById = (
-    mutationDependencies: ReadonlyArray<string> | Readonly<string>,
-  ) =>
+  const getDependentQueries = (mutationData: Data) => {
+    const [, normalizedObjectsData] = normalize(mutationData, config);
+
+    return getQueriesDependentOnMutation(
+      normalizedData.dependentQueries,
+      Object.keys(normalizedObjectsData),
+    );
+  };
+
+  const getDependentQueriesByIds = (ids: ReadonlyArray<string>) =>
     getQueriesDependentOnMutation(
       normalizedData.dependentQueries,
-      Array.isArray(mutationDependencies)
-        ? mutationDependencies
-        : [mutationDependencies],
+      ids.map(getId),
     );
 
   const getQueriesToUpdate = (mutationData: Data) => {
@@ -174,7 +180,10 @@ export const createNormalizer = (
       updatedObjects,
     );
 
-    const foundQueries = getQueriesById(Object.keys(updatedObjects));
+    const foundQueries = getQueriesDependentOnMutation(
+      normalizedData.dependentQueries,
+      Object.keys(updatedObjects),
+    );
 
     return foundQueries.map(queryKey => ({
       queryKey,
@@ -225,11 +234,12 @@ export const createNormalizer = (
       normalizedData = initialData;
       currentDataReferences = {};
     },
-    getQueriesById,
     setQuery,
     removeQuery,
     getQueriesToUpdate,
     getObjectById,
     getQueryFragment,
+    getDependentQueries,
+    getDependentQueriesByIds,
   };
 };

@@ -922,4 +922,117 @@ describe('createNormalizer', () => {
       ]);
     });
   });
+
+  describe('getDependentQueriesById', () => {
+    it('gets queries for 1 object', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: null,
+      });
+      normalizer.setQuery('query2', {
+        id: '2',
+        name: 'name2',
+        nested: null,
+      });
+      normalizer.setQuery('query3', {
+        id: '3',
+        name: 'name2',
+        nested: { id: '1' },
+      });
+
+      expect(normalizer.getDependentQueriesByIds(['1'])).toEqual([
+        'query',
+        'query3',
+      ]);
+    });
+
+    it('gets queries for 2 objects', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: null,
+      });
+      normalizer.setQuery('query2', {
+        id: '2',
+        name: 'name2',
+        nested: null,
+      });
+      normalizer.setQuery('query3', {
+        id: '3',
+        name: 'name3',
+        nested: { id: '1' },
+      });
+      normalizer.setQuery('query4', {
+        id: '4',
+        name: 'name4',
+        nested: null,
+      });
+
+      expect(normalizer.getDependentQueriesByIds(['1', '2'])).toEqual([
+        'query',
+        'query3',
+        'query2',
+      ]);
+    });
+  });
+
+  describe('getDependentQueries', () => {
+    it('gets queries for 1 object', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: null,
+      });
+      normalizer.setQuery('query2', {
+        id: '2',
+        name: 'name2',
+        nested: null,
+      });
+      normalizer.setQuery('query3', {
+        id: '3',
+        name: 'name2',
+        nested: { id: '1' },
+      });
+
+      expect(normalizer.getDependentQueries({ id: '1' })).toEqual([
+        'query',
+        'query3',
+      ]);
+    });
+
+    it('gets queries for 2 objects, for array and nested object', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        name: 'name',
+        nested: null,
+      });
+      normalizer.setQuery('query2', {
+        id: '2',
+        name: 'name2',
+        nested: null,
+      });
+      normalizer.setQuery('query3', {
+        id: '3',
+        name: 'name3',
+        nested: { id: '1' },
+      });
+      normalizer.setQuery('query4', {
+        id: '4',
+        name: 'name4',
+        nested: null,
+      });
+
+      expect(
+        normalizer.getDependentQueries([
+          { id: '1', nested: { id: '2' } },
+          { id: '5' },
+        ]),
+      ).toEqual(['query', 'query3', 'query2']);
+    });
+  });
 });
