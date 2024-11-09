@@ -127,6 +127,14 @@ const BooksApp = () => {
       >
         Update user1 name manually
       </button>
+      <button
+        type="button"
+        onClick={() =>
+          console.log(queryNormalizer.getDependentQueries([{ id: '1' }]))
+        }
+      >
+        Get dependent queries for book 1
+      </button>
       <hr />
       <h2>Books</h2>
       <Books />

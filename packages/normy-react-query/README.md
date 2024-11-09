@@ -26,6 +26,7 @@
 - [Optimistic updates](#optimistic-updates-arrow_up)
 - [useQueryNormalizer and manual updates](#useQueryNormalizer-and-manual-updates-arrow_up)
 - [getObjectById and getQueryFragment](#getObjectById-and-getQueryFragment-arrow_up)
+- [getDependentQueries and getDependentQueriesByIds](#getDependentQueries-and-getDependentQueriesByIds-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
 - [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
 - [Structural sharing](#structural-sharing-arrow_up)
@@ -444,6 +445,42 @@ const usersAndBook = queryNormalizer.getQueryFragment(
 
 Notice that to define an array type, you just need to pass one item, even though we want to have two users.
 This is because we care only about data structure.
+
+## getDependentQueries and getDependentQueriesByIds [:arrow_up:](#table-of-content)
+
+Sometimes you might have an object, or even data with multiple objects, and get an answer to the question - what queries
+actually hold this object/these objects. For example, you might prefer to invalidate/refetch all queries, instead of
+just relying on automatic data updates in memory. Or.... you might want to abort all pending requests from dependent queries.
+
+For this, you can use `getObjectById` and `getQueryFragment` helpers, which both give you a list of all dependend queries.
+
+### getDependentQueries
+
+For example, if you have a `data`, containing some objects, you could check all dependent queries like this:
+
+```js
+const listOfDependentQueries = queryNormalizer.getDependentQueries({
+  id: '1',
+  name: 'x',
+  nested: { id: '2' },
+});
+```
+
+Now, assuming, that objects with ids `1` and `2` are both normalizable, you will receive a list of all queries holding those objects, for example `[['books'], ['book', 1], ['book', 2]]`. Then, you can do anything with them, like invalidate/abort by just
+using normal `react-query` API.
+
+### getDependentQueriesByIds
+
+For example, if you have a `data`, containing some objects, you could check all dependent queries like this:
+
+```js
+const listOfDependentQueries = queryNormalizer.getDependentQueriesByIds([
+  '1',
+  '2',
+]);
+```
+
+This is the same as above, it just does not use data as argument, but a list of object ids.
 
 ## Garbage collection [:arrow_up:](#table-of-content)
 
