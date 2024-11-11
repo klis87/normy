@@ -53,6 +53,15 @@ export const createQueryNormalizer = (
         if (event.type === 'removed') {
           normalizer.removeQuery(JSON.stringify(event.query.queryKey));
         } else if (
+          event.type === 'added' &&
+          event.query.state.data !== undefined &&
+          shouldBeNormalized(normalize, event.query.meta?.normalize)
+        ) {
+          normalizer.setQuery(
+            JSON.stringify(event.query.queryKey),
+            event.query.state.data as Data,
+          );
+        } else if (
           event.type === 'updated' &&
           event.action.type === 'success' &&
           event.action.data !== undefined &&
