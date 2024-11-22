@@ -1,10 +1,12 @@
-<div align="center" style="margin-bottom: 32px">
-  <h1 style="padding-bottom: 32px">
-    <img src="https://raw.githubusercontent.com/klis87/normy/refs/heads/master/logo.webp" width="100px" align="center" alt="Normys logo" style="margin-right: 8px;" />
+<div align="center">
+  <h1>
+    <img src="https://raw.githubusercontent.com/klis87/normy/refs/heads/master/logo.webp" width="100px" align="center" alt="Normys logo" />
     <span style="font-size: 150%; vertical-align: middle;">Normy</span>
+    <br />
+    <br />
   </h1>
-
 </div>
+<br />
 
 [![npm version](https://badge.fury.io/js/%40normy%2Fcore.svg)](https://badge.fury.io/js/%40normy%2Fcore)
 [![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/core/dist/normy.min.js?compression=gzip)](https://unpkg.com/@normy/core)
