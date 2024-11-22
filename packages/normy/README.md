@@ -1,11 +1,9 @@
-<div align="center">
-  <h1>
+<div align="center" style="margin-bottom: 32px">
+  <h1 style="padding-bottom: 32px">
     <img src="https://raw.githubusercontent.com/klis87/normy/refs/heads/master/logo.webp" width="100px" align="center" alt="Normys logo" style="margin-right: 8px;" />
     <span style="font-size: 150%; vertical-align: middle;">Normy</span>
   </h1>
-  <p align="center">
-    Automatic normalization and data updates for data fetching libraries (react-query, swr, rtk-query and more)
-  </p>
+
 </div>
 
 [![npm version](https://badge.fury.io/js/%40normy%2Fcore.svg)](https://badge.fury.io/js/%40normy%2Fcore)
@@ -18,7 +16,7 @@
 
 <!-- [![Known Vulnerabilities](https://snyk.io/test/github/klis87/normy/badge.svg)](https://snyk.io/test/github/klis87/normy) -->
 
-Automatic normalization and data updates for data fetching libraries
+Automatic normalization and data updates for data fetching libraries (react-query, swr, rtk-query and more)
 
 ## Table of content
 
