@@ -1,6 +1,6 @@
 <div align="center">
   <h1>
-    <img src="https://raw.githubusercontent.com/klis87/normy/refs/heads/master/logo.webp" width="100px" align="center" alt="Normys logo" />
+    <img src="https://raw.githubusercontent.com/klis87/normy/refs/heads/master/logo.webp" width="120px" align="center" alt="Normys logo" />
     <span style="font-size: 150%; vertical-align: middle;">Normy</span>
     <br />
     <br />
