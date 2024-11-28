@@ -683,6 +683,29 @@ describe('createNormalizer', () => {
       ]);
     });
 
+    it('returns query if mutation array and query array are of different length', () => {
+      const normalizer = createNormalizer();
+      normalizer.setQuery('query', {
+        id: '1',
+        list: [1, 2],
+      });
+
+      expect(
+        normalizer.getQueriesToUpdate({
+          id: '1',
+          list: [1],
+        }),
+      ).toEqual([
+        {
+          queryKey: 'query',
+          data: {
+            id: '1',
+            list: [1],
+          },
+        },
+      ]);
+    });
+
     it('works with equal date objects', () => {
       const normalizer = createNormalizer();
 
