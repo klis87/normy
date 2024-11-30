@@ -20,8 +20,8 @@ const isMutationObjectDifferent = (
   normalizedData: Data,
 ): boolean => {
   if (Array.isArray(mutationData) && Array.isArray(normalizedData)) {
-    if (mutationData.length === 0) {
-      return normalizedData.length !== 0;
+    if (mutationData.length !== normalizedData.length) {
+      return true;
     }
 
     return mutationData.some((v, i) =>
