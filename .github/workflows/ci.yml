@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20 # Specify the Node.js version you want
-          cache: 'pnpm'
+          # cache: 'pnpm'
 
       # Step 3: Install pnpm
       - name: Install pnpm
