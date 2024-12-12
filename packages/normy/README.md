@@ -10,13 +10,10 @@
 
 [![npm version](https://badge.fury.io/js/%40normy%2Fcore.svg)](https://badge.fury.io/js/%40normy%2Fcore)
 [![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/core/dist/normy.min.js?compression=gzip)](https://unpkg.com/@normy/core)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/klis87/normy/ci.yml?branch=master)](https://github.com/klis87/normy/actions)
 [![Coverage Status](https://coveralls.io/repos/github/klis87/normy/badge.svg?branch=master)](https://coveralls.io/github/klis87/normy?branch=master)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-
-<!-- [![Build Status](https://travis-ci.org/klis87/normy.svg?branch=master)](https://travis-ci.org/klis87/normy) -->
-
-<!-- [![Known Vulnerabilities](https://snyk.io/test/github/klis87/normy/badge.svg)](https://snyk.io/test/github/klis87/normy) -->
 
 Automatic normalization and data updates for data fetching libraries (react-query, swr, rtk-query and more)
 
