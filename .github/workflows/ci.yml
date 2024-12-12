@@ -24,21 +24,22 @@ jobs:
           node-version: 20 # Specify the Node.js version you want
           cache: 'pnpm'
 
+      # Step 3: Install pnpm
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: npm install -g pnpm``
 
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: pnpm install
 
-      # Step 4: Build the application
+      # Step 5: Build the application
       - name: Build
         run: pnpm run build
 
-      # Step 5: Lint the code
+      # Step 6: Lint the code
       - name: Lint
         run: pnpm run lint
 
-      # Step 6: Run tests with coverage
+      # Step 7: Run tests with coverage
       # - name: Test with coverage
       #   run: pnpm run test:cover
