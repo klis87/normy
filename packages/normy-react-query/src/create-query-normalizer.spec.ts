@@ -545,14 +545,14 @@ describe('createQueryNormalizer', () => {
     });
 
     // Set isInvalidated on the query.
-    client.invalidateQueries({ queryKey: ['book'] });
+    await client.invalidateQueries({ queryKey: ['book'] });
 
-    let state1 = client.getQueryCache().find({ queryKey: ['book'] })?.state;
+    const state1 = client.getQueryCache().find({ queryKey: ['book'] })?.state;
 
-    let dataUpdatedAt1 = state1?.dataUpdatedAt;
-    let isInvalidated1 = state1?.isInvalidated;
-    let error1 = state1?.error;
-    let status1 = state1?.status;
+    const dataUpdatedAt1 = state1?.dataUpdatedAt;
+    const isInvalidated1 = state1?.isInvalidated;
+    const error1 = state1?.error;
+    const status1 = state1?.status;
 
     await sleep(1);
 
@@ -561,12 +561,12 @@ describe('createQueryNormalizer', () => {
       name: 'Name updated',
     });
 
-    let state2 = client.getQueryCache().find({ queryKey: ['book'] })?.state;
+    const state2 = client.getQueryCache().find({ queryKey: ['book'] })?.state;
 
-    let dataUpdatedAt2 = state2?.dataUpdatedAt;
-    let isInvalidated2 = state2?.isInvalidated;
-    let error2 = state2?.error;
-    let status2 = state2?.status;
+    const dataUpdatedAt2 = state2?.dataUpdatedAt;
+    const isInvalidated2 = state2?.isInvalidated;
+    const error2 = state2?.error;
+    const status2 = state2?.status;
 
     expect(dataUpdatedAt1).toEqual(dataUpdatedAt2);
     expect(isInvalidated1).toEqual(isInvalidated2);
