@@ -24,10 +24,25 @@ const updateQueriesFromMutationData = (
   const queriesToUpdate = normalizer.getQueriesToUpdate(mutationData);
 
   queriesToUpdate.forEach(query => {
-    queryClient.setQueryData(
-      JSON.parse(query.queryKey) as QueryKey,
-      () => query.data,
-    );
+    const queryKey = JSON.parse(query.queryKey) as QueryKey;
+    const cachedQuery = queryClient.getQueryCache().find({ queryKey });
+
+    // react-query resets some state when setQueryData() is called.
+    // We'll remember and reapply state that shouldn't
+    // be reset when a query is updated via Normy.
+
+    // dataUpdatedAt and isInvalidated determine if a query is stale or not,
+    // and we only want data updates from the network to change it.
+    const dataUpdatedAt = cachedQuery?.state.dataUpdatedAt;
+    const isInvalidated = cachedQuery?.state.isInvalidated;
+    const error = cachedQuery?.state.error;
+    const status = cachedQuery?.state.status;
+
+    queryClient.setQueryData(queryKey, () => query.data, {
+      updatedAt: dataUpdatedAt,
+    });
+
+    cachedQuery?.setState({ isInvalidated, error, status });
   });
 };
 

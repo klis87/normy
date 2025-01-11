@@ -521,4 +521,56 @@ describe('createQueryNormalizer', () => {
       },
     });
   });
+
+  it('keeps relevant query state on queries after setNormalizedData', async () => {
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
+
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () =>
+        Promise.resolve({
+          id: '1',
+          name: 'Name',
+        }),
+    });
+
+    // Set error state on the query.
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () => {
+        throw new Error('Failed to fetch');
+      },
+    });
+
+    // Set isInvalidated on the query.
+    await client.invalidateQueries({ queryKey: ['book'] });
+
+    const state1 = client.getQueryCache().find({ queryKey: ['book'] })?.state;
+
+    const dataUpdatedAt1 = state1?.dataUpdatedAt;
+    const isInvalidated1 = state1?.isInvalidated;
+    const error1 = state1?.error;
+    const status1 = state1?.status;
+
+    await sleep(1);
+
+    normalizer.setNormalizedData({
+      id: '1',
+      name: 'Name updated',
+    });
+
+    const state2 = client.getQueryCache().find({ queryKey: ['book'] })?.state;
+
+    const dataUpdatedAt2 = state2?.dataUpdatedAt;
+    const isInvalidated2 = state2?.isInvalidated;
+    const error2 = state2?.error;
+    const status2 = state2?.status;
+
+    expect(dataUpdatedAt1).toEqual(dataUpdatedAt2);
+    expect(isInvalidated1).toEqual(isInvalidated2);
+    expect(error1).toEqual(error2);
+    expect(status1).toEqual(status2);
+  });
 });
