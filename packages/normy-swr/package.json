@@ -33,7 +33,7 @@
     "prepublish": "pnpm run build"
   },
   "peerDependencies": {
-    "swr": ">=5.4.3"
+    "swr": ">=2.2.4"
   },
   "dependencies": {
     "@normy/core": "workspace:*"

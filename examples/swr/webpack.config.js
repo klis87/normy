@@ -61,9 +61,7 @@ module.exports = {
   devtool: 'eval-source-map',
   devServer: {
     port: 3000,
-    inline: true,
     hot: true,
-    overlay: true,
   },
   mode: 'development',
   plugins: [
