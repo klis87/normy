@@ -12,24 +12,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-    alias: {
-      '@normy/core': path.join(
-        __dirname,
-        '..',
-        '..',
-        'packages',
-        'normy',
-        'es',
-      ),
-      '@normy/rtk-query': path.join(
-        __dirname,
-        '..',
-        '..',
-        'packages',
-        'normy-rtk-query',
-        'es',
-      ),
-    },
   },
   module: {
     rules: [

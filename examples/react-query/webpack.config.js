@@ -12,33 +12,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-    alias: {
-      '@normy/core': path.join(
-        __dirname,
-        '..',
-        '..',
-        'packages',
-        'normy',
-        'es',
-      ),
-      '@normy/react-query': path.join(
-        __dirname,
-        '..',
-        '..',
-        'packages',
-        'normy-react-query',
-        'es',
-      ),
-      react: path.join(
-        __dirname,
-        '..',
-        '..',
-        'packages',
-        'normy-react-query',
-        'node_modules',
-        'react',
-      ),
-    },
   },
   module: {
     rules: [
