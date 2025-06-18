@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { useQueryNormalizer } from '@normy/vue-query';
 import { computed } from 'vue';
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
 const queryClient = useQueryClient();
+const queryNormalizer = useQueryNormalizer();
 
 // Books Query
 const { data: booksQueryData } = useQuery({
@@ -107,6 +109,12 @@ const { mutate: updateBookNameOptimistic } = useMutation({
     normalize: false,
   },
 });
+
+const updateUserManually = () => {
+  queryNormalizer.setNormalizedData({
+    author: { id: '1000', name: 'User1 updated' },
+  });
+};
 </script>
 
 <template>
@@ -135,6 +143,10 @@ const { mutate: updateBookNameOptimistic } = useMutation({
 
     <button type="button" @click="updateBookNameOptimistic()">
       Update book name optimistic
+    </button>
+
+    <button type="button" @click="updateUserManually()">
+      Update user1 name manually
     </button>
 
     <hr />

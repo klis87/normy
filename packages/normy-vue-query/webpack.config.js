@@ -1,6 +1,6 @@
 module.exports = {
   output: {
-    library: 'NormyReactQuery',
+    library: 'NormyVueQuery',
     libraryTarget: 'umd',
   },
   resolve: {
@@ -28,11 +28,17 @@ module.exports = {
       amd: '@normy/core',
       root: 'Normy',
     },
-    '@tanstack/react-query': {
-      commonjs: '@tanstack/react-query',
-      commonjs2: '@tanstack/react-query',
-      amd: '@tanstack/react-query',
-      root: 'ReactQuery',
+    '@normy/query-core': {
+      commonjs: '@normy/query-core',
+      commonjs2: '@normy/query-core',
+      amd: '@normy/query-core',
+      root: 'NormyQueryCore',
+    },
+    '@tanstack/vue-query': {
+      commonjs: '@tanstack/vue-query',
+      commonjs2: '@tanstack/vue-query',
+      amd: '@tanstack/vue-query',
+      root: 'VueQuery',
     },
   },
   devtool: 'source-map',

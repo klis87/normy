@@ -1,13 +1,17 @@
-# @normy/vue-query
+# @normy/query
 
-[![npm version](https://badge.fury.io/js/%40normy%2Fvue-query.svg)](https://badge.fury.io/js/%40normy%2Fvue-query)
-[![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/vue-query/dist/normy-vue-query.min.js?compression=gzip)](https://unpkg.com/@normy/vue-query)
+[![npm version](https://badge.fury.io/js/%40normy%2Freact-query.svg)](https://badge.fury.io/js/%40normy%2Freact-query)
+[![gzip size](https://img.badgesize.io/https://unpkg.com/@normy/react-query/dist/normy-react-query.min.js?compression=gzip)](https://unpkg.com/@normy/react-query)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/klis87/normy/ci.yml?branch=master)](https://github.com/klis87/normy/actions)
 [![Coverage Status](https://coveralls.io/repos/github/klis87/normy/badge.svg?branch=master)](https://coveralls.io/github/klis87/normy?branch=master)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-`vue-query` integration with `normy` - automatic normalization and data updates for data fetching libraries
+`react-query` integration with `normy` - automatic normalization and data updates for data fetching libraries
+
+> **Note**
+>
+> The newest version supports `react-query: 5` and `trpc: 11`! If you still use older versions, you must use `@normy/react-query@0.10.2`
 
 ## Table of content
 
@@ -21,28 +25,31 @@
 - [getObjectById and getQueryFragment](#getObjectById-and-getQueryFragment-arrow_up)
 - [getDependentQueries and getDependentQueriesByIds](#getDependentQueries-and-getDependentQueriesByIds-arrow_up)
 - [Garbage collection](#garbage-collection-arrow_up)
+- [Clearing and unsubscribing from updates](#clearing-and-unsubscribing-from-updates-arrow_up)
 - [Structural sharing](#structural-sharing-arrow_up)
 - [Examples](#examples-arrow_up)
 
 ## Introduction [:arrow_up:](#table-of-content)
 
-This is the official `vue-query` integration with `normy`, a library, which allows your application data to be normalized automatically. This documentation will cover only `vue-query` specifics, so if you did not already do that, you can
+This is the official `react-query` integration with `normy`, a library, which allows your application data to be normalized automatically. This documentation will cover only `react-query` specifics, so if you did not already do that, you can
 find `normy` documentation [here](https://github.com/klis87/normy/tree/master).
 
 ## Motivation [:arrow_up:](#table-of-content)
 
-In order to understand what `@normy/vue-query` actually does, it is the best to see an example:
+In order to understand what `@normy/react-query` actually does, it is the best to see an example:
 
 ```diff
-  import { createApp } from 'vue';
+  import React from 'react';
   import {
-    VueQueryPlugin,
+    QueryClientProvider,
     QueryClient,
     useQueryClient,
   } from '@tanstack/react-query';
-+ import { VueQueryNormalizerPlugin } from '@normy/vue-query';
++ import { QueryNormalizerProvider } from '@normy/react-query';
 
-  <script>
+  const queryClient = new QueryClient();
+
+  const Books = () => {
     const queryClient = useQueryClient();
 
     const { data: booksData = [] } = useQuery(['books'], () =>
@@ -105,14 +112,17 @@ In order to understand what `@normy/vue-query` actually does, it is the best to 
         queryClient.setQueryData(['books'], data => data.concat(mutationData));
       },
     });
-  </script>
 
-  const queryClient = new QueryClient();
+    // return some JSX
+  };
 
-  createApp(App)
-+   .use(VueQueryNormalizerPlugin, { queryClient })
-    .use(VueQueryPlugin, { queryClient })
-    .mount('#app');
+  const App = () => (
++   <QueryNormalizerProvider queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Books />
+      </QueryClientProvider>
++   </QueryNormalizerProvider>
+  );
 ```
 
 So, as you can see, apart from top level arrays, no manual data updates are necessary anymore. This is especially handy if a given mutation
@@ -124,22 +134,22 @@ which queries to update. The more queries you have, the bigger advantages `normy
 To install the package, just run:
 
 ```
-$ npm install @normy/vue-query
+$ npm install @normy/react-query
 ```
 
-or you can just use CDN: `https://unpkg.com/@normy/vue-query`.
+or you can just use CDN: `https://unpkg.com/@normy/react-query`.
 
-You do not need to install `@normy/core`, because it will be installed as `@normy/vue-query` direct dependency.
+You do not need to install `@normy/core`, because it will be installed as `@normy/react-query` direct dependency.
 
 ## Basic usage [:arrow_up:](#table-of-content)
 
 For the basic usage, see `Motivation` paragraph. The only thing which you need to actually do is to pass `queryClient`
-to `VueQueryNormalizerPlugin`. After doing this, you can use `vue-query` as you normally do, but you don't need to make any data updates
+to `QueryNormalizerProvider`. After doing this, you can use `react-query` as you normally do, but you don't need to make any data updates
 most of the time anymore.
 
-`VueQueryNormalizerPlugin` accepts two options:
+`QueryNormalizerProvider` accepts two props:
 
-- `queryClient` - this is just a vue-query instance you create by `new QueryClient(config)`,
+- `queryClient` - this is just a react-query instance you create by `new QueryClient(config)`,
 - `normalizerConfig` - this is `normy` config, which you might need to meet requirements for data normalization to work - see
   [explanation](https://github.com/klis87/normy/tree/master/#required-conditions-arrow_up) for more details. Additionally to `normy` config, you can also pass `normalize` option, which is `true` by default - if you pass `false`, nothing will be normalized unless explicitely set (see the next paragraph)
 
@@ -153,23 +163,20 @@ or just if you do not need it for a given query, for instance if a query data wi
 
 Anyway, you might want to change this globally by passing `normalize: false` to `QueryNormalizerProvider`:
 
-```js
-createApp(App)
-  .use(VueQueryNormalizerPlugin, {
-    queryClient,
-    normalizerConfig: { normalize: false },
-  })
-  .use(VueQueryPlugin, { queryClient })
-  .mount('#app');
+```jsx
+<QueryNormalizerProvider
+  queryClient={queryClient}
+  normalizerConfig={{ normalize: false }}
+>
+  {children}
+</QueryNormalizerProvider>
 ```
 
 Then, you may override the global default `normalize` setting per query and mutation.
 For this, you can use `meta` option, for example for `useQuery`:
 
 ```js
-useQuery({
-  queryKey: ['query-key'],
-  queryFn: loadData,
+useQuery(['query-key'], loadData, {
   meta: {
     normalize: true,
   },
@@ -191,9 +198,7 @@ Similarly, you can have `normalize: true` set globally (default), but you could 
 for a specific query or a mutation, for example:
 
 ```js
-useQuery({
-  queryKey: ['query-key'],
-  queryFn: loadData,
+useQuery(['query-key'], loadData, {
   meta: {
     normalize: false,
   },
@@ -206,7 +211,7 @@ For normal mutations there is nothing you need to do, `normy` will inspect respo
 update normalized data and update all relevant queries. With optimistic updates though, you need to prepare optimistic data
 yourself:
 
-```js
+```jsx
 useMutation({
   mutationFn: async () => {
     return {
@@ -236,7 +241,7 @@ It will work at the same time as a normal mutation too, so on mutation success, 
 again. If you are sure about the response structure, you might want to disable normalization for this mutation,
 so that on successful response the normalization won't be repeated unnecessarily:
 
-```js
+```jsx
 useMutation({
   mutationFn: async () => {
     return {
@@ -267,20 +272,22 @@ useMutation({
 Sometimes you might need to update your data manually, without having API response. One of examples could be having a websocket event that
 an object name has been changed. Now, instead of manually updating all your relevant queries, instead you could do below:
 
-```vue
-<script>
-import { useQueryNormalizer } from '@normy/vue-query';
+```jsx
+import { useQueryNormalizer } from '@normy/react-query';
 
-const queryNormalizer = useQueryNormalizer();
+const SomeComponent = () => {
+  const queryNormalizer = useQueryNormalizer();
 
-const updateUser = () => {
-  queryNormalizer.setNormalizedData({ id: '1', name: 'Updated name' });
+  return (
+    <button
+      onClick={() =>
+        queryNormalizer.setNormalizedData({ id: '1', name: 'Updated name' })
+      }
+    >
+      Update user
+    </button>
+  );
 };
-</script>
-
-<template>
-  <button @click="updateUser()">Update user</button>
-</template>
 ```
 
 What it will do is updating normalized store, as well as finding all queries which contain user with `id` equal `'1'` and updating them with `name: 'Updated name'`.
@@ -292,18 +299,20 @@ query/queries this object could be, all you need is an id. For example, you migh
 An even more interesting example is that you could use it as `initialData` or `placeholderData` for another `useQuery`,
 so that you could render some data before even query is fetched:
 
-```vue
-import { useQueryNormalizer } from '@normy/vue-query';
+```jsx
+import { useQueryNormalizer } from '@normy/react-query';
 
-<script>
-const queryNormalizer = useQueryNormalizer();
-const bookPlaceholder = queryNormalizer.getObjectById(1);
-const { data } = useQuery({
-  queryKey: ['books', 1],
-  placeholderData: bookPlaceholder,
-  ...otherOptions,
-});
-</script>
+const BookDetail = ({ bookId }) => {
+  const queryNormalizer = useQueryNormalizer();
+  const bookPlaceholder = queryNormalizer.getObjectById(bookId);
+  const query = useQuery({
+    queryKey: ['books', bookId],
+    placeholderData: bookPlaceholder,
+    ...otherOptions,
+  });
+
+  //
+};
 ```
 
 In above example, imagine you want to display a component with a book detail. You might already have this book
@@ -342,9 +351,8 @@ With above example, you will end up with infinite recursion error and `getObject
 You will also see a warning in the console, to use a second argument for this case, which tells `getObjectById`
 what structure is should have, for example:
 
-```vue
-<script>
-import { useQueryNormalizer } from '@normy/vue-query';
+```js
+import { useQueryNormalizer } from '@normy/react-query';
 
 const queryNormalizer = useQueryNormalizer();
 const user = queryNormalizer.getObjectById('1', {
@@ -352,7 +360,6 @@ const user = queryNormalizer.getObjectById('1', {
   name: '',
   bestFriend: { id: '', name: '' },
 });
-</script>
 ```
 
 In above case, `user` would be:
@@ -395,7 +402,7 @@ under the hood. Basically `getQueryFragment` allows you to get multiple objects 
 for example:
 
 ```js
-import { getId } from '@normy/vue-query';
+import { getId } from '@normy/react-query';
 
 const users = queryNormalizer.getQueryFragment([getId('1'), getId('2')]);
 const usersAndBook = queryNormalizer.getQueryFragment({
@@ -422,7 +429,7 @@ Anyway. if any object does not exist, it will be `undefined`. For example, assum
 Like for `getObjectById`, you can also pass data structure, for example:
 
 ```js
-import { getId } from '@normy/vue-query';
+import { getId } from '@normy/react-query';
 
 const usersAndBook = queryNormalizer.getQueryFragment(
   { users: [getId('1'), getId('2')], book: getId('3') },
@@ -457,7 +464,7 @@ const listOfDependentQueries = queryNormalizer.getDependentQueries({
 ```
 
 Now, assuming, that objects with ids `1` and `2` are both normalizable, you will receive a list of all queries holding those objects, for example `[['books'], ['book', 1], ['book', 2]]`. Then, you can do anything with them, like invalidate/abort by just
-using normal `vue-query` API.
+using normal `react-query` API.
 
 ### getDependentQueriesByIds
 
@@ -477,9 +484,14 @@ This is the same as above, it just does not use data as argument, but a list of 
 `normy` know how to clean after itself. When a query is removed from the store, `normy` will do the same, removing all redundant
 information.
 
+## Clearing and unsubscribing from updates [:arrow_up:](#table-of-content)
+
+When `QueryNormalizerProvider` is unmounted, all normalized data will be automatically cleared and all subscribers
+to `react-query` client will be unsubscribed.
+
 ## Structural sharing [:arrow_up:](#table-of-content)
 
-By default, this library takes advantage over `vue-query` structural sharing feature. Structural sharing benefit is the following - if a query
+By default, this library takes advantage over `react-query` structural sharing feature. Structural sharing benefit is the following - if a query
 is refetched, its data will remain referentially the same if it is the same structurally (when API response is the same).
 
 Typically it was implemented in order to have optimizations like avoiding rerenders for the same data,
@@ -490,7 +502,7 @@ This brings big performance improvements, especially during refetches on window 
 potentially dozens of queries could be refetched simultaneously. In practice, most of those responses will be the same,
 which will prevent data to be normalized again unnecessarily (to the very same normalized value).
 
-So it is even more beneficial not to turn off `vue-query` structural sharing feature!
+So it is even more beneficial not to turn off `react-query` structural sharing feature!
 
 ## Examples [:arrow_up:](#table-of-content)
 
@@ -498,7 +510,8 @@ I highly recommend to try examples how this package could be used in real applic
 
 There are following examples currently:
 
-- [vue-query](https://github.com/klis87/normy/tree/master/examples/vue-query)
+- [react-query](https://github.com/klis87/normy/tree/master/examples/react-query)
+- [trpc](https://github.com/klis87/normy/tree/master/examples/trpc)
 
 ## Licence [:arrow_up:](#table-of-content)
 

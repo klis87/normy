@@ -1,18 +1,18 @@
 {
-  "name": "@normy/vue-query",
+  "name": "@normy/query-core",
   "version": "0.18.0",
-  "description": "vue-query addon for normy - automatic normalization and data updates for data fetching libraries",
+  "description": "query-core addon for normy - automatic normalization and data updates for data fetching libraries",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
-  "unpkg": "dist/normy-vue-query.min.js",
+  "unpkg": "dist/normy-query-core.min.js",
   "repository": "git@github.com:klis87/normy.git",
   "author": "Konrad Lisiczynski <klisiczynski@gmail.com>",
   "license": "MIT",
   "typings": "types/index.d.ts",
   "keywords": [
     "normalization",
-    "vue-query"
+    "query-core"
   ],
   "homepage": "https://github.com/klis87/normy",
   "bugs": {
@@ -26,28 +26,25 @@
     "build-types": "tsc src/index.ts --strict --esModuleInterop --lib es2018,dom --skipLibCheck --jsx react --declaration --emitDeclarationOnly --declarationDir types",
     "build:commonjs": "cross-env BABEL_ENV=cjs babel src --extensions '.ts,.tsx' --out-dir lib --ignore 'src/**/*.spec.js'",
     "build:es": "babel src --extensions '.ts,.tsx' --out-dir es --ignore 'src/**/*.spec.js'",
-    "build:umd": "webpack --mode development -o dist --output-filename normy-vue-query.js",
-    "build:umd:min": "webpack --mode production -o dist --output-filename normy-vue-query.min.js",
+    "build:umd": "webpack --mode development -o dist --output-filename normy-query-core.js",
+    "build:umd:min": "webpack --mode production -o dist --output-filename normy-query-core.min.js",
     "build": "npm-run-all clean build-types -p build:commonjs build:es build:umd build:umd:min",
     "build:watch": "nodemon --watch src --ignore src/**/*.spec.js --exec 'pnpm run build:es'",
     "prepare": "pnpm run build"
   },
   "peerDependencies": {
-    "@tanstack/vue-query": ">=5.4.3",
-    "vue": ">=3.4.29"
+    "@tanstack/query-core": ">=5.4.3"
   },
   "dependencies": {
-    "@normy/core": "workspace:*",
-    "@normy/query-core": "workspace:*"
+    "@normy/core": "workspace:*"
   },
   "devDependencies": {
     "@babel/cli": "7.23.4",
     "@babel/core": "7.23.5",
     "@babel/preset-env": "7.23.5",
-    "@babel/preset-react": "7.23.3",
     "@babel/preset-typescript": "7.23.3",
     "@babel/types": "7.23.5",
-    "@tanstack/vue-query": "5.4.3",
+    "@tanstack/query-core": "5.4.3",
     "@types/node": "20.10.4",
     "@typescript-eslint/eslint-plugin": "6.13.2",
     "@typescript-eslint/parser": "6.13.2",
@@ -63,7 +60,7 @@
     "npm-run-all": "4.1.5",
     "rimraf": "3.0.2",
     "ts-jest": "29.1.1",
-    "typescript": "5.3.3",
+    "typescript": "5.6.3",
     "webpack": "5.89.0",
     "webpack-cli": "5.1.4"
   },

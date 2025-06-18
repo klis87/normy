@@ -31,7 +31,7 @@
     "build:umd:min": "webpack --mode production -o dist --output-filename normy.min.js",
     "build": "npm-run-all clean build-types -p build:commonjs build:es build:umd build:umd:min",
     "build:watch": "nodemon --watch src --ignore src/**/*.spec.js --exec 'pnpm run build:es'",
-    "prepublish": "pnpm run build"
+    "prepare": "pnpm run build"
   },
   "devDependencies": {
     "@babel/cli": "7.23.4",
@@ -69,6 +69,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0f322466821c75aefec9bafb41f28118a1f6789b"
+  }
 }

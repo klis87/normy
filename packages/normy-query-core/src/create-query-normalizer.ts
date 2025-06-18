@@ -3,7 +3,7 @@ import {
   type Data,
   type NormalizerConfig,
 } from '@normy/core';
-import type { QueryClient, QueryKey } from '@tanstack/vue-query';
+import type { QueryClient, QueryKey } from '@tanstack/query-core';
 
 const shouldBeNormalized = (
   globalNormalize: boolean,
@@ -24,10 +24,25 @@ const updateQueriesFromMutationData = (
   const queriesToUpdate = normalizer.getQueriesToUpdate(mutationData);
 
   queriesToUpdate.forEach(query => {
-    queryClient.setQueryData(
-      JSON.parse(query.queryKey) as QueryKey,
-      () => query.data,
-    );
+    const queryKey = JSON.parse(query.queryKey) as QueryKey;
+    const cachedQuery = queryClient.getQueryCache().find({ queryKey });
+
+    // react-query resets some state when setQueryData() is called.
+    // We'll remember and reapply state that shouldn't
+    // be reset when a query is updated via Normy.
+
+    // dataUpdatedAt and isInvalidated determine if a query is stale or not,
+    // and we only want data updates from the network to change it.
+    const dataUpdatedAt = cachedQuery?.state.dataUpdatedAt;
+    const isInvalidated = cachedQuery?.state.isInvalidated;
+    const error = cachedQuery?.state.error;
+    const status = cachedQuery?.state.status;
+
+    queryClient.setQueryData(queryKey, () => query.data, {
+      updatedAt: dataUpdatedAt,
+    });
+
+    cachedQuery?.setState({ isInvalidated, error, status });
   });
 };
 
@@ -52,6 +67,15 @@ export const createQueryNormalizer = (
       unsubscribeQueryCache = queryClient.getQueryCache().subscribe(event => {
         if (event.type === 'removed') {
           normalizer.removeQuery(JSON.stringify(event.query.queryKey));
+        } else if (
+          event.type === 'added' &&
+          event.query.state.data !== undefined &&
+          shouldBeNormalized(normalize, event.query.meta?.normalize)
+        ) {
+          normalizer.setQuery(
+            JSON.stringify(event.query.queryKey),
+            event.query.state.data as Data,
+          );
         } else if (
           event.type === 'updated' &&
           event.action.type === 'success' &&
@@ -114,5 +138,13 @@ export const createQueryNormalizer = (
     },
     getObjectById: normalizer.getObjectById,
     getQueryFragment: normalizer.getQueryFragment,
+    getDependentQueries: (mutationData: Data) =>
+      normalizer
+        .getDependentQueries(mutationData)
+        .map(key => JSON.parse(key) as QueryKey),
+    getDependentQueriesByIds: (ids: ReadonlyArray<string>) =>
+      normalizer
+        .getDependentQueriesByIds(ids)
+        .map(key => JSON.parse(key) as QueryKey),
   };
 };

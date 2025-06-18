@@ -154,6 +154,16 @@ $ npm install @normy/react-query
 
 or you can just use CDN: `https://unpkg.com/@normy/react-query`.
 
+### vue-query
+
+To install the package, just run:
+
+```
+$ npm install @normy/vue-query
+```
+
+or you can just use CDN: `https://unpkg.com/@normy/vue-query`.
+
 ### swr
 
 To install the package, just run:
@@ -293,6 +303,7 @@ Moreover, in the future some additional performance specific options will be add
 Currently the are three official integrations with data fetching libraries, namely `react-query`, `swr` and `rtk-query`. See dedicated documentations for specific integrations:
 
 - [react-query](https://github.com/klis87/normy/tree/master/packages/normy-react-query)
+- [vue-query](https://github.com/klis87/normy/tree/master/packages/normy-vue-query)
 - [swr](https://github.com/klis87/normy/tree/master/packages/normy-swr)
 - [rtk-query](https://github.com/klis87/normy/tree/master/packages/normy-rtk-query)
 
@@ -304,6 +315,7 @@ There are following examples currently:
 
 - [react-query](https://github.com/klis87/normy/tree/master/examples/react-query)
 - [trpc](https://github.com/klis87/normy/tree/master/examples/trpc)
+- [vue-query](https://github.com/klis87/normy/tree/master/examples/vue-query)
 - [swr](https://github.com/klis87/normy/tree/master/examples/swr)
 - [rtk-query](https://github.com/klis87/normy/tree/master/examples/rtk-query)
 

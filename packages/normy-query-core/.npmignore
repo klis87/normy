@@ -1,0 +1,5 @@
+**/*.spec.ts
+*.tgz
+.babelrc
+webpack.config.js
+coverage

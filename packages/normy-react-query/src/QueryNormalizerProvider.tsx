@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { QueryClient } from '@tanstack/react-query';
 import { NormalizerConfig } from '@normy/core';
-
-import { createQueryNormalizer } from './create-query-normalizer';
+import { createQueryNormalizer } from '@normy/query-core';
 
 const QueryNormalizerContext = React.createContext<
   undefined | ReturnType<typeof createQueryNormalizer>

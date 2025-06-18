@@ -10,6 +10,9 @@ const queryClient = new QueryClient({
 });
 
 createApp(App)
-  .use(VueQueryNormalizerPlugin, { queryClient })
+  .use(VueQueryNormalizerPlugin, {
+    queryClient,
+    normalizerConfig: { devLogging: true },
+  })
   .use(VueQueryPlugin, { queryClient })
   .mount('#app');

@@ -1,6 +1,6 @@
 module.exports = {
   output: {
-    library: 'NormyReactQuery',
+    library: 'NormyQueryCore',
     libraryTarget: 'umd',
   },
   resolve: {
@@ -27,12 +27,6 @@ module.exports = {
       commonjs2: '@normy/core',
       amd: '@normy/core',
       root: 'Normy',
-    },
-    '@normy/query-core': {
-      commonjs: '@normy/query-core',
-      commonjs2: '@normy/query-core',
-      amd: '@normy/query-core',
-      root: 'NormyQueryCore',
     },
     '@tanstack/react-query': {
       commonjs: '@tanstack/react-query',
