@@ -293,9 +293,9 @@ An even more interesting example is that you could use it as `initialData` or `p
 so that you could render some data before even query is fetched:
 
 ```vue
+<script>
 import { useQueryNormalizer } from '@normy/vue-query';
 
-<script>
 const queryNormalizer = useQueryNormalizer();
 const bookPlaceholder = queryNormalizer.getObjectById(1);
 const { data } = useQuery({
