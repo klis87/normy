@@ -8,7 +8,8 @@
         "packages/*/node_modules/**",
         "packages/*/dist/**",
         "packages/*/es/**",
-        "packages/*/lib/**"
+        "packages/*/lib/**",
+        "examples/**"
       ]
     }
   },
