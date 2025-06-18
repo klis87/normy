@@ -1,5 +1,6 @@
 {
   "name": "normy-trpc-example",
+  "private": true,
   "version": "1.0.0",
   "description": "normy trpc example",
   "main": "src/index.js",

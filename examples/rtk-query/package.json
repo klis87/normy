@@ -1,5 +1,6 @@
 {
   "name": "normy-rtk-query-example",
+  "private": true,
   "version": "1.0.0",
   "description": "normy rtk query example",
   "main": "src/index.js",
