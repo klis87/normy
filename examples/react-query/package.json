@@ -1,6 +1,5 @@
 {
   "name": "normy-react-query-example",
-  "version": "1.0.0",
   "private": true,
   "description": "normy react query example",
   "main": "src/index.js",
