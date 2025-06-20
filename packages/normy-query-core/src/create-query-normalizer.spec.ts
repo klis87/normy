@@ -402,6 +402,83 @@ describe('createQueryNormalizer', () => {
     });
   });
 
+  it('reverts normalizedData after error of an optimistic update to automatic rollbackData', async () => {
+    const client = new QueryClient();
+    const normalizer = createQueryNormalizer(client);
+    normalizer.subscribe();
+
+    await client.prefetchQuery({
+      queryKey: ['book'],
+      queryFn: () =>
+        Promise.resolve({
+          id: '1',
+          name: 'Name',
+        }),
+    });
+
+    const mutationObserver = new MutationObserver(client, {
+      mutationFn: async () => {
+        await sleep(100);
+        return Promise.reject({ error: true });
+      },
+      onMutate: () => ({
+        optimisticData: {
+          id: '1',
+          name: 'Name updated',
+        },
+      }),
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const mutation = mutationObserver.mutate().catch(() => {});
+
+    await sleep(1);
+
+    expect(normalizer.getNormalizedData()).toEqual({
+      queries: {
+        '["book"]': {
+          data: '@@1',
+          dependencies: ['@@1'],
+          usedKeys: {
+            '': ['id', 'name'],
+          },
+        },
+      },
+      dependentQueries: {
+        '@@1': ['["book"]'],
+      },
+      objects: {
+        '@@1': {
+          id: '1',
+          name: 'Name updated',
+        },
+      },
+    });
+
+    await mutation;
+
+    expect(normalizer.getNormalizedData()).toEqual({
+      queries: {
+        '["book"]': {
+          data: '@@1',
+          dependencies: ['@@1'],
+          usedKeys: {
+            '': ['id', 'name'],
+          },
+        },
+      },
+      dependentQueries: {
+        '@@1': ['["book"]'],
+      },
+      objects: {
+        '@@1': {
+          id: '1',
+          name: 'Name',
+        },
+      },
+    });
+  });
+
   it('clears data and unsubscribes from updates', async () => {
     const client = new QueryClient();
     const normalizer = createQueryNormalizer(client);

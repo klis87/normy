@@ -220,6 +220,7 @@ useMutation({
         id: '1',
         name: 'Name updated',
       },
+      // this is optional, if not passed, it will be calculated automatically!
       rollbackData: {
         id: '1',
         name: 'Name',
@@ -230,7 +231,8 @@ useMutation({
 ```
 
 The above code will immediately update all queries which have object with `id: 1` in their data. In case of
-a mutation error, data will be reverted to original `rollbackData`.
+a mutation error, data will be reverted to original `rollbackData`. Note that you do not even need to pass it,
+because if not passed, `normy` will calculate it for you, automatically!
 
 It will work at the same time as a normal mutation too, so on mutation success, all dependent queries will be updated
 again. If you are sure about the response structure, you might want to disable normalization for this mutation,

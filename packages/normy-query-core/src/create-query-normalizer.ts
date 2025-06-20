@@ -109,9 +109,25 @@ export const createQueryNormalizer = (
             (event.mutation.state?.context as { optimisticData?: Data })
               ?.optimisticData
           ) {
+            const context = event.mutation.state.context as {
+              optimisticData: Data;
+              rollbackData?: Data;
+            };
+
+            if (!context.rollbackData) {
+              const rollbackDataToInject = normalizer.getCurrentData(
+                context.optimisticData,
+              );
+
+              normalizer.log(
+                'calculated automatically rollbackData:',
+                rollbackDataToInject,
+              );
+              context.rollbackData = rollbackDataToInject;
+            }
+
             updateQueriesFromMutationData(
-              (event.mutation.state.context as { optimisticData: Data })
-                .optimisticData,
+              context.optimisticData,
               normalizer,
               queryClient,
             );

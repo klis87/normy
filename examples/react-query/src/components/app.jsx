@@ -2,7 +2,8 @@ import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQueryNormalizer } from '@normy/react-query';
 
-const sleep = () => new Promise(resolve => setTimeout(resolve, 10));
+const sleep = (timeout = 10) =>
+  new Promise(resolve => setTimeout(resolve, timeout));
 
 const Books = () => {
   const { data: booksData = [] } = useQuery({
@@ -77,21 +78,14 @@ const BooksApp = () => {
 
   const updateBookNameMutationOptimistic = useMutation({
     mutationFn: async () => {
-      await sleep();
+      await sleep(2000);
 
-      return {
-        id: '1',
-        name: 'Name 1 Updated',
-      };
+      throw new Error('test');
     },
     onMutate: () => ({
       optimisticData: {
         id: '1',
         name: 'Name 1 Updated',
-      },
-      rollbackData: {
-        id: '1',
-        name: 'Name 1',
       },
     }),
     meta: {

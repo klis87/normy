@@ -228,6 +228,12 @@ export const createNormalizer = (
     exampleObject?: T,
   ): T | undefined => getQueryFragment(`@@${id}`, exampleObject);
 
+  const getCurrentData = <T extends Data>(newData: T): T | undefined => {
+    const [fragment] = normalize(newData, config);
+
+    return getQueryFragment(fragment, newData);
+  };
+
   return {
     getNormalizedData: () => normalizedData,
     clearNormalizedData: () => {
@@ -241,5 +247,9 @@ export const createNormalizer = (
     getQueryFragment,
     getDependentQueries,
     getDependentQueriesByIds,
+    getCurrentData,
+    log: (...messages: unknown[]) => {
+      warning(config.devLogging, ...messages);
+    },
   };
 };
