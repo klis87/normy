@@ -1,6 +1,6 @@
 {
   "name": "@normy/rtk-query",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "rtk-query addon for normy - automatic normalization and data updates for data fetching libraries",
   "main": "lib/index.js",
   "module": "es/index.js",
