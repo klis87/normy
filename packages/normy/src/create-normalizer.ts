@@ -1,18 +1,29 @@
-import { addOrRemoveDependencies } from './add-or-remove-dependencies';
+import {
+  addOrRemoveDependencies,
+  addOrRemoveQueriesWithArrays,
+} from './add-or-remove-dependencies';
 import { defaultConfig } from './default-config';
 import { denormalize } from './denormalize';
 import { getDependenciesDiff } from './get-dependencies-diff';
 import { getId } from './get-id';
-import { getQueriesDependentOnMutation } from './get-queries-dependent-on-mutation';
+import {
+  getQueriesDependentOnArrayOperations,
+  getQueriesDependentOnMutation,
+} from './get-queries-dependent-on-mutation';
 import { mergeData } from './merge-data';
 import { normalize } from './normalize';
 import { Data, DataObject, NormalizedData, NormalizerConfig } from './types';
 import { warning } from './warning';
+import {
+  getArrayOperationsToApply,
+  applyArrayOperations,
+} from './array-transformations';
 
 const initialData: NormalizedData = {
   queries: {},
   objects: {},
   dependentQueries: {},
+  queriesWithArrays: {},
 };
 
 const isMutationObjectDifferent = (
@@ -70,10 +81,8 @@ export const createNormalizer = (
       currentDataReferences[queryKey] = queryData;
     }
 
-    const [normalizedQueryData, normalizedObjectsData, usedKeys] = normalize(
-      queryData,
-      config,
-    );
+    const [normalizedQueryData, normalizedObjectsData, usedKeys, arrayTypes] =
+      normalize(queryData, queryKey, config);
 
     const { addedDependencies, removedDependencies } = getDependenciesDiff(
       normalizedData.queries[queryKey]
@@ -82,12 +91,23 @@ export const createNormalizer = (
       Object.keys(normalizedObjectsData),
     );
 
+    const {
+      addedDependencies: addedArrayTypes,
+      removedDependencies: removedArrayTypes,
+    } = getDependenciesDiff(
+      normalizedData.queries[queryKey]
+        ? normalizedData.queries[queryKey].arrayTypes
+        : [],
+      arrayTypes,
+    );
+
     normalizedData = {
       queries: {
         ...normalizedData.queries,
         [queryKey]: {
           data: normalizedQueryData,
           usedKeys,
+          arrayTypes,
           dependencies: Object.keys(normalizedObjectsData),
         },
       },
@@ -97,6 +117,12 @@ export const createNormalizer = (
         queryKey,
         addedDependencies,
         removedDependencies,
+      ),
+      ...addOrRemoveQueriesWithArrays(
+        normalizedData.queriesWithArrays,
+        queryKey,
+        addedArrayTypes,
+        removedArrayTypes,
       ),
     };
 
@@ -153,7 +179,7 @@ export const createNormalizer = (
   };
 
   const getDependentQueries = (mutationData: Data) => {
-    const [, normalizedObjectsData] = normalize(mutationData, config);
+    const [, normalizedObjectsData] = normalize(mutationData, '', config);
 
     return getQueriesDependentOnMutation(
       normalizedData.dependentQueries,
@@ -167,34 +193,6 @@ export const createNormalizer = (
       ids.map(getId),
     );
 
-  const getQueriesToUpdate = (mutationData: Data) => {
-    const [, normalizedObjectsData] = normalize(mutationData, config);
-
-    const updatedObjects = filterMutationObjects(
-      normalizedObjectsData,
-      normalizedData.objects,
-    );
-
-    const normalizedDataWithMutation = mergeData(
-      normalizedData.objects,
-      updatedObjects,
-    );
-
-    const foundQueries = getQueriesDependentOnMutation(
-      normalizedData.dependentQueries,
-      Object.keys(updatedObjects),
-    );
-
-    return foundQueries.map(queryKey => ({
-      queryKey,
-      data: denormalize(
-        normalizedData.queries[queryKey].data,
-        normalizedDataWithMutation,
-        normalizedData.queries[queryKey].usedKeys,
-      ),
-    }));
-  };
-
   const getQueryFragment = <T extends Data>(
     fragment: Data,
     exampleObject?: T,
@@ -202,7 +200,7 @@ export const createNormalizer = (
     let usedKeys = {};
 
     if (exampleObject) {
-      const [, , keys] = normalize(exampleObject, config);
+      const [, , keys] = normalize(exampleObject, '', config);
       usedKeys = keys;
     }
 
@@ -229,9 +227,68 @@ export const createNormalizer = (
   ): T | undefined => getQueryFragment(`@@${id}`, exampleObject);
 
   const getCurrentData = <T extends Data>(newData: T): T | undefined => {
-    const [fragment] = normalize(newData, config);
+    const [fragment] = normalize(newData, '', config);
 
     return getQueryFragment(fragment, newData);
+  };
+
+  const getQueriesToUpdate = (mutationData: Data) => {
+    const [, normalizedObjectsData] = normalize(mutationData, '', config);
+
+    const updatedObjects = filterMutationObjects(
+      normalizedObjectsData,
+      normalizedData.objects,
+    );
+
+    const normalizedDataWithMutation = mergeData(
+      normalizedData.objects,
+      updatedObjects,
+    );
+
+    const arrayOperations = getArrayOperationsToApply(mutationData, config);
+    const arrayOperationTypes = Array.from(
+      new Set(arrayOperations.map(operation => operation.arrayType)),
+    );
+
+    const foundQueriesWithArrayOperations =
+      getQueriesDependentOnArrayOperations(
+        normalizedData.queriesWithArrays,
+        arrayOperationTypes,
+      );
+
+    const foundQueries = getQueriesDependentOnMutation(
+      normalizedData.dependentQueries,
+      Object.keys(updatedObjects),
+    );
+
+    const queriesWithOnlyMutation = foundQueries.filter(
+      query => !foundQueriesWithArrayOperations.includes(query),
+    );
+
+    return [
+      ...queriesWithOnlyMutation.map(queryKey => ({
+        queryKey,
+        data: denormalize(
+          normalizedData.queries[queryKey].data,
+          normalizedDataWithMutation,
+          normalizedData.queries[queryKey].usedKeys,
+        ),
+      })),
+      ...foundQueriesWithArrayOperations.map(queryKey => ({
+        queryKey,
+        data: applyArrayOperations(
+          denormalize(
+            normalizedData.queries[queryKey].data,
+            normalizedDataWithMutation,
+            normalizedData.queries[queryKey].usedKeys,
+          ),
+          queryKey,
+          arrayOperations,
+          config,
+          getObjectById,
+        ),
+      })),
+    ];
   };
 
   return {

@@ -14,7 +14,10 @@ const renderApp = () => {
   root.render(
     <QueryNormalizerProvider
       queryClient={queryClient}
-      normalizerConfig={{ devLogging: true }}
+      normalizerConfig={{
+        devLogging: true,
+        getArrayType: ({ arrayKey }) => arrayKey,
+      }}
     >
       <QueryClientProvider client={queryClient}>
         <App />

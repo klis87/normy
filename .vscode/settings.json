@@ -1,0 +1,4 @@
+{
+  "jest.enable": true,
+  "jest.autoRun": "off"
+}

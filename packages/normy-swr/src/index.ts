@@ -1,4 +1,4 @@
-export { getId } from '@normy/core';
+export { getId, arrayHelpers, createArrayHelpers } from '@normy/core';
 
 export {
   SWRNormalizerProvider,

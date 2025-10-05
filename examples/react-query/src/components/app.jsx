@@ -6,17 +6,19 @@ const sleep = (timeout = 10) =>
   new Promise(resolve => setTimeout(resolve, timeout));
 
 const Books = () => {
-  const { data: booksData = [] } = useQuery({
+  const { data: booksData } = useQuery({
     queryKey: ['books'],
     queryFn: () =>
-      Promise.resolve([
-        { id: '0', name: 'Name 0', author: null },
-        { id: '1', name: 'Name 1', author: { id: '1000', name: 'User1' } },
-        { id: '2', name: 'Name 2', author: { id: '1001', name: 'User2' } },
-      ]),
+      Promise.resolve({
+        books: [
+          { id: '0', name: 'Name 0', author: null },
+          { id: '1', name: 'Name 1', author: { id: '1000', name: 'User1' } },
+          { id: '2', name: 'Name 2', author: { id: '1001', name: 'User2' } },
+        ],
+      }),
   });
 
-  return booksData.map(book => (
+  return booksData?.books.map(book => (
     <div key={book.id}>
       {book.name} {book.author && book.author.name}
     </div>
@@ -59,20 +61,14 @@ const BooksApp = () => {
     mutationFn: async () => {
       await sleep();
 
-      return {
-        id: '3',
-        name: 'Name 3',
-        author: { id: '1002', name: 'User3' },
-      };
-    },
-    onSuccess: () => {
-      queryClient.setQueryData(['books'], data =>
-        data.concat({
+      return [
+        {
           id: '3',
           name: 'Name 3',
           author: { id: '1002', name: 'User3' },
-        }),
-      );
+          __append: ['books'],
+        },
+      ];
     },
   });
 

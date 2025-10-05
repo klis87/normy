@@ -1,7 +1,7 @@
 import type { NormyQueryMeta } from '@normy/query-core';
 
 export { createQueryNormalizer } from '@normy/query-core';
-export { getId } from '@normy/core';
+export { getId, arrayHelpers, createArrayHelpers } from '@normy/core';
 
 export {
   VueQueryNormalizerPlugin,

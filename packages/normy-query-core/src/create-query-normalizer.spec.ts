@@ -12,6 +12,7 @@ describe('createQueryNormalizer', () => {
       queries: {},
       dependentQueries: {},
       objects: {},
+      queriesWithArrays: {},
     });
   });
 
@@ -37,6 +38,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -48,6 +50,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -69,6 +72,7 @@ describe('createQueryNormalizer', () => {
       queries: {},
       dependentQueries: {},
       objects: {},
+      queriesWithArrays: {},
     });
   });
 
@@ -93,6 +97,7 @@ describe('createQueryNormalizer', () => {
       queries: {},
       dependentQueries: {},
       objects: {},
+      queriesWithArrays: {},
     });
   });
 
@@ -119,6 +124,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -130,6 +136,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -156,6 +163,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -167,6 +175,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
 
     await sleep(10);
@@ -175,6 +184,7 @@ describe('createQueryNormalizer', () => {
       queries: {},
       dependentQueries: {},
       objects: {},
+      queriesWithArrays: {},
     });
   });
 
@@ -210,6 +220,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -221,6 +232,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name updated',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -259,6 +271,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -270,6 +283,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -307,6 +321,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -318,6 +333,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name updated',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -365,6 +381,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -376,6 +393,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name updated',
         },
       },
+      queriesWithArrays: {},
     });
 
     await mutation;
@@ -388,6 +406,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -399,6 +418,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name reverted',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -442,6 +462,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -453,6 +474,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name updated',
         },
       },
+      queriesWithArrays: {},
     });
 
     await mutation;
@@ -465,6 +487,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -476,6 +499,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
   });
 
@@ -509,6 +533,7 @@ describe('createQueryNormalizer', () => {
       queries: {},
       dependentQueries: {},
       objects: {},
+      queriesWithArrays: {},
     });
   });
 
@@ -539,6 +564,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -550,6 +576,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name updated',
         },
       },
+      queriesWithArrays: {},
     });
 
     expect(client.getQueryData(['book'])).toEqual({
@@ -585,6 +612,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -596,6 +624,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
   });
 

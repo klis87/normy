@@ -38,22 +38,46 @@ const stipFromDeps = (
 
 export const getDependencies = (
   data: Data,
+  queryKey: string,
   config = defaultConfig,
   usedKeys?: UsedKeys,
+  arrayTypes?: string[],
   path = '',
-): [DataObject[], UsedKeys] => {
+  parentObj?: DataObject,
+  parentObjKey?: string,
+): [DataObject[], UsedKeys, string[]] => {
   usedKeys = usedKeys || {};
+  arrayTypes = arrayTypes || [];
 
   if (Array.isArray(data)) {
+    const arrayType = config.getArrayType({
+      array: data as DataObject[],
+      parentObj: parentObj as DataObject,
+      arrayKey: parentObjKey as string,
+      queryKey,
+    });
+
+    if (arrayType !== undefined && !arrayTypes.includes(arrayType)) {
+      arrayTypes.push(arrayType);
+    }
+
     return [
       (data as DataObject[]).reduce(
         (prev: DataObject[], current: Data) => [
           ...prev,
-          ...getDependencies(current, config, usedKeys, path)[0],
+          ...getDependencies(
+            current,
+            queryKey,
+            config,
+            usedKeys,
+            arrayTypes,
+            path,
+          )[0],
         ],
         [] as DataObject[],
       ),
       usedKeys,
+      arrayTypes,
     ];
   }
 
@@ -66,22 +90,40 @@ export const getDependencies = (
       Object.entries(data).reduce(
         (prev, [k, v]) => [
           ...prev,
-          ...getDependencies(v, config, usedKeys, `${path}.${k}`)[0],
+          ...getDependencies(
+            v,
+            queryKey,
+            config,
+            usedKeys,
+            arrayTypes,
+            `${path}.${k}`,
+            data,
+            k,
+          )[0],
         ],
         config.getNormalizationObjectKey(data) !== undefined ? [data] : [],
       ),
       usedKeys,
+      arrayTypes,
     ];
   }
 
-  return [[], usedKeys];
+  return [[], usedKeys, arrayTypes];
 };
 
 export const normalize = (
   data: Data,
+  queryKey: string,
   config = defaultConfig,
-): [Data, { [objectId: string]: DataObject }, UsedKeys] => {
-  const [dependencies, usedKeys] = getDependencies(data, config);
+): [Data, { [objectId: string]: DataObject }, UsedKeys, string[]] => {
+  const [dependencies, usedKeys, arrayTypes] = getDependencies(
+    data,
+    queryKey,
+    config,
+    undefined,
+    undefined,
+    '',
+  );
 
   return [
     stipFromDeps(data, config, true),
@@ -100,5 +142,6 @@ export const normalize = (
       [objectId: string]: DataObject;
     },
     usedKeys,
+    arrayTypes,
   ];
 };

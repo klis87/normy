@@ -10,6 +10,7 @@ describe('createQueryNormalizer', () => {
       queries: {},
       dependentQueries: {},
       objects: {},
+      queriesWithArrays: {},
     });
   });
 
@@ -35,6 +36,7 @@ describe('createQueryNormalizer', () => {
           usedKeys: {
             '': ['id', 'name'],
           },
+          arrayTypes: [],
         },
       },
       dependentQueries: {
@@ -46,6 +48,7 @@ describe('createQueryNormalizer', () => {
           name: 'Name',
         },
       },
+      queriesWithArrays: {},
     });
   });
 });

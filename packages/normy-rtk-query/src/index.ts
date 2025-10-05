@@ -6,7 +6,7 @@ import {
   type NormalizerConfig,
 } from '@normy/core';
 
-export { getId } from '@normy/core';
+export { getId, arrayHelpers, createArrayHelpers } from '@normy/core';
 
 type GetNormalizerAction = {
   type: 'getNormalization';

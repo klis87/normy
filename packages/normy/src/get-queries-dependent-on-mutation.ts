@@ -14,3 +14,18 @@ export const getQueriesDependentOnMutation = (
 
   return Array.from(new Set(queries));
 };
+
+export const getQueriesDependentOnArrayOperations = (
+  queriesWithArrays: NormalizedData['queriesWithArrays'],
+  mutationDependencies: ReadonlyArray<string>,
+): ReadonlyArray<string> => {
+  const queries: string[] = [];
+
+  mutationDependencies.forEach(dependency => {
+    if (queriesWithArrays[dependency]) {
+      queries.push(...queriesWithArrays[dependency]);
+    }
+  });
+
+  return Array.from(new Set(queries));
+};

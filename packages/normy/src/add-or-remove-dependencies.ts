@@ -36,3 +36,37 @@ export const addOrRemoveDependencies = (
 
   return { dependentQueries, objects };
 };
+
+export const addOrRemoveQueriesWithArrays = (
+  queriesWithArrays: NormalizedData['queriesWithArrays'],
+  queryKey: string,
+  arrayTypesToAdd: ReadonlyArray<string>,
+  arrayTypesToRemove: ReadonlyArray<string>,
+) => {
+  queriesWithArrays = { ...queriesWithArrays };
+
+  arrayTypesToAdd.forEach(dependency => {
+    if (!queriesWithArrays[dependency]) {
+      queriesWithArrays[dependency] = [queryKey];
+    }
+
+    if (!queriesWithArrays[dependency].includes(queryKey)) {
+      queriesWithArrays[dependency] = [
+        ...queriesWithArrays[dependency],
+        queryKey,
+      ];
+    }
+  });
+
+  arrayTypesToRemove.forEach(dependency => {
+    if (queriesWithArrays[dependency].length > 1) {
+      queriesWithArrays[dependency] = queriesWithArrays[dependency].filter(
+        v => v !== queryKey,
+      );
+    } else {
+      delete queriesWithArrays[dependency];
+    }
+  });
+
+  return { queriesWithArrays };
+};

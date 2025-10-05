@@ -108,18 +108,21 @@ In order to understand what `normy` actually does, it is the best to see an exam
         id: '3',
         name: 'Name 3',
         author: { id: '1003', name: 'User3' },
++      __append: 'books',
       }),
-      // with data with top level arrays, you still need to update data manually
-      onSuccess: mutationData => {
-        queryClient.setQueryData(['books'], data => data.concat(mutationData));
-      },
+-     onSuccess: mutationData => {
+-       queryClient.setQueryData(['books'], data => data.concat(mutationData));
+-     },
     });
 
     // return some JSX
   };
 
   const App = () => (
-+   <QueryNormalizerProvider queryClient={queryClient}>
++   <QueryNormalizerProvider
++     queryClient={queryClient}
++     normalizerConfig={{ getArrayType: ({ arrayKey }) => arrayKey }}
++   >
       <QueryClientProvider client={queryClient}>
         <Books />
       </QueryClientProvider>
@@ -127,7 +130,7 @@ In order to understand what `normy` actually does, it is the best to see an exam
   );
 ```
 
-So, as you can see, apart from top level arrays, no manual data updates are necessary anymore. This is especially handy if a given mutation
+So, as you can see, no manual data updates are necessary anymore. This is especially handy if a given mutation
 should update data for multiple queries. Not only this is verbose to do updates manually, but also you need to exactly know,
 which queries to update. The more queries you have, the bigger advantages `normy` brings.
 
@@ -141,6 +144,10 @@ this library will automatically figure it out to update `title` for object with 
 It also works with nested objects with ids, no matter how deep. If an object with id has other objects
 with ids, then those will be normalized separately and parent object will have just reference to those nested
 objects.
+
+Notice, that it even works for array operations! It requires though 2 things first, config callback to compute array types `getArrayType`
+and some hints, what operations should be applied (in our case `\_\_append: 'books'). We will cover this more in arrays chapter,
+but to give you some teaser, it is very flexible, we have numerous built-in operations, plus it is possible to create custom array operations. All of this should prevent any need to write any imperative code to update any data, no exceptions!
 
 ## Installation [:arrow_up:](#table-of-content)
 
@@ -241,15 +248,316 @@ to keep things standardized and consistent. As a last resort, you can amend resp
 
 ## Normalization of arrays [:arrow_up:](#table-of-content)
 
-Unfortunately it does not mean you will never need to update data manually anymore. Some updates still need
-to be done manually like usually, namely adding and removing items from array. Why? Imagine a `REMOVE_BOOK`
-mutation. This book could be present in many queries, library cannot know from which queries
-you would like to remove it. The same applies for `ADD_BOOK`, the library cannot know to which query a book should be added,
-or even as which array index. The same thing for action like `SORT_BOOKS`. This problem affects only top
-level arrays though. For instance, if you have a book with some id and another key like `likedByUsers`,
-then if you return new book with updated list in `likedByUsers`, this will work again automatically.
+Let's say you have a data in a query like:
 
-In the future version of the library though, with some additional pointers, it will be possible to do above updates as well!
+```ts
+{
+  id: '1',
+  name: 'Book name',
+  authors: [{ id: '2', name: 'Author name' }],
+}
+```
+
+Then, updating `authors` is easy, just have a mutation with response:
+
+```ts
+{
+  id: '1',
+  authors: [{ id: '2', name: 'Author name 2' }, { id: '3', name: 'Author name 3' }],
+}
+```
+
+Then, just `authors` array will be replaced with the new one. But what if you have some data with arrays not belonging to any object? Like:
+
+```ts
+{
+  books: [{ id: '1', name: 'Book name' }],
+}
+```
+
+For such cases, typically you would need to either refetch such a query or... update `books` data manually yourself. However, in the
+contrary to other normalization automatic updates systems, like Apollo or Relay, Normy supports even automatic updates for such cases,
+in the spirit of always following declarative data updates pirinciple. To make it work though, we need to do 2 things first, namely
+providing a config function to compute array type and decorating normalized nodes in mutation responses with so-called array operation hints.
+
+Please note, that this paragraph is quite long in comparison to others. It does not mean that array operations are hard, just it takes
+many examples to explain all concepts properly. However, if you wish, at least for now, to skip this chapter, this is completely fine.
+You can just update your data manually or refetch queries for array operations, if you prefer, and later, you could gradually switch to automatic array operations, once
+you are ready.
+
+### Computing array type
+
+Typically, in the contrast to objects, array does not have anything like `id` or `type`. Therefore, we need to declare in config
+how those should be calculated. For this, we can use `getArrayType` config function, for example:
+
+```tsx
+<QueryNormalizerProvider
+  queryClient={queryClient}
+  normalizerConfig={{ getArrayType: ({ arrayKey }) => arrayKey }}
+>
+  {children}
+</QueryNormalizerProvider>
+```
+
+For instance, if we have a data like `{ books: [{ id: '1', name: 'Name 1' }] }`, `normalizerConfig` will set this array type as `books`.
+
+`getArrayType` has passed the following attributes, (together with `arrayKey`), so that it should be possible to handle any data structure:
+
+- `arrayKey` - like you probably guessed in the above example, this is just `key`, under which the array is stored in parent object
+- `array` - the array itself, in case you need to compute array type based on array content
+- `parentObj` - the object which holds the array
+- `queryKey` - this is query key, which holds a data containing a given array, this is provided as a last resort, in case the above attributes are not enough for your case
+
+Now, imagine you use more GraphQL style of storing arrays, like `{ type: 'books', edges: [{ id: '1', name: 'Name 1' }] }`, to cover this
+case, you could do:
+
+```ts
+{
+  getArrayType: ({ parentObj, arrayKey }) =>
+    parentObj.type && arrayKey === 'edges' ? parentObj.type : undefined;
+}
+```
+
+Other ideas, you might use an infinite scrolling feature, which would end up with data like:
+
+```ts
+[
+  {
+    page: 1,
+    data: [
+      { id: '1', name: 'Name 1' },
+      { id: '2', name: 'Name 2' },
+    ],
+  },
+  {
+    page: 2,
+    data: [
+      { id: '3', name: 'Name 3' },
+      { id: '4', name: 'Name 4' },
+    ],
+  },
+];
+```
+
+Then, you could detect paginated data and compute array type like:
+
+```ts
+{
+  getArrayType: ({ parentObj, arrayKey }) => {
+    if (parentObj.page !== undefined) {
+      return `${arrayKey}:${parentObj.page}`;
+    }
+
+    return arrayKey;
+  };
+}
+```
+
+As you can see, `getArrayType` is highly flexible and it should allow you to assign proper array types no matter what data structure you use.
+
+### Array operation hints
+
+Now, after you set `getArrayType` function, let's say you have a mutation `ADD_BOOK`, with response `{ id: '2', name: 'New book' }`.
+You would like it to be automatically added to a books array somewhere in a query/queries. The problem is, that without some hints,
+it is not possible to know what and where it should be done. For example, should we add it to every array with books? We do not know,
+as one array could hold all books, but another one could hold only favourite books, is book with `id: 2` a favourite one? We could go on and on, but the point is, we need to decorate our mutation responses with what should be exactly done. We do it by using special attributes,
+which we put into relevant objects. For example, in order to add book to `books` array, we can do this:
+
+```ts
+{ id: '2', name: 'New book', __append: 'books' }
+```
+
+That's it! We add a special meta property `__apend`, and put value as `books`, which is just the name of array into which the new book
+will be appended to. Ok, but what, if we want this object to be added to multiple arrays? No problem:
+
+```ts
+{ id: '2', name: 'New book', __append: ['books', 'favouriteBooks'] }
+```
+
+You just provide value as array of array types.
+
+There are more array operations than `append`, but before we learn all of them, let's discuss a way to inject props to more complex
+operations. For example let's analyze `insert` operation, which allows us to put an object to a given array at given index.
+How to do it? Well, as operation value, we do not just pass names of array types, but an object like this:
+
+```ts
+{ id: '2', name: 'New book', __insert: { arrayTypes: 'books', index: 1 } }
+```
+
+This way we can pass a property like `index` for operations requiring those. To insert this object to multiple arrays, of course we do:
+
+```ts
+{ id: '2', name: 'New book', __insert: { arrayTypes: ['books', 'favouriteBooks'], index: 1 } }
+```
+
+So like before, we can just pass array of array types. Ok, but what, if we need to set different indexes for different array types?
+
+```ts
+{ id: '2', name: 'New book', __insert: [{ arrayType: 'books', index: 1 }, { arrayType: 'favouriteBooks', index: 2 }] }
+```
+
+As you can see, you just pass array of operation configs, so that each array type can have dedicated properties.
+
+And what, if you would like to multiple operations to one node? Easy:
+
+```ts
+{ id: '2', name: 'New book', __append: 'favouriteBooks',  __insert: { arrayTypes: 'books', index: 1 } }
+```
+
+You just add multiple meta operation properties to the same object.
+
+Of course, you can have multiple objects in a mutation response, each one having multiple operations. It does not matter how many,
+all of them will be executed. All we care about is to mark what operation should be executed on a given node, and for which array type.
+We do not care where a given array is stored, and in how many queries, this is all handled for us automatically.
+
+Also, before we go on, we need to divide operations to node operations - like `append` and `insert`, and nodeless operations, like `clear`. `clear` operations is to clear a given array. It means that it does not belong to any specific node (which could be for instance
+appended somewhere). Nodeless operations look similarly to node operations, they are objects with meta property, the difference is that
+it does not extend a node, it is just a standalone object, for example `{ __clear: 'books' }`.
+
+Moreover, to simplify the process of adding those meta properties, and also, if you use TypeScript, to give you some typesafety when adding them, you can use `arrayHelpers`, for example:
+
+```ts
+import { arayHelpers } from '@normy/react-query';
+
+arayHelpers.append({ id: '2', name: 'New book' }, 'books');
+arayHelpers.insert({ id: '2', name: 'New book' }, 'books', { index: 1 });
+arayHelpers.clear('books');
+```
+
+This is the same like adding those attributes manually, so it is optional to use. To give you more examples, you
+probably guessed that, but if you want to execute multiple operations for a mutation data, you can do it for example as:
+
+```ts
+import { arayHelpers } from '@normy/react-query';
+
+const mutationData = { id: '2', name: 'New book' };
+
+const mutationDataWithOperations = [
+  arayHelpers.append(mutationData, 'books'),
+  arayHelpers.clear('favouriteBooks'),
+];
+```
+
+The point is, it really does not matter how you reformat mutation responses, all operations will be found anyway.
+
+Also, you might ask a question, how to apply multiple operations into one node with `arayHelpers`? You can use `chain` for that:
+
+```ts
+arayHelpers
+  .chain({ id: '2', name: 'New book' })
+  .append('books')
+  .insert('favouriteBooks', { index: 1 })
+  .insert('soldBooks', { index: 2 })
+  .apply();
+```
+
+So, you call `chain` with a node, and then you use all operations like previously (but without passing node as it was already passed to `chain`). And... after you set all methods to chain, you need to finish everything with `apply`.
+
+Also, what is very important, obviously chaining can be done only for node operations. For nodeless operations like `__clear` it does
+not make sense to chain, because nodeless operations are not executed on any node, so there is not point chaining them.
+
+Now, after you have all bacics, how to use operations, let's analyze all built-in array operations.
+
+#### insert
+
+Insert allows us to inject a node to an array at given index. Like we showed above, we use it like `{ id: '2', name: 'New book', __insert: { arrayTypes: 'books', index: 0 } }`.
+
+There are some interesting additional qualities for `insert` operation:
+
+1. Negative indexes (like in Python) are supported, for example you can set `-1` to insert as the last item
+2. Duplicates are prevented - if you try to insert a node with `id` to an array where this item is already there, the operation will be ignored - probably duplicating items
+   is not what would be correct.
+3. If the inserted node has more properties, that other nodes in array you insert into, they will be removed - node structure should be consistent within an array
+4. For convenience, if you insert a node which miss some properties which are present in other nodes in an array, if possible, they will be picked from normalized store
+   and added automatically. If not possible, a warning will be shown in the console.
+
+#### append
+
+This is like `insert` with `index: -1`, for example `{ id: '2', name: 'New book', __append: 'books' }`.
+
+#### prepend
+
+This is like `insert` with `index: 0`, for example `{ id: '2', name: 'New book', __prepend: 'books' }`.
+
+#### remove
+
+Allows us to remove a node from an array, for example `{ id: '2', name: 'Book', __remove: 'books' }`. Notice that no index is passed, because node is removed by id.
+
+#### replace
+
+Replaces a node at given `index` in an array with node you add this operation to, for example `{ id: '2', name: 'New book', __replace: { arrayTypes: 'books', index: 0 } }`.
+
+#### move
+
+Useful to move a node to a different array index, for example `{ id: '2', name: 'Book', __replace: { arrayTypes: 'books', toIndex: 2 } }`.
+
+#### swap
+
+Similar to `move`, but node at `toIndex` index will go to the initial position of node you apply operation to, for example `{ id: '2', name: 'Book', __swap: { arrayTypes: 'books', toIndex: 2 } }`.
+
+#### clear
+
+This is nodeless operation to clear an entire array, for example `{ __clear: 'books' }`.
+
+#### replaceAll
+
+This is nodeless operation to replace an array with a completely new value, for example `{ __replaceAll: { arrayType: 'books', value: [{ id: '2', name: 'Book' }] }`.
+
+### Custom operations
+
+In order to support maximum flexibility, you can provide your own custom operations, like sort, or whatever you can imagine. To do it, pass `customArrayOperations`, for example:
+
+```ts
+{
+  getArrayType: ({ arrayKey }) => arrayKey,
+  customArrayOperations: {
+    // simplified append,just simplified
+    __push: props => [...props.array, props.operation.node],
+    // reimplementation of build-in replace
+    __replaceWith: props =>
+      typeof props.operation.props?.index === 'number'
+        ? props.array.map((item, index) =>
+            index === props.operation.props?.index
+              ? props.operation.node
+              : item,
+          )
+        : props.array,
+    __reverse: props => [...props.array].reverse(),
+  },
+};
+```
+
+Also, you can extend array helpers with your operations:
+
+```ts
+import { createArrayHelpers } from '@normy/react-query';
+
+const customArrayHelpers = createArrayHelpers({
+  nodelessOperations: {
+    reverse: (arrayType: string) => ({
+      __reverse: { arrayTypes: arrayType },
+    }),
+  },
+
+  nodeOperations: {
+    push: (node, arrayType) => ({
+      ...node,
+      __push: Array.isArray(node.__push)
+        ? [...node.__push, arrayType] // to support chaining
+        : [arrayType],
+    }),
+
+    replaceWith: (node, arrayType, config) => ({
+      ...node,
+      __replaceWith: Array.isArray(node.__replaceWith)
+        ? [...node.__replaceWith, { arrayType, index: config.index }]
+        : [{ arrayType, index: config.index }],
+    }),
+  },
+});
+```
+
+Note, that `nodelessOperations` will not support `chain`, while `nodeOperations` will.
 
 ## Debugging [:arrow_up:](#table-of-content)
 
