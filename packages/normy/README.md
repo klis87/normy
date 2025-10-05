@@ -387,13 +387,21 @@ How to do it? Well, as operation value, we do not just pass names of array types
 This way we can pass a property like `index` for operations requiring those. To insert this object to multiple arrays, of course we do:
 
 ```ts
-{ id: '2', name: 'New book', __insert: { arrayTypes: ['books', 'favouriteBooks'], index: 1 } }
+{
+  id: '2',
+  name: 'New book',
+ _insert: { arrayTypes: ['books', 'favouriteBooks'], index: 1 },
+}
 ```
 
 So like before, we can just pass array of array types. Ok, but what, if we need to set different indexes for different array types?
 
 ```ts
-{ id: '2', name: 'New book', __insert: [{ arrayType: 'books', index: 1 }, { arrayType: 'favouriteBooks', index: 2 }] }
+{
+  id: '2',
+  name: 'New book',
+  __insert: [{ arrayType: 'books', index: 1 }, { arrayType: 'favouriteBooks', index: 2 }],
+}
 ```
 
 As you can see, you just pass array of operation configs, so that each array type can have dedicated properties.
@@ -401,7 +409,12 @@ As you can see, you just pass array of operation configs, so that each array typ
 And what, if you would like to multiple operations to one node? Easy:
 
 ```ts
-{ id: '2', name: 'New book', __append: 'favouriteBooks',  __insert: { arrayTypes: 'books', index: 1 } }
+{
+  id: '2',
+  name: 'New book',
+  __append: 'favouriteBooks',
+  __insert: { arrayTypes: 'books', index: 1 },
+}
 ```
 
 You just add multiple meta operation properties to the same object.
