@@ -1,6 +1,6 @@
 {
   "name": "@normy/core",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Automatic normalization and data updates for data fetching libraries",
   "main": "lib/index.js",
   "module": "es/index.js",
