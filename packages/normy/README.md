@@ -54,11 +54,13 @@ In order to understand what `normy` actually does, it is the best to see an exam
   const Books = () => {
     const queryClient = useQueryClient();
 
-    const { data: booksData = [] } = useQuery(['books'], () =>
-      Promise.resolve([
-        { id: '1', name: 'Name 1', author: { id: '1001', name: 'User1' } },
-        { id: '2', name: 'Name 2', author: { id: '1002', name: 'User2' } },
-      ]),
+    const { data: booksData } = useQuery(['books'], () =>
+      Promise.resolve({
+        books: [
+          { id: '1', name: 'Name 1', author: { id: '1001', name: 'User1' } },
+          { id: '2', name: 'Name 2', author: { id: '1002', name: 'User2' } },
+        ],
+      }),
     );
 
     const { data: bookData } = useQuery(['book'], () =>
@@ -75,11 +77,11 @@ In order to understand what `normy` actually does, it is the best to see an exam
         name: 'Name 1 Updated',
       }),
 -     onSuccess: mutationData => {
--       queryClient.setQueryData(['books'], data =>
--         data.map(book =>
+-       queryClient.setQueryData(['books'], data => ({
+-         books: data.books.map(book =>
 -           book.id === mutationData.id ? { ...book, ...mutationData } : book,
 -         ),
--       );
+-       }));
 -       queryClient.setQueryData(['book'], data =>
 -         data.id === mutationData.id ? { ...data, ...mutationData } : data,
 -       );
@@ -92,11 +94,11 @@ In order to understand what `normy` actually does, it is the best to see an exam
         author: { id: '1004', name: 'User4' },
       }),
 -     onSuccess: mutationData => {
--       queryClient.setQueryData(['books'], data =>
--         data.map(book =>
+-       queryClient.setQueryData(['books'], data => ({
+-         books: data.books.map(book =>
 -           book.id === mutationData.id ? { ...book, ...mutationData } : book,
 -         ),
--       );
+-       }));
 -       queryClient.setQueryData(['book'], data =>
 -         data.id === mutationData.id ? { ...data, ...mutationData } : data,
 -       );
@@ -111,7 +113,7 @@ In order to understand what `normy` actually does, it is the best to see an exam
 +      __append: 'books',
       }),
 -     onSuccess: mutationData => {
--       queryClient.setQueryData(['books'], data => data.concat(mutationData));
+-       queryClient.setQueryData(['books'], data => ({ books: data.books.concat(mutationData) });
 -     },
     });
 
