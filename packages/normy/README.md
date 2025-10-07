@@ -113,7 +113,10 @@ In order to understand what `normy` actually does, it is the best to see an exam
 +      __append: 'books',
       }),
 -     onSuccess: mutationData => {
--       queryClient.setQueryData(['books'], data => ({ books: data.books.concat(mutationData) });
+-       queryClient.setQueryData(
+-         ['books'],
+-         data => ({ books: data.books.concat(mutationData) }),
+-       );
 -     },
     });
 
