@@ -5,12 +5,22 @@ export const denormalize = (
   normalizedData: { [key: string]: Data },
   usedKeys: UsedKeys,
   path = '',
+  seenRefs = new Set<string>(),
 ): Data => {
+  // Handle circular references
   if (typeof data === 'string' && data.startsWith('@@')) {
-    return denormalize(normalizedData[data], normalizedData, usedKeys, path);
+    // Check if we've already seen this reference in the current traversal
+    if (seenRefs.has(data)) {
+      // Circular reference detected, return the reference string itself
+      return data;
+    }
+    // Add to seen set before recursing
+    const newSeenRefs = new Set(seenRefs);
+    newSeenRefs.add(data);
+    return denormalize(normalizedData[data], normalizedData, usedKeys, path, newSeenRefs);
   } else if (Array.isArray(data)) {
     return data.map(value =>
-      denormalize(value, normalizedData, usedKeys, path),
+      denormalize(value, normalizedData, usedKeys, path, seenRefs),
     ) as DataPrimitiveArray | DataObject[];
   } else if (
     data !== null &&
@@ -22,7 +32,7 @@ export const denormalize = (
       : Object.entries(data);
 
     return objectEntries.reduce((prev, [k, v]) => {
-      prev[k] = denormalize(v, normalizedData, usedKeys, `${path}.${k}`);
+      prev[k] = denormalize(v, normalizedData, usedKeys, `${path}.${k}`, seenRefs);
 
       return prev;
     }, {} as DataObject);
