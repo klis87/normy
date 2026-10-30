@@ -1,10 +1,10 @@
 import { defaultConfig } from './default-config';
 import { mergeData } from './merge-data';
-import {
+import type {
   Data,
-  NormalizerConfig,
-  DataPrimitiveArray,
   DataObject,
+  DataPrimitiveArray,
+  NormalizerConfig,
   UsedKeys,
 } from './types';
 
@@ -83,7 +83,9 @@ export const getDependencies = (
 
   if (data !== null && typeof data === 'object' && !(data instanceof Date)) {
     if (config.getNormalizationObjectKey(data) !== undefined) {
-      usedKeys[path] = Object.keys(data);
+      usedKeys[path] = [
+        ...new Set([...(usedKeys[path] || []), ...Object.keys(data)]),
+      ];
     }
 
     return [
