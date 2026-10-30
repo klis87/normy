@@ -1,4 +1,5 @@
 import { getDependenciesDiff } from './get-dependencies-diff';
+import { normalize } from './normalize';
 
 describe('getDependenciesDiff', () => {
   it('returns no diff for the same dependencies', () => {
@@ -27,5 +28,17 @@ describe('getDependenciesDiff', () => {
       addedDependencies: ['z'],
       removedDependencies: ['y'],
     });
+  });
+
+  it('accumulates used keys across array items of different shapes', () => {
+    const [, , usedKeys] = normalize(
+      [
+        { id: '1', a: 1 },
+        { id: '2', b: 2 },
+      ],
+      '',
+    );
+
+    expect(usedKeys['']).toEqual(['id', 'a', 'b']);
   });
 });

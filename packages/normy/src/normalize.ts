@@ -83,7 +83,9 @@ export const getDependencies = (
 
   if (data !== null && typeof data === 'object' && !(data instanceof Date)) {
     if (config.getNormalizationObjectKey(data) !== undefined) {
-      usedKeys[path] = Object.keys(data);
+      usedKeys[path] = [
+        ...new Set([...(usedKeys[path] || []), ...Object.keys(data)]),
+      ];
     }
 
     return [
