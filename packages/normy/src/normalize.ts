@@ -1,10 +1,10 @@
 import { defaultConfig } from './default-config';
 import { mergeData } from './merge-data';
-import type {
+import {
   Data,
-  DataObject,
-  DataPrimitiveArray,
   NormalizerConfig,
+  DataPrimitiveArray,
+  DataObject,
   UsedKeys,
 } from './types';
 
